@@ -2,7 +2,7 @@
 "DefaultBrowserCard.Button.v2" = "Barrachd fiosrachaidh";
 
 /* Description for small home tab banner shown that allows user to switch their default browser to Firefox. */
-"DefaultBrowserCard.Description" = "Suidhich ceanglaichean o làraichean-lìn, puist-d agus teachdaireachdan airson ’s gun tèid am fosgladh gu fèin-obrachail ann am Firefox.";
+"DefaultBrowserCard.Description" = "Suidhich ceanglaichean o làraichean-lìn, puist-d agus teachdaireachdan airson ’s gun tèid am fosgladh gu fèin-obrachail ann am Carbon.";
 
 /* Title for small home tab banner shown that allows user to switch their default browser to Firefox. */
 "DefaultBrowserCard.Title" = "Leum dhan bhrabhsair bhunaiteach agad";
@@ -17,7 +17,7 @@
 "DefaultBrowserOnboarding.Description2" = "2. Thoir gnogag air “Aplacaid brabhsair bhunaiteach”";
 
 /* Description for default browser onboarding card. */
-"DefaultBrowserOnboarding.Description3" = "3. Tagh Firefox";
+"DefaultBrowserOnboarding.Description3" = "3. Tagh Carbon";
 
 /* Text for the screenshot of the iOS system settings page for Firefox. */
 "DefaultBrowserOnboarding.Screenshot" = "Aplacaid brabhsair bhunaiteach";
