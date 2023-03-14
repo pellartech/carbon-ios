@@ -15492,6 +15492,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E60961861B62B8A700DD640F /* Fennec.xcconfig */;
 			buildSettings = {
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Xlinker",
