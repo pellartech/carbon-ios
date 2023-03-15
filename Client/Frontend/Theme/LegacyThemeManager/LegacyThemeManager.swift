@@ -47,7 +47,7 @@ class LegacyThemeManager {
     }
 
     private init() {
-        UserDefaults.standard.register(defaults: [LegacyThemeManagerPrefs.systemThemeIsOn.rawValue: true])
+        UserDefaults.standard.register(defaults: [LegacyThemeManagerPrefs.systemThemeIsOn.rawValue: false])
         systemThemeIsOn = UserDefaults.standard.bool(forKey: LegacyThemeManagerPrefs.systemThemeIsOn.rawValue)
 
         NotificationCenter.default.addObserver(self,
@@ -96,6 +96,8 @@ class LegacyThemeManager {
         if !nightMode && LegacyThemeManager.instance.systemThemeIsOn {
             let userInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
             LegacyThemeManager.instance.current = userInterfaceStyle == .dark ? LegacyDarkTheme() : LegacyNormalTheme()
+        }else{
+            LegacyThemeManager.instance.current = LegacyDarkTheme()
         }
     }
 }

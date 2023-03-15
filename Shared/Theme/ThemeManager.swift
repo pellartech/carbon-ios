@@ -54,8 +54,8 @@ final public class DefaultThemeManager: ThemeManager, Notifiable {
 
         migrateDefaultsToUseStandard()
 
-        self.userDefaults.register(defaults: [ThemeKeys.systemThemeIsOn: true,
-                                              ThemeKeys.NightMode.isOn: NSNumber(value: false)])
+        self.userDefaults.register(defaults: [ThemeKeys.systemThemeIsOn: false,
+                                              ThemeKeys.NightMode.isOn: NSNumber(value: true)])
 
         changeCurrentTheme(loadInitialThemeType())
 
