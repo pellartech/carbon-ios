@@ -16,7 +16,7 @@ class ReaderModeThemeButton: UIButton {
                 titleLabel?.font = UIFont(name: "SF-Pro", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             case .serif,
                  .serifBold:
-                titleLabel?.font = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+                titleLabel?.font = UIFont(name: "Roboto-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             }
         }
     }

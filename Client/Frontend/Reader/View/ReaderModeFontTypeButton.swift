@@ -22,7 +22,7 @@ class ReaderModeFontTypeButton: UIButton {
         case .serif,
              .serifBold:
             setTitle(.ReaderModeStyleSerifFontType, for: [])
-            let font = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
+            let font = UIFont(name: "Roboto-Regular", size: DynamicFontHelper.defaultHelper.ReaderStandardFontSize)
             titleLabel?.font = font
         }
     }

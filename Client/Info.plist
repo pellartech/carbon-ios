@@ -110,10 +110,10 @@
 	<string>$(SENTRY_CLOUD_DSN)</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>NewYorkMedium-Bold.otf</string>
-		<string>NewYorkMedium-BoldItalic.otf</string>
-		<string>NewYorkMedium-Regular.otf</string>
-		<string>NewYorkMedium-RegularItalic.otf</string>
+		<string>Roboto-Bold.otf</string>
+		<string>Roboto-BoldItalic.otf</string>
+		<string>Roboto-Regular.otf</string>
+		<string>Roboto-Italic.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
