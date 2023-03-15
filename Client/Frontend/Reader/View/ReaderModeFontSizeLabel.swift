@@ -22,7 +22,7 @@ class ReaderModeFontSizeLabel: UILabel {
                 font = UIFont(name: "SF-Pro-Text-Regular", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
             case .serif,
                  .serifBold:
-                font = UIFont(name: "NewYorkMedium-Regular", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
+                font = UIFont(name: "Roboto-Regular", size: DynamicFontHelper.defaultHelper.ReaderBigFontSize)
             }
         }
     }

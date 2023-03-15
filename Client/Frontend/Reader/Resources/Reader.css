@@ -4,24 +4,24 @@
 
 @font-face {
     font-family: new-york;
-    src: url('/reader-mode/fonts/NewYorkMedium-Regular.otf');
+    src: url('/reader-mode/fonts/Roboto-Regular.otf');
 }
 
 @font-face {
     font-family: new-york;
-    src: url('/reader-mode/fonts/NewYorkMedium-Bold.otf');
+    src: url('/reader-mode/fonts/Roboto-Bold.otf');
     font-weight: bold;
 }
 
 @font-face {
     font-family: new-york;
-    src: url('/reader-mode/fonts/NewYorkMedium-RegularItalic.otf');
+    src: url('/reader-mode/fonts/Roboto-Italic.otf');
     font-style: italic;
 }
 
 @font-face {
     font-family: new-york;
-    src: url('/reader-mode/fonts/NewYorkMedium-BoldItalic.otf');
+    src: url('/reader-mode/fonts/Roboto-BoldItalic.otf');
     font-weight: bold;
     font-style: italic;
 }
