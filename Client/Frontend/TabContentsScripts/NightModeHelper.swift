@@ -7,16 +7,19 @@ import WebKit
 import Shared
 import Common
 
+public enum NightModeKeys {
+    static let Status = "profile.NightModeStatus"
+    static let DarkThemeEnabled = "NightModeEnabledDarkTheme"
+}
+
 class NightModeHelper: TabContentScript {
-    private enum NightModeKeys {
-        static let Status = "profile.NightModeStatus"
-        static let DarkThemeEnabled = "NightModeEnabledDarkTheme"
-    }
 
     fileprivate weak var tab: Tab?
 
     required init(tab: Tab) {
         self.tab = tab
+        UserDefaults.standard.setValue(true, forKey: NightModeKeys.Status)
+        UserDefaults.standard.setValue(true, forKey: NightModeKeys.DarkThemeEnabled)
     }
 
     static func name() -> String {
