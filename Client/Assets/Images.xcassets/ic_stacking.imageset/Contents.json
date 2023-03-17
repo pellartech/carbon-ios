@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_stacking.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

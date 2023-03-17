@@ -32,11 +32,11 @@ extension HomeLogoHeaderViewModel: HomepageViewModelProtocol, FeatureFlaggable {
 
     func section(for traitCollection: UITraitCollection, size: CGSize) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .estimated(100))
+                                              heightDimension: .estimated(250))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .estimated(100))
+                                               heightDimension: .estimated(250))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
@@ -67,7 +67,6 @@ extension HomeLogoHeaderViewModel: HomepageViewModelProtocol, FeatureFlaggable {
 extension HomeLogoHeaderViewModel: HomepageSectionHandler {
     func configure(_ cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell {
         guard let logoHeaderCell = cell as? HomeLogoHeaderCell else { return UICollectionViewCell() }
-        logoHeaderCell.applyTheme(theme: theme)
         return logoHeaderCell
     }
 }
