@@ -93,7 +93,7 @@ class TelemetryWrapper: TelemetryWrapperProtocol {
         telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.normalbrowsing", withDefaultValue: true)
         telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.privatebrowsing", withDefaultValue: true)
         telemetryConfig.measureUserDefaultsSetting(forKey: "profile.prefkey.trackingprotection.strength", withDefaultValue: "basic")
-        telemetryConfig.measureUserDefaultsSetting(forKey: LegacyThemeManagerPrefs.systemThemeIsOn.rawValue, withDefaultValue: true)
+        telemetryConfig.measureUserDefaultsSetting(forKey: LegacyThemeManagerPrefs.systemThemeIsOn.rawValue, withDefaultValue: false)
 
         let prefs = profile.prefs
         legacyTelemetry.beforeSerializePing(pingType: CorePingBuilder.PingType) { (inputDict) -> [String: Any?] in
