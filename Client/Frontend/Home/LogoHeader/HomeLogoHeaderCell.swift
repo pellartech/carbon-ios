@@ -251,7 +251,9 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             return cell
         }else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
-            cell.setUI(data: statsModel[indexPath.row])
+            cell.setUI(data: statsModel[indexPath.row],index: indexPath.row)
+            cell.setNeedsLayout()
+            cell.layoutIfNeeded()
             return cell
         }
     }
@@ -355,11 +357,23 @@ class DataTableCell: UITableViewCell {
 class ComingSoonCollectionCell: UICollectionViewCell {
     
     private struct UX {
-        struct Icon {
+        struct IconView {
             static let top: CGFloat = 10
             static let height: CGFloat = 56
             static let width: CGFloat = 56
+        }
+        struct Icon {
+            static let width1: CGFloat = 30
+            static let height1: CGFloat = 35
             
+            static let width2: CGFloat = 34
+            static let height2: CGFloat = 34
+
+            static let width3: CGFloat = 33
+            static let height3: CGFloat = 33
+            
+            static let width4: CGFloat = 31
+            static let height4: CGFloat = 31
         }
         struct Value {
             static let font: CGFloat = 10
@@ -368,9 +382,17 @@ class ComingSoonCollectionCell: UICollectionViewCell {
             static let width: CGFloat = 56
         }
     }
+    private lazy var iconView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 15
+        view.clipsToBounds = true
+        return view
+    }()
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = UIColor.clear
+        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -387,26 +409,48 @@ class ComingSoonCollectionCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(iconImageView)
+        iconView.addSubview(iconImageView)
+        addSubview(iconView)
         addSubview(titleLabel)
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         
         NSLayoutConstraint.activate([
-            iconImageView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Icon.top),
-            iconImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant:  UX.Icon.width),
-            iconImageView.heightAnchor.constraint(equalToConstant:  UX.Icon.height),
-            
-            titleLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor,constant: UX.Value.top),
+            iconView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            iconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            iconView.widthAnchor.constraint(equalToConstant:  UX.IconView.width),
+            iconView.heightAnchor.constraint(equalToConstant:   UX.IconView.height),
+            iconImageView.centerXAnchor.constraint(equalTo:  iconView.centerXAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo:  iconView.centerYAnchor),
+            titleLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor,constant: UX.Value.top),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleLabel.widthAnchor.constraint(equalToConstant: UX.Value.width),
             titleLabel.heightAnchor.constraint(equalToConstant: UX.Value.height)
         ])
     }
-    func setUI(data : StatsModel){
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+        iconView.setGradientBackground()
+    }
+    func setUI(data : StatsModel,index : Int){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title
+        switch index {
+        case 0:
+            setUIForImage(width: UX.Icon.width1, height: UX.Icon.height1)
+        case 1:
+            setUIForImage(width: UX.Icon.width2, height: UX.Icon.height2)
+        case 2:
+            setUIForImage(width: UX.Icon.width3, height: UX.Icon.height3)
+        case 3:
+            setUIForImage(width: UX.Icon.width4, height: UX.Icon.height4)
+        default:
+            break
+        }
+    }
+    func setUIForImage(width: CGFloat, height: CGFloat){
+        iconImageView.widthAnchor.constraint(equalToConstant: width).isActive = true
+        iconImageView.heightAnchor.constraint(equalToConstant: height).isActive = true
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -502,3 +546,14 @@ class StatsModel {
     }
 }
 
+extension UIView{
+    func setGradientBackground() {
+        let colorTop =  UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0).cgColor
+        let colorBottom = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0).cgColor
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorTop, colorBottom]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.frame = self.frame
+        self.layer.insertSublayer(gradientLayer, at:0)
+    }
+}
