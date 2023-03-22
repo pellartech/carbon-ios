@@ -46,16 +46,15 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let height: CGFloat = 50
         }
         struct CardTitleLabel {
-            static let font: CGFloat = 13
-            static let centerYAnchor: CGFloat = -25
-            static let width: CGFloat = 120
-            static let height: CGFloat = 50
+            static let width: CGFloat = 98
+            static let height: CGFloat = 18
             static let YAnchor: CGFloat = -45
+            static let font : CGFloat = 13
         }
         struct CollectionView {
-            static let leadingAnchor: CGFloat = 35
-            static let topAnchor: CGFloat = 20
-            static let width: CGFloat = -30
+            static let leadingAnchor: CGFloat = 30
+            static let topAnchor: CGFloat = 10
+            static let trailingAnchor: CGFloat = -30
             static let leading: CGFloat = 10
             static let widthAnchor: CGFloat = -10
 
@@ -99,12 +98,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         label.font = UIFont.boldSystemFont(ofSize: UX.StatsTitleLabel.font)
         label.text = "Your Carbon Stats"
         label.translatesAutoresizingMaskIntoConstraints = false
-        statsView.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: statsView.centerYAnchor, constant: UX.StatsTitleLabel.centerYAnchor),
-            label.widthAnchor.constraint(equalToConstant: UX.StatsTitleLabel.width),
-            label.heightAnchor.constraint(equalToConstant: UX.StatsTitleLabel.height)])
         return label
     }()
     
@@ -115,12 +108,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         label.font = UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.font)
         label.text = "COMING SOON"
         label.translatesAutoresizingMaskIntoConstraints = false
-        statsView.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: statsView.centerYAnchor, constant: UX.CardTitleLabel.centerYAnchor),
-            label.widthAnchor.constraint(equalToConstant: UX.CardTitleLabel.width),
-            label.heightAnchor.constraint(equalToConstant: UX.CardTitleLabel.height)])
         return label
     }()
     
@@ -169,11 +156,11 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
 
     
     // MARK: - Variables
-    private  var dataModel = [DataModel(title: "Data Saved", value: "2MB"),DataModel(title: "Tracker & Ads Blocked", value: "5"),DataModel(title: "Searches", value: "19")]
+    private  var dataModel = [DataModel(title: "Data Saved", value: "0B"),DataModel(title: "Tracker & Ads Blocked", value: "0"),DataModel(title: "Searches", value: "0")]
     
     private var statsModel = [StatsModel(title: "Wallet", icon:"ic_wallet"),StatsModel(title: "Staking", icon: "ic_stacking"),StatsModel(title: "Swap", icon: "ic_swap"),StatsModel(title: "Bridge", icon: "ic_bridge")]
     
-    private  var earnedModel = [DataModel(title: "Earned Today", value: "2"),DataModel(title: "Earned Total", value: "10")]
+    private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
   
     private var wallpaperManager =  WallpaperManager()
 
@@ -201,6 +188,11 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         contentView.addSubview(comingSoonView)
         
         NSLayoutConstraint.activate([
+            statsTitleLabel.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
+            statsTitleLabel.centerYAnchor.constraint(equalTo: statsView.centerYAnchor, constant: UX.StatsTitleLabel.centerYAnchor),
+            statsTitleLabel.widthAnchor.constraint(equalToConstant: UX.StatsTitleLabel.width),
+            statsTitleLabel.heightAnchor.constraint(equalToConstant: UX.StatsTitleLabel.height),
+            
             statsView.topAnchor.constraint(equalTo: contentView.topAnchor,
                                            constant: UX.StatsView.topConstant),
             statsView.widthAnchor.constraint(equalToConstant: contentView.frame.width/2 -  UX.StatsView.constant),
@@ -225,7 +217,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             
             collectionView.leadingAnchor.constraint(equalTo: comingSoonView.leadingAnchor,constant: UX.CollectionView.leadingAnchor),
             collectionView.topAnchor.constraint(equalTo: comingSoonView.topAnchor,constant: UX.CollectionView.topAnchor),
-            collectionView.widthAnchor.constraint(equalTo: comingSoonView.widthAnchor,constant: UX.CollectionView.width),
+            collectionView.trailingAnchor.constraint(equalTo: comingSoonView.trailingAnchor,constant: UX.CollectionView.trailingAnchor),
             collectionView.heightAnchor.constraint(equalTo: comingSoonView.heightAnchor),
             
             statsCollectionView.leadingAnchor.constraint(equalTo: statsView.leadingAnchor,constant: UX.CollectionView.leading),
@@ -259,11 +251,11 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return collectionView == statsCollectionView ? CGSize(width:(collectionView.frame.width/2) - 5, height: 50) : CGSize(width: 65, height: 100)
+        return collectionView == statsCollectionView ? CGSize(width:(collectionView.frame.width/2) - 5, height: 50) : CGSize(width: 56, height: 68)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return collectionView == statsCollectionView ? 30 : 25
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return collectionView == statsCollectionView ? 10 : 20
     }
 
 
@@ -378,7 +370,7 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         struct Value {
             static let font: CGFloat = 10
             static let top: CGFloat = 10
-            static let height: CGFloat = 10
+            static let height: CGFloat = 15
             static let width: CGFloat = 56
         }
     }
