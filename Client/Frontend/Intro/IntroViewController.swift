@@ -19,7 +19,7 @@ class IntroViewController: UIViewController, OnboardingViewControllerProtocol, T
     struct UX {
         static let closeButtonSize: CGFloat = 30
         static let closeHorizontalMargin: CGFloat = 24
-        static let closeVerticalMargin: CGFloat = 20
+        static let closeVerticalMargin: CGFloat = 10
         static let pageControlHeight: CGFloat = 40
         static let pageControlBottomPadding: CGFloat = 8
     }
@@ -73,34 +73,34 @@ class IntroViewController: UIViewController, OnboardingViewControllerProtocol, T
     // MARK: View setup
     private func setupPageController() {
         // Create onboarding card views
-        var cardViewController: OnboardingCardViewController
-        for cardType in viewModel.enabledCards {
-            if let viewModel = viewModel.getCardViewModel(cardType: cardType) {
-                cardViewController = OnboardingCardViewController(viewModel: viewModel,
-                                                                  delegate: self)
-                onboardingCards.append(cardViewController)
-            }
-        }
+        let cardViewController =  OnboardingViewController()
+//        for cardType in viewModel.enabledCards {
+//            if let viewModel = viewModel.getCardViewModel(cardType: cardType) {
+//                cardViewController = OnboardingCardViewController(viewModel: viewModel,
+//                                                                  delegate: self)
+//                onboardingCards.append(cardViewController)
+//            }
+//        }
 
-        if let firstViewController = onboardingCards.first {
-            pageController.setViewControllers([firstViewController],
+//        if let firstViewController = onboardingCards.first {
+            pageController.setViewControllers([cardViewController],
                                               direction: .forward,
                                               animated: true,
                                               completion: nil)
-        }
+//        }
     }
 
     private func setupLayout() {
         addChild(pageController)
         view.addSubview(pageController.view)
         pageController.didMove(toParent: self)
-        view.addSubviews(pageControl, closeButton)
+        view.addSubviews(closeButton)
 
         NSLayoutConstraint.activate([
-            pageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                                constant: -UX.pageControlBottomPadding),
-            pageControl.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            pageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+//                                                constant: -UX.pageControlBottomPadding),
+//            pageControl.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
                                              constant: UX.closeVerticalMargin),
