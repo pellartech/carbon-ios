@@ -1,14 +1,16 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/
-
 import UIKit
 
 protocol OnboardingProtocol {
     func nextButtonTapped()
+    func doneButtonTapped()
 }
 
-class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, OnboardingProtocol {
+protocol IntroOnboardingProtocol {
+    func moveToNextScreen(index:Int)
+    func closeOnboardingScreen()
+}
+
+class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, OnboardingProtocol, UIScrollViewDelegate {
     
     private lazy var collectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -19,7 +21,6 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
         collectionView.backgroundColor =  Utilities().hexStringToUIColor(hex: "#1E1E1E")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.isScrollEnabled = false
         collectionView.bounces = false
         collectionView.alwaysBounceHorizontal = false
         collectionView.isPagingEnabled = true
@@ -28,6 +29,7 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
+    var delegate: IntroOnboardingProtocol?
     
     var onboardingModel = [OnboardingModel(title: "Privacy", image: "ic_privacy",descrp: "Saves data be downloading ad-blocking filterins only when you’re connected to WI-FI. When toggled on, this setting may affect the quality of ad blocking."),OnboardingModel(title: "Speed!", image: "ic_speed",descrp:"Like VPN, AdBlock etc.ing ad-blocking filterins only when you’re connected to WI-FI. When toggled on, this setting may affect the quality of ad blocking."),OnboardingModel(title: "Rewards", image: "ic_rewards",descrp:"Saves data be downloading ad-blocking filterins only when you’re connected to WI-FI. When toggled on, this setting may affect the quality of ad blocking.")]
     
@@ -75,15 +77,31 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
     }
     
     func nextButtonTapped() {
-        collectionView.scrollToNextItem()
+        scrollToNextItem()
+    }
+    
+    func doneButtonTapped() {
+        delegate?.closeOnboardingScreen()
+    }
+    func scrollToNextItem(){
+        let cellSize = collectionView.frame.size
+        let contentOffset = collectionView.contentOffset
+        if collectionView.contentSize.width >= collectionView.contentOffset.x + cellSize.width
+        {
+            let r = CGRect(x: contentOffset.x + cellSize.width, y: contentOffset.y, width: cellSize.width, height: cellSize.height)
+            collectionView.scrollRectToVisible(r, animated: true);
+            for cell in collectionView.visibleCells {
+                let indexPath = collectionView.indexPath(for: cell)
+                delegate?.moveToNextScreen(index: indexPath!.row)
+            }
+        }
+        
     }
 }
 
 
 
 class OnboardingWelcomeCollectionCell: UICollectionViewCell {
-    
-    
     
     private struct UX {
         struct LayerView {
@@ -225,7 +243,7 @@ class OnboardingWelcomeCollectionCell: UICollectionViewCell {
         return label
     }()
     
-    var delegate : OnboardingProtocol!
+    var delegate : OnboardingProtocol?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -293,7 +311,7 @@ class OnboardingWelcomeCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     @objc func nextLabelTapped(sender: UILabel){
-        delegate.nextButtonTapped()
+        delegate?.nextButtonTapped()
     }
 }
 
@@ -394,7 +412,7 @@ class OnboardingCollectionCell: UICollectionViewCell {
         return label
     }()
     
-    var delegate : OnboardingProtocol!
+    var delegate : OnboardingProtocol?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -451,7 +469,11 @@ class OnboardingCollectionCell: UICollectionViewCell {
         ])
     }
     @objc func nextLabelTapped(sender: UILabel){
-        delegate.nextButtonTapped()
+        if nextLabel.text == "DONE"{
+            delegate?.doneButtonTapped()
+        }else{
+            delegate?.nextButtonTapped()
+        }
     }
     func gradientColor(bounds: CGRect, gradientLayer :CAGradientLayer) -> UIColor? {
         UIGraphicsBeginImageContext(gradientLayer.bounds.size)
@@ -470,7 +492,7 @@ class OnboardingCollectionCell: UICollectionViewCell {
         return gradient
     }
     func setUI(data : OnboardingModel,index:Int){
-        nextLabel.isHidden = index == 3 ? true : false
+        nextLabel.text = index == 3 ? "DONE" : "NEXT"
         titleLabel.text = data.title
         descrpLabel.text = data.descrp
         centerImageView.image = UIImage(named: data.image!)
@@ -571,17 +593,6 @@ class Utilities {
         Scanner(string: cString).scanHexInt64(&rgbValue)
         return UIColor(red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,blue: CGFloat(rgbValue & 0x0000FF) / 255.0,alpha: CGFloat(1.0)
         )
-    }
-}
-extension UICollectionView {
-    func scrollToNextItem(){
-        let cellSize = self.frame.size
-        let contentOffset = self.contentOffset
-        if self.contentSize.width >= self.contentOffset.x + cellSize.width
-        {
-            let r = CGRect(x: contentOffset.x + cellSize.width, y: contentOffset.y, width: cellSize.width, height: cellSize.height)
-            self.scrollRectToVisible(r, animated: true);
-        }
     }
 }
 extension UIView{

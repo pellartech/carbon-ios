@@ -29,7 +29,7 @@ private struct DarkColourPalette: ThemeColourPalette {
     var layerSepia: UIColor = FXColors.Orange05
 
     // MARK: - Actions
-    var actionPrimary: UIColor = FXColors.Blue30
+    var actionPrimary: UIColor = FXColors.Orange100
     var actionPrimaryHover: UIColor = FXColors.Blue20
     var actionSecondary: UIColor = FXColors.LightGrey30
     var actionSecondaryHover: UIColor = FXColors.LightGrey20
