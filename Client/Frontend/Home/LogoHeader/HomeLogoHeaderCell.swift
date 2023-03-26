@@ -36,9 +36,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
             static let alpha: CGFloat = 0.3
-
         }
-        
         struct StatsTitleLabel {
             static let font: CGFloat = 10
             static let centerYAnchor: CGFloat = -30
@@ -57,7 +55,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let trailingAnchor: CGFloat = -30
             static let leading: CGFloat = 10
             static let widthAnchor: CGFloat = -10
-
         }
     }
     
@@ -89,6 +86,13 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return view
     } ()
     
+    private lazy var featureView : UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(UX.ComingSoonView.alpha)
+        view.layer.cornerRadius = UX.ComingSoonView.radius
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    } ()
     
     ///UILabel
     private lazy var statsTitleLabel: UILabel = {
@@ -111,6 +115,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return label
     }()
     
+    private lazy var featureCardTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = wallpaperManager.currentWallpaper.textColor
+        label.font = UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.font)
+        label.text = "FEATURED"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -153,15 +165,30 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return collectionView
     }()
     
-
+    private lazy var featureCollectionView : UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.collectionViewLayout = layout
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ComingSoonCollectionCell.self, forCellWithReuseIdentifier: "ComingSoonCollectionCell")
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
+    
     
     // MARK: - Variables
     private  var dataModel = [DataModel(title: "Data Saved", value: "0B"),DataModel(title: "Tracker & Ads Blocked", value: "0"),DataModel(title: "Searches", value: "0")]
     
-    private var statsModel = [StatsModel(title: "Wallet", icon:"ic_wallet"),StatsModel(title: "Staking", icon: "ic_stacking"),StatsModel(title: "Swap", icon: "ic_swap"),StatsModel(title: "Bridge", icon: "ic_bridge")]
+    private var statsModel = [StatsModel(title: "Wallet", icon:"ic_wallet",color: UIColor.clear),StatsModel(title: "Staking", icon: "ic_stacking",color: UIColor.clear),StatsModel(title: "Swap", icon: "ic_swap",color: UIColor.clear),StatsModel(title: "Bridge", icon: "ic_bridge",color: UIColor.clear)]
     
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
-  
+    
+    private var featuredModel = [StatsModel(title: "ChatGPT", icon:"ic_chatGPT",color: UIColor(red: 18, green: 163, blue: 127, alpha: 1)),StatsModel(title: "OpeneSea", icon: "ic_openSea",color: UIColor(red: 32, green: 129, blue: 226, alpha: 1)),StatsModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1)),StatsModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1))]
+
     private var wallpaperManager =  WallpaperManager()
 
     // MARK: - Initializers
@@ -182,19 +209,21 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         dataView.addSubview(tableView)
         comingSoonView.addSubview(cardTitleLabel)
         comingSoonView.addSubview(collectionView)
+        featureView.addSubview(featureCardTitleLabel)
+        featureView.addSubview(featureCollectionView)
         
         contentView.addSubview(statsView)
         contentView.addSubview(dataView)
         contentView.addSubview(comingSoonView)
-        
+        contentView.addSubview(featureView)
+
         NSLayoutConstraint.activate([
             statsTitleLabel.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
             statsTitleLabel.centerYAnchor.constraint(equalTo: statsView.centerYAnchor, constant: UX.StatsTitleLabel.centerYAnchor),
             statsTitleLabel.widthAnchor.constraint(equalToConstant: UX.StatsTitleLabel.width),
             statsTitleLabel.heightAnchor.constraint(equalToConstant: UX.StatsTitleLabel.height),
             
-            statsView.topAnchor.constraint(equalTo: contentView.topAnchor,
-                                           constant: UX.StatsView.topConstant),
+            statsView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.StatsView.topConstant),
             statsView.widthAnchor.constraint(equalToConstant: contentView.frame.width/2 -  UX.StatsView.constant),
             statsView.heightAnchor.constraint(equalToConstant: UX.StatsView.viewHeight),
             statsView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -209,6 +238,11 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             comingSoonView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
             comingSoonView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewHeight),
             comingSoonView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
+            featureView.topAnchor.constraint(equalTo: comingSoonView.bottomAnchor,constant: UX.ComingSoonView.constant),
+            featureView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
+            featureView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewHeight),
+            featureView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
             tableView.leadingAnchor.constraint(equalTo: dataView.leadingAnchor),
             tableView.topAnchor.constraint(equalTo: dataView.topAnchor),
@@ -225,25 +259,47 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             statsCollectionView.widthAnchor.constraint(equalTo: statsView.widthAnchor,constant: UX.CollectionView.widthAnchor),
             statsCollectionView.heightAnchor.constraint(equalTo: statsView.heightAnchor),
             
+            featureCollectionView.leadingAnchor.constraint(equalTo: featureView.leadingAnchor,constant: UX.CollectionView.leadingAnchor),
+            featureCollectionView.topAnchor.constraint(equalTo: featureView.topAnchor,constant: UX.CollectionView.topAnchor),
+            featureCollectionView.trailingAnchor.constraint(equalTo: featureView.trailingAnchor,constant:UX.CollectionView.trailingAnchor),
+            featureCollectionView.heightAnchor.constraint(equalTo: featureView.heightAnchor),
+            
             cardTitleLabel.centerXAnchor.constraint(equalTo: comingSoonView.centerXAnchor),
             cardTitleLabel.centerYAnchor.constraint(equalTo: comingSoonView.centerYAnchor,constant: UX.CardTitleLabel.YAnchor),
+            
+            featureCardTitleLabel.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
+            featureCardTitleLabel.centerYAnchor.constraint(equalTo: featureView.centerYAnchor,constant: UX.CardTitleLabel.YAnchor),
         ])
     }
 
 
 // MARK: - UICollectionView Delegate & DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collectionView == statsCollectionView ? earnedModel.count :statsModel.count
+        switch collectionView {
+        case statsCollectionView:
+            return  earnedModel.count
+        case featureCollectionView:
+            return featuredModel.count
+        default:
+            return statsModel.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (collectionView == statsCollectionView){
+        switch collectionView {
+        case statsCollectionView:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StatsCollectionCell", for: indexPath) as! StatsCollectionCell
             cell.setUI(data: earnedModel[indexPath.row])
             return cell
-        }else{
+        case featureCollectionView:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
-            cell.setUI(data: statsModel[indexPath.row],index: indexPath.row)
+            cell.setUI(data: featuredModel[indexPath.row],index: indexPath.row,isFeature: true)
+            cell.setNeedsLayout()
+            cell.layoutIfNeeded()
+            return cell
+        default:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
+            cell.setUI(data: statsModel[indexPath.row],index: indexPath.row,isFeature: false)
             cell.setNeedsLayout()
             cell.layoutIfNeeded()
             return cell
@@ -355,6 +411,9 @@ class ComingSoonCollectionCell: UICollectionViewCell {
             static let width: CGFloat = 56
         }
         struct Icon {
+            static let width: CGFloat = 56
+            static let height: CGFloat = 56
+            
             static let width1: CGFloat = 30
             static let height1: CGFloat = 35
             
@@ -424,25 +483,28 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         super.layoutIfNeeded()
         iconView.setGradientBackground()
     }
-    func setUI(data : StatsModel,index : Int){
+    func setUI(data : StatsModel,index : Int, isFeature: Bool){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title
         switch index {
         case 0:
-            setUIForImage(width: UX.Icon.width1, height: UX.Icon.height1)
+            setUIForImage(width: isFeature ? UX.Icon.width : UX.Icon.width1, height: isFeature ? UX.Icon.height : UX.Icon.height1,color: data.color!)
         case 1:
-            setUIForImage(width: UX.Icon.width2, height: UX.Icon.height2)
+            setUIForImage(width: isFeature ? UX.Icon.width : UX.Icon.width2, height: isFeature ? UX.Icon.height : UX.Icon.height2,color: data.color!)
         case 2:
-            setUIForImage(width: UX.Icon.width3, height: UX.Icon.height3)
+            setUIForImage(width: isFeature ? UX.Icon.width : UX.Icon.width3, height: isFeature ? UX.Icon.height : UX.Icon.height3,color: data.color!)
         case 3:
-            setUIForImage(width: UX.Icon.width4, height: UX.Icon.height4)
+            setUIForImage(width: isFeature ? UX.Icon.width : UX.Icon.width4, height: isFeature ? UX.Icon.height : UX.Icon.height4,color: data.color!)
         default:
             break
         }
     }
-    func setUIForImage(width: CGFloat, height: CGFloat){
+    func setUIForImage(width: CGFloat, height: CGFloat,color: UIColor){
         iconImageView.widthAnchor.constraint(equalToConstant: width).isActive = true
         iconImageView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        iconImageView.backgroundColor = color
+        iconView.backgroundColor = color
+
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -531,10 +593,11 @@ class StatsModel {
     
     var title: String?
     var icon: String?
-    
-    init(title: String?,icon: String?){
+    var color: UIColor?
+    init(title: String?,icon: String?,color: UIColor){
         self.title = title
         self.icon = icon
+        self.color = color
     }
 }
 
