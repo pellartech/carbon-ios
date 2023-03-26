@@ -22,6 +22,7 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.bounces = false
+        collectionView.isScrollEnabled = false
         collectionView.alwaysBounceHorizontal = false
         collectionView.isPagingEnabled = true
         collectionView.register(OnboardingWelcomeCollectionCell.self, forCellWithReuseIdentifier: "OnboardingWelcomeCollectionCell")
