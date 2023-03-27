@@ -497,8 +497,9 @@ private extension HomepageViewController {
     // Setup all the tap and long press actions on cells in each sections
     private func setupSectionsAction() {
         // Header view
-        viewModel.headerViewModel.onTapAction = { _ in
-            // No action currently set if the logo button is tapped.
+        viewModel.headerViewModel.onTapAction = { data in
+            guard let url = data.url!.asURL else { return }
+            self.showSiteWithURLHandler(url, isGoogleTopSite: false)
         }
 
         // Message card
