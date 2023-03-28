@@ -19,7 +19,7 @@ case "${CONFIGURATION}" in
     Firefox)
         CHANNEL="release"
         ;;
-    Carbon)
+    CarbonDebug)
         CHANNEL="developer"
         ;;
     CarbonRelease)
