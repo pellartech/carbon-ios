@@ -244,6 +244,9 @@ extension IntroViewController : IntroOnboardingProtocol{
     func moveToNextScreen(index: Int) {
         pageControl.currentPage = index + 1
     }
+    func moveToNextScreenManually(index: Int) {
+        pageControl.currentPage = index
+    }
     func closeOnboardingScreen() {
         closeOnboarding()
     }

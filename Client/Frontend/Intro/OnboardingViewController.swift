@@ -7,6 +7,7 @@ protocol OnboardingProtocol {
 
 protocol IntroOnboardingProtocol {
     func moveToNextScreen(index:Int)
+    func moveToNextScreenManually(index:Int)
     func closeOnboardingScreen()
 }
 
@@ -20,9 +21,9 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor =  Utilities().hexStringToUIColor(hex: "#1E1E1E")
         collectionView.dataSource = self
+        collectionView.isScrollEnabled = true
         collectionView.delegate = self
         collectionView.bounces = false
-        collectionView.isScrollEnabled = false
         collectionView.alwaysBounceHorizontal = false
         collectionView.isPagingEnabled = true
         collectionView.register(OnboardingWelcomeCollectionCell.self, forCellWithReuseIdentifier: "OnboardingWelcomeCollectionCell")
@@ -98,10 +99,15 @@ class OnboardingViewController: UIViewController,UICollectionViewDelegate, UICol
         }
         
     }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        var visibleRect = CGRect()
+        visibleRect.origin = collectionView.contentOffset
+        visibleRect.size = collectionView.bounds.size
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
+        delegate?.moveToNextScreenManually(index: indexPath.row)
+    }
 }
-
-
-
 class OnboardingWelcomeCollectionCell: UICollectionViewCell {
     
     private struct UX {
