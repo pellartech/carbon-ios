@@ -9,6 +9,6 @@
 
 MOZ_BUNDLE_DISPLAY_NAME = Carbon
 MOZ_BUNDLE_ID = website.carbon.ios.browser
-CODE_SIGN_ENTITLEMENTS = Client/Entitlements/FirefoxApplication.entitlements
+CODE_SIGN_ENTITLEMENTS = Client/Entitlements/CarbonApplicationRelease.entitlements
 OTHER_SWIFT_FLAGS = $(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_RELEASE
 MOZ_INTERNAL_URL_SCHEME = firefox-internal

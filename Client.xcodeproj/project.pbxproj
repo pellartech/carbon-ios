@@ -1727,20 +1727,14 @@
 		0C21B9AF29D61058008E1CB8 /* CarbonApplication.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CarbonApplication.entitlements; sourceTree = "<group>"; };
 		0C2944B19D544A0B270DDB37 /* ta */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ta; path = ta.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C3947E0A085F03473EBA539 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Search.strings; sourceTree = "<group>"; };
+		0C3E5AF329D61DB1002EA7AC /* CarbonApplicationRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CarbonApplicationRelease.entitlements; sourceTree = "<group>"; };
 		0C474316B6171274626C1D7D /* zh-CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-CN"; path = "zh-CN.lproj/Today.strings"; sourceTree = "<group>"; };
 		0C50497DA875DAA9B8A777D9 /* lo */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lo; path = lo.lproj/AuthenticationManager.strings; sourceTree = "<group>"; };
+		0C70D07229D618F500E79FC8 /* Carbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Carbon.entitlements; sourceTree = "<group>"; };
 		0C8147FDBDF90CAC4DD8FCCE /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/Search.strings; sourceTree = "<group>"; };
 		0C9CA87D29C0C1E90041533D /* Carbon.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Carbon.xcconfig; path = Configuration/Carbon.xcconfig; sourceTree = "<group>"; };
 		0C9CA87E29C0C1F20041533D /* CarbonRelease.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = CarbonRelease.xcconfig; path = Configuration/CarbonRelease.xcconfig; sourceTree = "<group>"; };
-		0C9CA88029C0EA000041533D /* NotificationServiceCarbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationServiceCarbon.entitlements; sourceTree = "<group>"; };
-		0C9CA88129C0EA320041533D /* ShareToCarbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareToCarbon.entitlements; sourceTree = "<group>"; };
-		0C9CA88229C0EA4F0041533D /* TodayCarbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayCarbon.entitlements; sourceTree = "<group>"; };
-		0C9CA88329C0EA680041533D /* WidgetKitExtensionCarbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetKitExtensionCarbon.entitlements; sourceTree = "<group>"; };
 		0C9CA88429C0EA8B0041533D /* CredentialProviderCarbon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CredentialProviderCarbon.entitlements; sourceTree = "<group>"; };
-		0C9CA88529C0F33A0041533D /* NotificationServiceCarbonRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationServiceCarbonRelease.entitlements; sourceTree = "<group>"; };
-		0C9CA88629C0F34F0041533D /* ShareToCarbonRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareToCarbonRelease.entitlements; sourceTree = "<group>"; };
-		0C9CA88729C0F3630041533D /* TodayCarbonRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodayCarbonRelease.entitlements; sourceTree = "<group>"; };
-		0C9CA88829C0F3750041533D /* WidgetKitExtensionCarbonRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetKitExtensionCarbonRelease.entitlements; sourceTree = "<group>"; };
 		0C9CA88929C0F3AE0041533D /* CredentialProviderCarbonRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CredentialProviderCarbonRelease.entitlements; sourceTree = "<group>"; };
 		0C9D476E841BDCAA3B9895EA /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/FindInPage.strings; sourceTree = "<group>"; };
 		0CA641EEA5D10000F7FA5F89 /* lt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lt; path = lt.lproj/Menu.strings; sourceTree = "<group>"; };
@@ -7849,6 +7843,7 @@
 		E40A18F61EDC73D5006B7F28 /* Entitlements */ = {
 			isa = PBXGroup;
 			children = (
+				0C70D07229D618F500E79FC8 /* Carbon.entitlements */,
 				E40A18F71EDC73D5006B7F28 /* Fennec.entitlements */,
 				E40A18F81EDC73D5006B7F28 /* FennecEnterprise.entitlements */,
 				E40A18F91EDC73D5006B7F28 /* Firefox.entitlements */,
@@ -8054,6 +8049,7 @@
 			isa = PBXGroup;
 			children = (
 				0C21B9AF29D61058008E1CB8 /* CarbonApplication.entitlements */,
+				0C3E5AF329D61DB1002EA7AC /* CarbonApplicationRelease.entitlements */,
 				E6F738761EB7A97500B50143 /* FirefoxApplication.entitlements */,
 				E6F738751EB7A97100B50143 /* FirefoxBetaApplication.entitlements */,
 				E6F738741EB7A8D300B50143 /* FennecApplication.entitlements */,
@@ -8268,14 +8264,6 @@
 		F84B21B51A090F8100AAB793 = {
 			isa = PBXGroup;
 			children = (
-				0C9CA88829C0F3750041533D /* WidgetKitExtensionCarbonRelease.entitlements */,
-				0C9CA88729C0F3630041533D /* TodayCarbonRelease.entitlements */,
-				0C9CA88629C0F34F0041533D /* ShareToCarbonRelease.entitlements */,
-				0C9CA88529C0F33A0041533D /* NotificationServiceCarbonRelease.entitlements */,
-				0C9CA88329C0EA680041533D /* WidgetKitExtensionCarbon.entitlements */,
-				0C9CA88229C0EA4F0041533D /* TodayCarbon.entitlements */,
-				0C9CA88129C0EA320041533D /* ShareToCarbon.entitlements */,
-				0C9CA88029C0EA000041533D /* NotificationServiceCarbon.entitlements */,
 				962C6C39297054A700354BE8 /* Package.swift */,
 				962C6C3F2971F5D400354BE8 /* Dangerfile.swift */,
 				962C6C3B297054EC00354BE8 /* Sources */,
@@ -15730,7 +15718,7 @@
 		F939487529C093110084FCE9 /* Carbon */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NotificationServiceCarbon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -15747,7 +15735,7 @@
 		F939487629C093110084FCE9 /* Carbon */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ShareToCarbon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -15764,7 +15752,7 @@
 		F939487729C093110084FCE9 /* Carbon */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TodayCarbon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -15782,7 +15770,7 @@
 		F939487829C093110084FCE9 /* Carbon */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = WidgetKitExtensionCarbon.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -16200,7 +16188,7 @@
 		F939488D29C093250084FCE9 /* CarbonRelease */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NotificationServiceCarbonRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -16216,7 +16204,7 @@
 		F939488E29C093250084FCE9 /* CarbonRelease */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = ShareToCarbonRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -16232,7 +16220,7 @@
 		F939488F29C093250084FCE9 /* CarbonRelease */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = TodayCarbonRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
@@ -16249,7 +16237,7 @@
 		F939489029C093250084FCE9 /* CarbonRelease */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = WidgetKitExtensionCarbonRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "$(inherit)Extensions/Entitlements/Carbon.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
