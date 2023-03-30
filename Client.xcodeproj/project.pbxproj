@@ -16090,6 +16090,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEFINES_MODULE = YES;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DQW7B5HUNY;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = DQW7B5HUNY;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
 				INFOPLIST_FILE = Sync/Info.plist;
