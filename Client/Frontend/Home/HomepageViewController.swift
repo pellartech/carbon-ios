@@ -497,9 +497,14 @@ private extension HomepageViewController {
     // Setup all the tap and long press actions on cells in each sections
     private func setupSectionsAction() {
         // Header view
-        viewModel.headerViewModel.onTapAction = { data in
-            guard let url = data.url!.asURL else { return }
-            self.showSiteWithURLHandler(url, isGoogleTopSite: false)
+        viewModel.headerViewModel.onTapAction = { data,isLongpress in
+            if (isLongpress){
+                let site = Site(url: data.url ?? "", title: data.title ?? "")
+                self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites)
+            }else{
+                guard let url = data.url!.asURL else { return }
+                self.showSiteWithURLHandler(url, isGoogleTopSite: false)
+            }
         }
 
         // Message card

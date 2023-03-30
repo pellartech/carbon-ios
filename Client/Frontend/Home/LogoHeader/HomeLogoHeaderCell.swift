@@ -7,9 +7,9 @@ import Shared
 import UIKit
 
 protocol FeatureCardProtocol{
-    func cardItemTapped(data: FeatureModel)
+    func cardItemTapped(data: FeatureModel,isLongPress: Bool)
 }
-class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,UITableViewDelegate, UITableViewDataSource{
+class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,UITableViewDelegate, UITableViewDataSource,UIGestureRecognizerDelegate{
     private struct UX {
         struct StatsView {
             static let constant: CGFloat = 10
@@ -148,7 +148,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     private lazy var viewMoreLabel: UILabel = {
         let label = UILabel()
         label.textColor = wallpaperManager.currentWallpaper.textColor
-        label.font = UIFont.systemFont(ofSize: UX.CardTitleLabel.viewMoreFont)
+        label.font = UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.viewMoreFont)
         label.text = "VIEW MORE"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -217,7 +217,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
     
-    private var featuredModel = [FeatureModel(title: "ChatGPT", icon:"ic_chatGPT",color: UIColor(red: 18, green: 163, blue: 127, alpha: 1),url: "https://chat.openai.com"),FeatureModel(title: "OpeneSea", icon: "ic_openSea",color: UIColor(red: 32, green: 129, blue: 226, alpha: 1),url: "https://opensea.io"),FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com")]
+    private var featuredModel = [FeatureModel(title: "ChatGPT", icon:"ic_chatGPT",color: UIColor(red: 18, green: 163, blue: 127, alpha: 1),url: "https://chat.openai.com"),FeatureModel(title: "OpenSea", icon: "ic_openSea",color: UIColor(red: 32, green: 129, blue: 226, alpha: 1),url: "https://opensea.io"),FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com")]
     private var viewMoredata = FeatureModel(title: "View more", icon: "", color: UIColor.clear, url: "https://carbon.website/app-store/")
 
     private var wallpaperManager =  WallpaperManager()
@@ -315,7 +315,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             viewMoreLabel.centerXAnchor.constraint(equalTo: viewMoreView.centerXAnchor),
             viewMoreLabel.centerYAnchor.constraint(equalTo: viewMoreView.centerYAnchor)
         ])
-        
+        setupGradiantLayerToView()
+        setupLongGestureRecognizerOnCollection()
+    }
+
+    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        delegate?.cardItemTapped(data: viewMoredata,isLongPress: false)
+    }
+    func setupGradiantLayerToView() {
         let colorTop =  UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0).cgColor
         let colorBottom = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0).cgColor
         let gradientLayer = CAGradientLayer()
@@ -325,11 +332,20 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         gradientLayer.cornerRadius = 12
         gradientLayer.frame = CGRect(x: featureView.frame.origin.x, y: featureView.frame.origin.y, width: 100, height: 24)
         viewMoreView.layer.insertSublayer(gradientLayer, at:0)
-
     }
-
-    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-        delegate?.cardItemTapped(data: viewMoredata)
+    func setupLongGestureRecognizerOnCollection() {
+        let longPressedGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureRecognizer:)))
+        longPressedGesture.minimumPressDuration = 0.5
+        longPressedGesture.delegate = self
+        longPressedGesture.delaysTouchesBegan = true
+        featureCollectionView.addGestureRecognizer(longPressedGesture)
+    }
+    @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        if (gestureRecognizer.state != .began) {return}
+        let p = gestureRecognizer.location(in: featureCollectionView)
+        if let indexPath = featureCollectionView.indexPathForItem(at: p) {
+            delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: true)
+        }
     }
     
 // MARK: - UICollectionView Delegate & DataSource
@@ -375,7 +391,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == featureCollectionView{
-            delegate?.cardItemTapped(data: featuredModel[indexPath.row])
+            delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: false)
         }
     }
 

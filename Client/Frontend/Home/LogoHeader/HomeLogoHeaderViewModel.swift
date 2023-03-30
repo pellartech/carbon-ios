@@ -11,7 +11,7 @@ class HomeLogoHeaderViewModel {
     }
 
     private let profile: Profile
-    var onTapAction: ((FeatureModel) -> Void)?
+    var onTapAction: ((FeatureModel,Bool) -> Void)?
     var theme: Theme
 
     init(profile: Profile, theme: Theme) {
@@ -74,7 +74,7 @@ extension HomeLogoHeaderViewModel: HomepageSectionHandler {
     }
 }
 extension HomeLogoHeaderViewModel: FeatureCardProtocol{
-    func cardItemTapped(data: FeatureModel) {
-      onTapAction?(data)
+    func cardItemTapped(data: FeatureModel,isLongPress: Bool) {
+      onTapAction?(data,isLongPress)
     }
 }
