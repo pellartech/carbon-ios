@@ -83,7 +83,7 @@ class FXColors {
     static let Orange70 = UIColor(rgb: 0xcc3d00)
     static let Orange80 = UIColor(rgb: 0x9e280b)
     static let Orange90 = UIColor(rgb: 0x7c1504)
-
+    static let Orange100 = UIColor(rgb: 0xFF571A)
     // MARK: - Red
     static let Red05 = UIColor(rgb: 0xffdfe7)
     static let Red10 = UIColor(rgb: 0xffbdc5)

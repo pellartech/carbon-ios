@@ -19,9 +19,9 @@ class IntroViewController: UIViewController, OnboardingViewControllerProtocol, T
     struct UX {
         static let closeButtonSize: CGFloat = 30
         static let closeHorizontalMargin: CGFloat = 24
-        static let closeVerticalMargin: CGFloat = 20
-        static let pageControlHeight: CGFloat = 40
-        static let pageControlBottomPadding: CGFloat = 8
+        static let closeVerticalMargin: CGFloat = 10
+        static let pageControlHeight: CGFloat = 20
+        static let pageControlBottomPadding: CGFloat = 0
     }
 
     // MARK: - Var related to onboarding
@@ -39,8 +39,8 @@ class IntroViewController: UIViewController, OnboardingViewControllerProtocol, T
     }()
 
     private lazy var pageControl: UIPageControl = .build { pageControl in
-        pageControl.currentPage = 0
-        pageControl.numberOfPages = self.viewModel.enabledCards.count
+        pageControl.currentPage = 1
+        pageControl.numberOfPages = 4
         pageControl.isUserInteractionEnabled = false
         pageControl.accessibilityIdentifier = AccessibilityIdentifiers.Onboarding.pageControl
     }
@@ -72,30 +72,16 @@ class IntroViewController: UIViewController, OnboardingViewControllerProtocol, T
 
     // MARK: View setup
     private func setupPageController() {
-        // Create onboarding card views
-        var cardViewController: OnboardingCardViewController
-        for cardType in viewModel.enabledCards {
-            if let viewModel = viewModel.getCardViewModel(cardType: cardType) {
-                cardViewController = OnboardingCardViewController(viewModel: viewModel,
-                                                                  delegate: self)
-                onboardingCards.append(cardViewController)
-            }
-        }
-
-        if let firstViewController = onboardingCards.first {
-            pageController.setViewControllers([firstViewController],
-                                              direction: .forward,
-                                              animated: true,
-                                              completion: nil)
-        }
+        let cardViewController =  OnboardingViewController()
+        cardViewController.delegate = self
+        pageController.setViewControllers([cardViewController], direction: .forward, animated: true, completion: nil)
     }
 
     private func setupLayout() {
         addChild(pageController)
         view.addSubview(pageController.view)
         pageController.didMove(toParent: self)
-        view.addSubviews(pageControl, closeButton)
-
+        view.addSubviews(pageControl ,closeButton)
         NSLayoutConstraint.activate([
             pageControl.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
@@ -246,11 +232,22 @@ extension IntroViewController {
     func applyTheme() {
         let theme = themeManager.currentTheme
         pageControl.currentPageIndicatorTintColor = theme.colors.actionPrimary
-        pageControl.pageIndicatorTintColor = theme.colors.actionSecondary
+        pageControl.pageIndicatorTintColor = theme.colors.formSurfaceOff
         view.backgroundColor = theme.colors.layer2
 
         onboardingCards.forEach { cardViewController in
             cardViewController.applyTheme()
         }
+    }
+}
+extension IntroViewController : IntroOnboardingProtocol{
+    func moveToNextScreen(index: Int) {
+        pageControl.currentPage = index + 1
+    }
+    func moveToNextScreenManually(index: Int) {
+        pageControl.currentPage = index
+    }
+    func closeOnboardingScreen() {
+        closeOnboarding()
     }
 }
