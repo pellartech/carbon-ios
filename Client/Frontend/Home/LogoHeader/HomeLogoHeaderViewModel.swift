@@ -11,7 +11,7 @@ class HomeLogoHeaderViewModel {
     }
 
     private let profile: Profile
-    var onTapAction: ((UIButton) -> Void)?
+    var onTapAction: ((FeatureModel,Bool) -> Void)?
     var theme: Theme
 
     init(profile: Profile, theme: Theme) {
@@ -32,11 +32,11 @@ extension HomeLogoHeaderViewModel: HomepageViewModelProtocol, FeatureFlaggable {
 
     func section(for traitCollection: UITraitCollection, size: CGSize) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .estimated(250))
+                                              heightDimension: .estimated(420))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .estimated(250))
+                                               heightDimension: .estimated(420))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
@@ -67,6 +67,14 @@ extension HomeLogoHeaderViewModel: HomepageViewModelProtocol, FeatureFlaggable {
 extension HomeLogoHeaderViewModel: HomepageSectionHandler {
     func configure(_ cell: UICollectionViewCell, at indexPath: IndexPath) -> UICollectionViewCell {
         guard let logoHeaderCell = cell as? HomeLogoHeaderCell else { return UICollectionViewCell() }
+        logoHeaderCell.delegate = self
+        logoHeaderCell.setNeedsLayout()
+        logoHeaderCell.layoutIfNeeded()
         return logoHeaderCell
+    }
+}
+extension HomeLogoHeaderViewModel: FeatureCardProtocol{
+    func cardItemTapped(data: FeatureModel,isLongPress: Bool) {
+      onTapAction?(data,isLongPress)
     }
 }

@@ -6,7 +6,10 @@ import Foundation
 import Shared
 import UIKit
 
-class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,UITableViewDelegate, UITableViewDataSource{
+protocol FeatureCardProtocol{
+    func cardItemTapped(data: FeatureModel,isLongPress: Bool)
+}
+class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,UITableViewDelegate, UITableViewDataSource,UIGestureRecognizerDelegate{
     private struct UX {
         struct StatsView {
             static let constant: CGFloat = 10
@@ -33,12 +36,17 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         struct ComingSoonView {
             static let constant: CGFloat = 10
             static let viewHeight: CGFloat = 140
+            static let featureViewHeight: CGFloat = 144
+            static let stackViewHeight: CGFloat = 174
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
             static let alpha: CGFloat = 0.3
+            static let viewMoreBottom: CGFloat = -12
+            static let viewMoreWidth: CGFloat = 100
+            static let viewMoreHeight: CGFloat = 24
+            static let viewMoreRadius: CGFloat = 12
 
         }
-        
         struct StatsTitleLabel {
             static let font: CGFloat = 10
             static let centerYAnchor: CGFloat = -30
@@ -50,6 +58,8 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let height: CGFloat = 18
             static let YAnchor: CGFloat = -45
             static let font : CGFloat = 13
+            static let viewMoreFont : CGFloat = 10
+            static let viewMoreYAnchor: CGFloat = -50
         }
         struct CollectionView {
             static let leadingAnchor: CGFloat = 30
@@ -57,13 +67,13 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let trailingAnchor: CGFloat = -30
             static let leading: CGFloat = 10
             static let widthAnchor: CGFloat = -10
+            static let featuretopAnchor: CGFloat = 5
 
         }
     }
     
 
     // MARK: - UI Elements
-    
     ///UIView
     private lazy var statsView : UIView = {
         let view = UIView()
@@ -89,6 +99,35 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return view
     } ()
     
+    private lazy var stackView : UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        view.backgroundColor = UIColor.clear
+        view.layer.cornerRadius = UX.ComingSoonView.radius
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    } ()
+    
+    private lazy var featureView : UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        view.backgroundColor = UIColor.black.withAlphaComponent(UX.ComingSoonView.alpha)
+        view.layer.cornerRadius = UX.ComingSoonView.radius
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    } ()
+    
+    ///UIButton
+    private lazy var viewMoreBtn : UIButton = {
+        let button = UIButton()
+        button.isUserInteractionEnabled = true
+        button.layer.cornerRadius = UX.ComingSoonView.viewMoreRadius
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("VIEW MORE", for: .normal)
+        button.setTitleColor(wallpaperManager.currentWallpaper.textColor, for: .normal)
+        button.titleLabel?.font =   UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.viewMoreFont)
+        return button
+    } ()
     
     ///UILabel
     private lazy var statsTitleLabel: UILabel = {
@@ -111,6 +150,22 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return label
     }()
     
+    private lazy var featureCardTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = wallpaperManager.currentWallpaper.textColor
+        label.font = UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.font)
+        label.text = "FEATURED"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var viewMoreLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = wallpaperManager.currentWallpaper.textColor
+        label.font = UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.viewMoreFont)
+        label.text = "VIEW MORE"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -153,7 +208,20 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return collectionView
     }()
     
-
+    private lazy var featureCollectionView : UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.collectionViewLayout = layout
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ComingSoonCollectionCell.self, forCellWithReuseIdentifier: "ComingSoonCollectionCell")
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
+    
     
     // MARK: - Variables
     private  var dataModel = [DataModel(title: "Data Saved", value: "0B"),DataModel(title: "Tracker & Ads Blocked", value: "0"),DataModel(title: "Searches", value: "0")]
@@ -161,19 +229,26 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     private var statsModel = [StatsModel(title: "Wallet", icon:"ic_wallet"),StatsModel(title: "Staking", icon: "ic_stacking"),StatsModel(title: "Swap", icon: "ic_swap"),StatsModel(title: "Bridge", icon: "ic_bridge")]
     
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
-  
-    private var wallpaperManager =  WallpaperManager()
+    
+    private var featuredModel = [FeatureModel(title: "ChatGPT", icon:"ic_chatGPT",color: UIColor(red: 18, green: 163, blue: 127, alpha: 1),url: "https://chat.openai.com"),FeatureModel(title: "OpenSea", icon: "ic_openSea",color: UIColor(red: 32, green: 129, blue: 226, alpha: 1),url: "https://opensea.io"),FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com")]
+    private var viewMoredata = FeatureModel(title: "View more", icon: "", color: UIColor.clear, url: "https://carbon.website/app-store/")
 
+    private var wallpaperManager =  WallpaperManager()
+   
+    var delegate: FeatureCardProtocol?
+    
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+
     }
-    
+    override func layoutIfNeeded() {
+        super.layoutIfNeeded()
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     // MARK: - UI Setup
     func setupView() {
         statsView.addSubview(statsTitleLabel)
@@ -182,19 +257,24 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         dataView.addSubview(tableView)
         comingSoonView.addSubview(cardTitleLabel)
         comingSoonView.addSubview(collectionView)
-        
+        featureView.addSubview(featureCardTitleLabel)
+        featureView.addSubview(featureCollectionView)
+        stackView.addSubview(featureView)
+        stackView.addSubview(viewMoreBtn)
+
         contentView.addSubview(statsView)
         contentView.addSubview(dataView)
         contentView.addSubview(comingSoonView)
+        contentView.addSubview(stackView)
         
+
         NSLayoutConstraint.activate([
             statsTitleLabel.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
             statsTitleLabel.centerYAnchor.constraint(equalTo: statsView.centerYAnchor, constant: UX.StatsTitleLabel.centerYAnchor),
             statsTitleLabel.widthAnchor.constraint(equalToConstant: UX.StatsTitleLabel.width),
             statsTitleLabel.heightAnchor.constraint(equalToConstant: UX.StatsTitleLabel.height),
             
-            statsView.topAnchor.constraint(equalTo: contentView.topAnchor,
-                                           constant: UX.StatsView.topConstant),
+            statsView.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.StatsView.topConstant),
             statsView.widthAnchor.constraint(equalToConstant: contentView.frame.width/2 -  UX.StatsView.constant),
             statsView.heightAnchor.constraint(equalToConstant: UX.StatsView.viewHeight),
             statsView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -209,6 +289,21 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             comingSoonView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
             comingSoonView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewHeight),
             comingSoonView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
+            stackView.topAnchor.constraint(equalTo: comingSoonView.bottomAnchor,constant: UX.ComingSoonView.constant),
+            stackView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
+            stackView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.stackViewHeight),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
+            featureView.topAnchor.constraint(equalTo: comingSoonView.bottomAnchor,constant: UX.ComingSoonView.constant),
+            featureView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
+            featureView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.featureViewHeight),
+            featureView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
+            viewMoreBtn.topAnchor.constraint(equalTo: featureView.bottomAnchor,constant: UX.ComingSoonView.viewMoreBottom),
+            viewMoreBtn.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
+            viewMoreBtn.widthAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreWidth),
+            viewMoreBtn.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreHeight),
             
             tableView.leadingAnchor.constraint(equalTo: dataView.leadingAnchor),
             tableView.topAnchor.constraint(equalTo: dataView.topAnchor),
@@ -225,23 +320,76 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             statsCollectionView.widthAnchor.constraint(equalTo: statsView.widthAnchor,constant: UX.CollectionView.widthAnchor),
             statsCollectionView.heightAnchor.constraint(equalTo: statsView.heightAnchor),
             
+            featureCollectionView.leadingAnchor.constraint(equalTo: featureView.leadingAnchor,constant: UX.CollectionView.leadingAnchor),
+            featureCollectionView.topAnchor.constraint(equalTo: featureView.topAnchor,constant: UX.CollectionView.featuretopAnchor),
+            featureCollectionView.trailingAnchor.constraint(equalTo: featureView.trailingAnchor,constant:UX.CollectionView.trailingAnchor),
+            featureCollectionView.heightAnchor.constraint(equalTo: featureView.heightAnchor),
+            
             cardTitleLabel.centerXAnchor.constraint(equalTo: comingSoonView.centerXAnchor),
             cardTitleLabel.centerYAnchor.constraint(equalTo: comingSoonView.centerYAnchor,constant: UX.CardTitleLabel.YAnchor),
+            
+            featureCardTitleLabel.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
+            featureCardTitleLabel.centerYAnchor.constraint(equalTo: featureView.centerYAnchor,constant: UX.CardTitleLabel.viewMoreYAnchor),
         ])
+        setupGradiantLayerToView()
+        setupLongGestureRecognizerOnCollection()
+        viewMoreBtn.addTarget(self, action: #selector(self.viewMoreTap(sender:)), for: .touchUpInside)
     }
-
-
+    @objc func viewMoreTap(sender: UIButton) {
+        delegate?.cardItemTapped(data: viewMoredata,isLongPress: false)
+    }
+    
+    func setupGradiantLayerToView() {
+        let colorTop =  UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0).cgColor
+        let colorBottom = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0).cgColor
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorBottom, colorTop]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.cornerRadius = 12
+        gradientLayer.frame = CGRect(x: featureView.frame.origin.x, y: featureView.frame.origin.y, width: 100, height: 24)
+        viewMoreBtn.layer.insertSublayer(gradientLayer, at:0)
+    }
+    func setupLongGestureRecognizerOnCollection() {
+        let longPressedGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureRecognizer:)))
+        longPressedGesture.minimumPressDuration = 0.5
+        longPressedGesture.delegate = self
+        longPressedGesture.delaysTouchesBegan = true
+        featureCollectionView.addGestureRecognizer(longPressedGesture)
+    }
+    @objc func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        if (gestureRecognizer.state != .began) {return}
+        let p = gestureRecognizer.location(in: featureCollectionView)
+        if let indexPath = featureCollectionView.indexPathForItem(at: p) {
+            delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: true)
+        }
+    }
+    
 // MARK: - UICollectionView Delegate & DataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collectionView == statsCollectionView ? earnedModel.count :statsModel.count
+        switch collectionView {
+        case statsCollectionView:
+            return  earnedModel.count
+        case featureCollectionView:
+            return featuredModel.count
+        default:
+            return statsModel.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (collectionView == statsCollectionView){
+        switch collectionView {
+        case statsCollectionView:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StatsCollectionCell", for: indexPath) as! StatsCollectionCell
             cell.setUI(data: earnedModel[indexPath.row])
             return cell
-        }else{
+        case featureCollectionView:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
+            cell.setUIFeature(data: featuredModel[indexPath.row],index: indexPath.row)
+            cell.setNeedsLayout()
+            cell.layoutIfNeeded()
+            return cell
+        default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
             cell.setUI(data: statsModel[indexPath.row],index: indexPath.row)
             cell.setNeedsLayout()
@@ -258,6 +406,11 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return collectionView == statsCollectionView ? 10 : 20
     }
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == featureCollectionView{
+            delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: false)
+        }
+    }
 
 // MARK: - UITableView Delegate & DataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -355,6 +508,9 @@ class ComingSoonCollectionCell: UICollectionViewCell {
             static let width: CGFloat = 56
         }
         struct Icon {
+            static let width: CGFloat = 56
+            static let height: CGFloat = 56
+            
             static let width1: CGFloat = 30
             static let height1: CGFloat = 35
             
@@ -424,6 +580,14 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         super.layoutIfNeeded()
         iconView.setGradientBackground()
     }
+    func setUIFeature(data : FeatureModel,index : Int){
+        iconImageView.image = UIImage(named: data.icon!)
+        titleLabel.text = data.title
+        iconImageView.widthAnchor.constraint(equalToConstant: UX.Icon.width).isActive = true
+        iconImageView.heightAnchor.constraint(equalToConstant: UX.Icon.height).isActive = true
+        iconImageView.backgroundColor = data.color!
+        iconView.backgroundColor = data.color!
+    }
     func setUI(data : StatsModel,index : Int){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title
@@ -433,9 +597,9 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         case 1:
             setUIForImage(width: UX.Icon.width2, height: UX.Icon.height2)
         case 2:
-            setUIForImage(width: UX.Icon.width3, height: UX.Icon.height3)
+            setUIForImage(width:  UX.Icon.width3, height: UX.Icon.height3)
         case 3:
-            setUIForImage(width: UX.Icon.width4, height: UX.Icon.height4)
+            setUIForImage(width:UX.Icon.width4, height:  UX.Icon.height4)
         default:
             break
         }
@@ -528,13 +692,24 @@ class DataModel {
 }
 
 class StatsModel {
-    
     var title: String?
     var icon: String?
-    
     init(title: String?,icon: String?){
         self.title = title
         self.icon = icon
+    }
+}
+
+class FeatureModel {
+    var title: String?
+    var icon: String?
+    var color: UIColor?
+    var url : String?
+    init(title: String?,icon: String?,color: UIColor,url:String?){
+        self.title = title
+        self.icon = icon
+        self.color = color
+        self.url = url
     }
 }
 
