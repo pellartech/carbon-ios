@@ -500,7 +500,7 @@ private extension HomepageViewController {
         viewModel.headerViewModel.onTapAction = { data,isLongpress in
             if (isLongpress){
                 let site = Site(url: data.url ?? "", title: data.title ?? "")
-                self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites)
+                self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites,isFeature: true)
             }else{
                 guard let url = data.url!.asURL else { return }
                 self.showSiteWithURLHandler(url, isGoogleTopSite: false)
@@ -519,7 +519,7 @@ private extension HomepageViewController {
         }
 
         viewModel.topSiteViewModel.tileLongPressedHandler = { [weak self] (site, sourceView) in
-            self?.contextMenuHelper.presentContextMenu(for: site, with: sourceView, sectionType: .topSites)
+            self?.contextMenuHelper.presentContextMenu(for: site, with: sourceView, sectionType: .topSites,isFeature: false)
         }
 
         // Recently saved
@@ -596,7 +596,7 @@ private extension HomepageViewController {
         }
 
         viewModel.pocketViewModel.onLongPressTileAction = { [weak self] (site, sourceView) in
-            self?.contextMenuHelper.presentContextMenu(for: site, with: sourceView, sectionType: .pocket)
+            self?.contextMenuHelper.presentContextMenu(for: site, with: sourceView, sectionType: .pocket,isFeature: false)
         }
 
         viewModel.pocketViewModel.onScroll = { [weak self] cells in
