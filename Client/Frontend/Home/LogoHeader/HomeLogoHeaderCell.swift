@@ -37,6 +37,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let constant: CGFloat = 10
             static let viewHeight: CGFloat = 140
             static let featureViewHeight: CGFloat = 144
+            static let stackViewHeight: CGFloat = 174
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
             static let alpha: CGFloat = 0.3
@@ -59,7 +60,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let font : CGFloat = 13
             static let viewMoreFont : CGFloat = 10
             static let viewMoreYAnchor: CGFloat = -50
-
         }
         struct CollectionView {
             static let leadingAnchor: CGFloat = 30
@@ -99,21 +99,34 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return view
     } ()
     
+    private lazy var stackView : UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        view.backgroundColor = UIColor.clear
+        view.layer.cornerRadius = UX.ComingSoonView.radius
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    } ()
+    
     private lazy var featureView : UIView = {
         let view = UIView()
+        view.isUserInteractionEnabled = true
         view.backgroundColor = UIColor.black.withAlphaComponent(UX.ComingSoonView.alpha)
         view.layer.cornerRadius = UX.ComingSoonView.radius
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     } ()
     
-    private lazy var viewMoreView : UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = UX.ComingSoonView.viewMoreRadius
-        view.translatesAutoresizingMaskIntoConstraints = false
-        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        view.addGestureRecognizer(tap)
-        return view
+    ///UIButton
+    private lazy var viewMoreBtn : UIButton = {
+        let button = UIButton()
+        button.isUserInteractionEnabled = true
+        button.layer.cornerRadius = UX.ComingSoonView.viewMoreRadius
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("VIEW MORE", for: .normal)
+        button.setTitleColor(wallpaperManager.currentWallpaper.textColor, for: .normal)
+        button.titleLabel?.font =   UIFont.boldSystemFont(ofSize: UX.CardTitleLabel.viewMoreFont)
+        return button
     } ()
     
     ///UILabel
@@ -240,19 +253,20 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     func setupView() {
         statsView.addSubview(statsTitleLabel)
         statsView.addSubview(statsCollectionView)
-        viewMoreView.addSubview(viewMoreLabel)
 
         dataView.addSubview(tableView)
         comingSoonView.addSubview(cardTitleLabel)
         comingSoonView.addSubview(collectionView)
         featureView.addSubview(featureCardTitleLabel)
         featureView.addSubview(featureCollectionView)
-        featureView.addSubview(viewMoreView)
+        stackView.addSubview(featureView)
+        stackView.addSubview(viewMoreBtn)
 
         contentView.addSubview(statsView)
         contentView.addSubview(dataView)
         contentView.addSubview(comingSoonView)
-        contentView.addSubview(featureView)
+        contentView.addSubview(stackView)
+        
 
         NSLayoutConstraint.activate([
             statsTitleLabel.centerXAnchor.constraint(equalTo: statsView.centerXAnchor),
@@ -276,15 +290,20 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             comingSoonView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewHeight),
             comingSoonView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
+            stackView.topAnchor.constraint(equalTo: comingSoonView.bottomAnchor,constant: UX.ComingSoonView.constant),
+            stackView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
+            stackView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.stackViewHeight),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            
             featureView.topAnchor.constraint(equalTo: comingSoonView.bottomAnchor,constant: UX.ComingSoonView.constant),
             featureView.widthAnchor.constraint(equalToConstant: contentView.frame.width - UX.DataView.constant),
             featureView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.featureViewHeight),
             featureView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
-            viewMoreView.topAnchor.constraint(equalTo: featureView.bottomAnchor,constant: UX.ComingSoonView.viewMoreBottom),
-            viewMoreView.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
-            viewMoreView.widthAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreWidth),
-            viewMoreView.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreHeight),
+            viewMoreBtn.topAnchor.constraint(equalTo: featureView.bottomAnchor,constant: UX.ComingSoonView.viewMoreBottom),
+            viewMoreBtn.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
+            viewMoreBtn.widthAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreWidth),
+            viewMoreBtn.heightAnchor.constraint(equalToConstant: UX.ComingSoonView.viewMoreHeight),
             
             tableView.leadingAnchor.constraint(equalTo: dataView.leadingAnchor),
             tableView.topAnchor.constraint(equalTo: dataView.topAnchor),
@@ -311,17 +330,15 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             
             featureCardTitleLabel.centerXAnchor.constraint(equalTo: featureView.centerXAnchor),
             featureCardTitleLabel.centerYAnchor.constraint(equalTo: featureView.centerYAnchor,constant: UX.CardTitleLabel.viewMoreYAnchor),
-            
-            viewMoreLabel.centerXAnchor.constraint(equalTo: viewMoreView.centerXAnchor),
-            viewMoreLabel.centerYAnchor.constraint(equalTo: viewMoreView.centerYAnchor)
         ])
         setupGradiantLayerToView()
         setupLongGestureRecognizerOnCollection()
+        viewMoreBtn.addTarget(self, action: #selector(self.viewMoreTap(sender:)), for: .touchUpInside)
     }
-
-    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+    @objc func viewMoreTap(sender: UIButton) {
         delegate?.cardItemTapped(data: viewMoredata,isLongPress: false)
     }
+    
     func setupGradiantLayerToView() {
         let colorTop =  UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0).cgColor
         let colorBottom = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0).cgColor
@@ -331,7 +348,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         gradientLayer.cornerRadius = 12
         gradientLayer.frame = CGRect(x: featureView.frame.origin.x, y: featureView.frame.origin.y, width: 100, height: 24)
-        viewMoreView.layer.insertSublayer(gradientLayer, at:0)
+        viewMoreBtn.layer.insertSublayer(gradientLayer, at:0)
     }
     func setupLongGestureRecognizerOnCollection() {
         let longPressedGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureRecognizer:)))
