@@ -8,13 +8,23 @@ import UIKit
 import Telemetry
 import Glean
 import Combine
+import Shared
+import Common
 //import UIHelpers
 //import Onboarding
 
 protocol TrackingProtectionDelegate: AnyObject {
     func trackingProtectionDidToggleProtection(enabled: Bool)
 }
-class TrackingProtectionViewController: UIViewController {
+class TrackingProtectionViewController: UIViewController, Themeable {
+    var themeObserver: NSObjectProtocol?
+    
+    var notificationCenter: Common.NotificationProtocol
+    
+    func applyTheme() {
+        
+    }
+    var themeManager: ThemeManager
     var tooltipHeight: Constraint?
 
     // MARK: - Data source
@@ -57,7 +67,7 @@ class TrackingProtectionViewController: UIViewController {
     func secureConnectionSectionItems(title: String, image: UIImage) -> [SectionItem] {
         [
             SectionItem(configureCell: { _, _ in
-                ImageCell(image: image, title: title)
+                ImageCell(image: image, title: title,theme:self.themeManager)
             })
         ]
     }
@@ -75,7 +85,8 @@ class TrackingProtectionViewController: UIViewController {
             configureCell: { [unowned self] tableView, indexPath in
                 let cell = SwitchTableViewCell(
                     item: self.trackingProtectionItem,
-                    reuseIdentifier: "SwitchTableViewCell"
+                    reuseIdentifier: "SwitchTableViewCell",
+                    theme :  themeManager
                 )
                 cell.valueChanged.sink { [unowned self] isOn in
                     self.trackingProtectionItem.settingsValue = isOn
@@ -104,7 +115,7 @@ class TrackingProtectionViewController: UIViewController {
     lazy var trackersSectionItems = toggleItems.map { toggleItem in
         SectionItem(
             configureCell: { [unowned self] _, _ in
-                let cell = SwitchTableViewCell(item: toggleItem, reuseIdentifier: "SwitchTableViewCell")
+                let cell = SwitchTableViewCell(item: toggleItem, reuseIdentifier: "SwitchTableViewCell", theme: themeManager)
                 cell.valueChanged.sink { isOn in
                     toggleItem.settingsValue = isOn
                     self.updateTelemetry(toggleItem.settingsKey, isOn)
@@ -127,7 +138,7 @@ class TrackingProtectionViewController: UIViewController {
     [
         SectionItem(
             configureCell: { [unowned self] _, _ in
-                let cell = SwitchTableViewCell(item: blockOtherItem, reuseIdentifier: "SwitchTableViewCell")
+                let cell = SwitchTableViewCell(item: blockOtherItem, reuseIdentifier: "SwitchTableViewCell", theme: themeManager)
                 cell.valueChanged.sink { [unowned self] isOn in
                     if isOn {
                         let alertController = UIAlertController(title: nil, message: UIConstantss.strings.settingsBlockOtherMessage, preferredStyle: .alert)
@@ -182,7 +193,8 @@ class TrackingProtectionViewController: UIViewController {
             configureCell: { [unowned self] _, _ in
                 SubtitleCell(
                     title: String(format: UIConstantss.strings.trackersBlockedSince, self.getAppInstallDate()),
-                    subtitle: self.getNumberOfTrackersBlocked()
+                    subtitle: self.getNumberOfTrackersBlocked(),
+                    theme: themeManager
                 )
             }
         )
@@ -216,13 +228,15 @@ class TrackingProtectionViewController: UIViewController {
     }
     var state: TrackingProtectionStates
     let favIconPublisher: AnyPublisher<URL?, Never>?
-    private let onboardingEventsHandler: OnboardingEventsHandling
     private var cancellable: AnyCancellable?
-
     // MARK: - VC Lifecycle
-    init(state: TrackingProtectionStates, onboardingEventsHandler: OnboardingEventsHandling, favIconPublisher: AnyPublisher<URL?, Never>? = nil) {
+    init(state: TrackingProtectionStates,
+         themeManager: ThemeManager = AppContainer.shared.resolve(),
+         notificationCenter: NotificationProtocol = NotificationCenter.default,
+         favIconPublisher: AnyPublisher<URL?, Never>? = nil) {
         self.state = state
-        self.onboardingEventsHandler = onboardingEventsHandler
+        self.themeManager = themeManager
+        self.notificationCenter = notificationCenter
         self.favIconPublisher = favIconPublisher
         super.init(nibName: nil, bundle: nil)
 
@@ -260,38 +274,17 @@ class TrackingProtectionViewController: UIViewController {
         super.viewDidLoad()
 
         title = UIConstantss.strings.trackingProtectionLabel
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.blue]
-        navigationController?.navigationBar.tintColor = UIColor.blue
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: themeManager.currentTheme.colors.actionPrimary]
+        navigationController?.navigationBar.tintColor = themeManager.currentTheme.colors.actionPrimary
 
         if case .settings = state {
             let doneButton = UIBarButtonItem(title: UIConstantss.strings.done, style: .plain, target: self, action: #selector(doneTapped))
-            doneButton.tintColor = UIColor.blue
+            doneButton.tintColor = themeManager.currentTheme.colors.actionPrimary
             navigationItem.rightBarButtonItem = doneButton
             self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for:.default)
             self.navigationController?.navigationBar.shadowImage = UIImage()
             self.navigationController?.navigationBar.layoutIfNeeded()
             self.navigationController?.navigationBar.isTranslucent = false
-
-            onboardingEventsHandler.send(.showTrackingProtection)
-            cancellable = onboardingEventsHandler
-                .routePublisher
-                .sink { [unowned self] route in
-                    switch route {
-                    case .none:
-                        var snapshot = dataSource.snapshot()
-                        snapshot.deleteSections([.tip])
-                        dataSource.apply(snapshot, animatingDifferences: true)
-
-                    case .trackingProtection:
-                        var snapshot = dataSource.snapshot()
-                        snapshot.insertSections([.tip], beforeSection: .enableTrackers)
-                        snapshot.appendItems(tooltipSectionItems, toSection: .tip)
-                        dataSource.apply(snapshot)
-
-                    default:
-                        break
-                    }
-                }
         }
 
         if case let .browsing(browsingStatus) = state,
@@ -340,7 +333,6 @@ class TrackingProtectionViewController: UIViewController {
     }
 
     @objc private func doneTapped() {
-        onboardingEventsHandler.route = nil
         self.dismiss(animated: true, completion: nil)
     }
 
@@ -390,7 +382,6 @@ class TrackingProtectionViewController: UIViewController {
 
 extension TrackingProtectionViewController: TooltipViewDelegate {
     func didTapTooltipDismissButton() {
-        onboardingEventsHandler.route = nil
     }
 }
 

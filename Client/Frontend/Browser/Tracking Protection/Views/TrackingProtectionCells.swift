@@ -4,18 +4,21 @@
 
 import Foundation
 import Combine
+import Shared
 
 class SubtitleCell: UITableViewCell {
+    private var wallpaperManager =  WallpaperManager()
 
-    convenience init(title: String, subtitle: String, reuseIdentifier: String? = nil) {
+    
+    convenience init(title: String, subtitle: String, reuseIdentifier: String? = nil, theme :ThemeManager) {
         self.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         textLabel?.text = title
-        textLabel?.textColor = UIColor.blue
+        textLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         textLabel?.font = UIFont.systemFont(ofSize: 15)
         textLabel?.adjustsFontForContentSizeCategory = true
         textLabel?.numberOfLines = 0
         detailTextLabel?.text = subtitle
-        detailTextLabel?.textColor = UIColor.blue
+        detailTextLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         detailTextLabel?.font = UIFont.systemFont(ofSize: 20)
         detailTextLabel?.adjustsFontForContentSizeCategory = true
         backgroundColor = .secondarySystemGroupedBackground
@@ -33,12 +36,13 @@ class SubtitleCell: UITableViewCell {
 }
 
 class ImageCell: UITableViewCell {
+    private var wallpaperManager =  WallpaperManager()
 
-    convenience init(image: UIImage, title: String, style: UITableViewCell.CellStyle = .default, reuseIdentifier: String? = nil) {
-        self.init(style: style, reuseIdentifier: reuseIdentifier)
+    convenience init(image: UIImage, title: String, reuseIdentifier: String? = nil, theme :ThemeManager) {
+        self.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         imageView?.image = image
         textLabel?.text = title
-        textLabel?.textColor = UIColor.blue
+        textLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         textLabel?.numberOfLines = 0
         backgroundColor = .secondarySystemGroupedBackground
         selectionStyle = .none
@@ -55,9 +59,11 @@ class ImageCell: UITableViewCell {
 }
 
 class SwitchTableViewCell: UITableViewCell {
+    
+    private var wallpaperManager =  WallpaperManager()
+
     private lazy var toggle: UISwitch = {
         let toggle = UISwitch()
-        toggle.onTintColor = UIColor.blue
         toggle.tintColor = .darkGray
         toggle.addTarget(self, action: #selector(toggle(sender:)), for: .valueChanged)
 
@@ -71,12 +77,13 @@ class SwitchTableViewCell: UITableViewCell {
         didSet { toggle.isOn = isOn }
     }
 
-    convenience init(item: ToggleItem, style: UITableViewCell.CellStyle = .default, reuseIdentifier: String?) {
+    convenience init(item: ToggleItem, style: UITableViewCell.CellStyle = .default, reuseIdentifier: String?, theme :ThemeManager) {
         self.init(style: style, reuseIdentifier: reuseIdentifier)
         toggle.isOn = Settings.getToggle(item.settingsKey)
         toggle.accessibilityIdentifier = "BlockerToggle.\(item.settingsKey.rawValue)"
+        toggle.onTintColor = theme.currentTheme.colors.actionPrimary
         textLabel?.text = item.title
-        textLabel?.textColor = UIColor.blue
+        textLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         textLabel?.numberOfLines = 0
         accessoryView = PaddedSwitch(switchView: toggle)
         backgroundColor = .secondarySystemGroupedBackground

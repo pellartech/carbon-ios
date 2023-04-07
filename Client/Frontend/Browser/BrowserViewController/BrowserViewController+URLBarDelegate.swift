@@ -127,46 +127,20 @@ extension BrowserViewController: URLBarDelegate {
                 }
             }
 
-//            let etpVC = EnhancedTrackingProtectionMenuVC(viewModel: etpViewModel)
-//            if UIDevice.current.userInterfaceIdiom == .phone {
-//                etpVC.modalPresentationStyle = .custom
-//                etpVC.transitioningDelegate = self
-//            } else {
-//                etpVC.asPopover = true
-//                etpVC.modalPresentationStyle = .popover
-//                etpVC.popoverPresentationController?.sourceView = urlBar.locationView.trackingProtectionButton
-//                etpVC.popoverPresentationController?.permittedArrowDirections = .up
-//                etpVC.popoverPresentationController?.delegate = self
-//            }
-//
-//            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .trackingProtectionMenu)
-//            self.present(etpVC, animated: true, completion: nil)
-            
-//            let favIconPublisher: AnyPublisher<URL?, Never> =
-//            webViewController
-//                .getMetadata()
-//                .map(\.icon)
-//                .map { $0.flatMap(URL.init(string:)) }
-//                .replaceError(with: nil)
-//                .receive(on: DispatchQueue.main)
-//                .eraseToAnyPublisher()
-//
-//            let state: TrackingProtectionStates = urlBar.inBrowsingMode
-//            ? .browsing(status: SecureConnectionStatus(
-//                url: webViewController.url!,
-//                isSecureConnection: webViewController.connectionIsSecure))
-//            : .homescreen
-//
-//            let trackingProtectionViewController = TrackingProtectionViewController(state: state, onboardingEventsHandler: onboardingEventsHandler, favIconPublisher: favIconPublisher)
-//            trackingProtectionViewController.delegate = self
-//            if UIDevice.current.userInterfaceIdiom == .pad {
-//                trackingProtectionViewController.modalPresentationStyle = .popover
-//                trackingProtectionViewController.popoverPresentationController?.sourceView = urlBar.shieldIconAnchor
-//                modalDelegate.presentModal(viewController: trackingProtectionViewController, animated: true)
-//            } else {
-//                modalDelegate.presentSheet(viewController: trackingProtectionViewController)
-//            }
-//
+            let etpVC = EnhancedTrackingProtectionMenuVC(viewModel: etpViewModel)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                etpVC.modalPresentationStyle = .custom
+                etpVC.transitioningDelegate = self
+            } else {
+                etpVC.asPopover = true
+                etpVC.modalPresentationStyle = .popover
+                etpVC.popoverPresentationController?.sourceView = urlBar.locationView.trackingProtectionButton
+                etpVC.popoverPresentationController?.permittedArrowDirections = .up
+                etpVC.popoverPresentationController?.delegate = self
+            }
+
+            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .trackingProtectionMenu)
+            self.present(etpVC, animated: true, completion: nil)
         }
     }
 

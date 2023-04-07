@@ -999,10 +999,14 @@ class ContentBlockerSetting: Setting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
-        viewController.profile = profile
-        viewController.tabManager = tabManager
-        navigationController?.pushViewController(viewController, animated: true)
+//        let viewController = ContentBlockerSettingViewController(prefs: profile.prefs)
+//        viewController.profile = profile
+//        viewController.tabManager = tabManager
+//        navigationController?.pushViewController(viewController, animated: true)
+        let trackingProtectionVC = TrackingProtectionViewController(state: .settings)
+//        trackingProtectionVC.delegate = presentingViewController as? BrowserViewController
+        navigationController?.pushViewController(trackingProtectionVC, animated: true)
+
     }
 }
 
