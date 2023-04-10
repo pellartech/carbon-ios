@@ -201,6 +201,8 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.separatorStyle = .singleLine
         tableView.tableFooterView = UIView()
+        let theme = themeManager.currentTheme
+        tableView.backgroundColor = theme.colors.layer1
         tableView.registers(SwitchTableViewCell.self)
         return tableView
     }()

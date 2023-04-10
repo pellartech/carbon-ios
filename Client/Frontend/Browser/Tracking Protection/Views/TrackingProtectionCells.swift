@@ -21,7 +21,7 @@ class SubtitleCell: UITableViewCell {
         detailTextLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         detailTextLabel?.font = UIFont.systemFont(ofSize: 20)
         detailTextLabel?.adjustsFontForContentSizeCategory = true
-        backgroundColor = .secondarySystemGroupedBackground
+        backgroundColor = theme.currentTheme.colors.layer4
         selectionStyle = .none
     }
 
@@ -44,7 +44,7 @@ class ImageCell: UITableViewCell {
         textLabel?.text = title
         textLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         textLabel?.numberOfLines = 0
-        backgroundColor = .secondarySystemGroupedBackground
+        backgroundColor = theme.currentTheme.colors.layer4
         selectionStyle = .none
     }
 
@@ -86,7 +86,7 @@ class SwitchTableViewCell: UITableViewCell {
         textLabel?.textColor = wallpaperManager.currentWallpaper.textColor
         textLabel?.numberOfLines = 0
         accessoryView = PaddedSwitch(switchView: toggle)
-        backgroundColor = .secondarySystemGroupedBackground
+        backgroundColor = theme.currentTheme.colors.layer4
         selectionStyle = .none
     }
 
