@@ -114,9 +114,19 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                 cell.valueChanged.sink { isOn in
                     toggleItem.settingsValue = isOn
                     self.updateTelemetry(toggleItem.settingsKey, isOn)
-                    
-                    self.prefs.setString(BlockingStrength.adblock.rawValue,
-                                         forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    if(toggleItem.title == UIConstantss.strings.labelBlockAds2 ){
+                        self.prefs.setString(BlockingStrength.adblock.rawValue,
+                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    }else if(toggleItem.title == UIConstantss.strings.labelBlockAnalytics ){
+                        self.prefs.setString(BlockingStrength.analytics.rawValue,
+                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    } else if(toggleItem.title == UIConstantss.strings.labelBlockSocial ){
+                        self.prefs.setString(BlockingStrength.social.rawValue,
+                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    }else{
+                        self.prefs.setString(BlockingStrength.content.rawValue,
+                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    }
                     TabContentBlocker.prefsChanged()
                     self.tableView.reloadData()
                 }
