@@ -11,16 +11,17 @@ import Combine
 import Shared
 import Common
 
-protocol TrackingProtectionDelegate: AnyObject{
-    func trackingProtectionDidToggleProtection(enabled: Bool)
-}
+
+
 class TrackingProtectionViewController: UIViewController, Themeable {
     
     var themeObserver: NSObjectProtocol?
     var notificationCenter: Common.NotificationProtocol
     var themeManager: ThemeManager
     var tooltipHeight: Constraint?
-    
+    var viewModel: TrackingProtectionVM
+    var prefs: Prefs
+
     // MARK: - Data source
     
     lazy var dataSource = DataSource(
@@ -81,10 +82,9 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                     item: self.trackingProtectionItem,
                     reuseIdentifier: "SwitchTableViewCell",
                     theme :  themeManager
-                )
+                )                
                 cell.valueChanged.sink { [unowned self] isOn in
                     self.trackingProtectionItem.settingsValue = isOn
-                    self.toggleProtection(isOn: isOn)
                     if isOn {
                         var snapshot = self.dataSource.snapshot()
                         snapshot.insertSections([.trackers], afterSection: .enableTrackers)
@@ -99,6 +99,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                         self.dataSource.apply(snapshot, animatingDifferences: true)
                     }
                     self.calculatePreferredSize()
+                    viewModel.toggleSiteSafelistStatus()
                 }
                 .store(in: &self.subscriptions)
                 return cell
@@ -114,14 +115,10 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                     toggleItem.settingsValue = isOn
                     self.updateTelemetry(toggleItem.settingsKey, isOn)
                     
-                    //                    GleanMetrics
-                    //                        .TrackingProtection
-                    //                        .trackerSettingChanged
-                    //                        .record(.init(
-                    //                            isEnabled: isOn,
-                    //                            sourceOfChange: self.sourceOfChange,
-                    //                            trackerChanged: toggleItem.settingsKey.trackerChanged)
-                    //                        )
+                    self.prefs.setString(BlockingStrength.adblock.rawValue,
+                                         forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                    TabContentBlocker.prefsChanged()
+                    self.tableView.reloadData()
                 }
                 .store(in: &self.subscriptions)
                 return cell
@@ -137,43 +134,18 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                     if isOn {
                         let alertController = UIAlertController(title: nil, message: UIConstantss.strings.settingsBlockOtherMessage, preferredStyle: .alert)
                         alertController.addAction(UIAlertAction(title: UIConstantss.strings.settingsBlockOtherNo, style: .default) { [unowned self] _ in
-                            // TODO: Make sure to reset the toggle
                             cell.isOn = false
                             self.blockOtherItem.settingsValue = false
                             self.updateTelemetry(self.blockOtherItem.settingsKey, false)
-                            //                            GleanMetrics
-                            //                                .TrackingProtection
-                            //                                .trackerSettingChanged
-                            //                                .record(.init(
-                            //                                    isEnabled: false,
-                            //                                    sourceOfChange: self.sourceOfChange,
-                            //                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
-                            //                                ))
                         })
                         alertController.addAction(UIAlertAction(title: UIConstantss.strings.settingsBlockOtherYes, style: .destructive) { [unowned self] _ in
                             self.blockOtherItem.settingsValue = true
                             self.updateTelemetry(self.blockOtherItem.settingsKey, true)
-                            //                            GleanMetrics
-                            //                                .TrackingProtection
-                            //                                .trackerSettingChanged
-                            //                                .record(.init(
-                            //                                    isEnabled: true,
-                            //                                    sourceOfChange: self.sourceOfChange,
-                            //                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
-                            //                                ))
                         })
                         self.present(alertController, animated: true, completion: nil)
                     } else {
                         self.blockOtherItem.settingsValue = isOn
                         self.updateTelemetry(blockOtherItem.settingsKey, isOn)
-                        //                        GleanMetrics
-                        //                            .TrackingProtection
-                        //                            .trackerSettingChanged
-                        //                            .record(.init(
-                        //                                isEnabled: isOn,
-                        //                                sourceOfChange: self.sourceOfChange,
-                        //                                trackerChanged: blockOtherItem.settingsKey.trackerChanged
-                        //                            ))
                     }
                 }
                 .store(in: &self.subscriptions)
@@ -207,7 +179,6 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         return tableView
     }()
     
-    weak var delegate: TrackingProtectionDelegate?
     private var modalDelegate: ModalDelegate?
     private var sourceOfChange: String {
         if case .settings = state { return "Settings" }  else { return "Panel" }
@@ -225,9 +196,13 @@ class TrackingProtectionViewController: UIViewController, Themeable {
     
     // MARK: - VC Lifecycle
     init(state: TrackingProtectionStates,
+         prefs: Prefs,
+         viewModel: TrackingProtectionVM,
          themeManager: ThemeManager = AppContainer.shared.resolve(),
          notificationCenter: NotificationProtocol = NotificationCenter.default,
          favIconPublisher: AnyPublisher<URL?, Never>? = nil) {
+        self.viewModel = viewModel
+        self.prefs = prefs
         self.state = state
         self.themeManager = themeManager
         self.notificationCenter = notificationCenter
@@ -326,10 +301,6 @@ class TrackingProtectionViewController: UIViewController, Themeable {
     }
     
     fileprivate func updateTelemetry(_ settingsKey: SettingsToggle, _ isOn: Bool) {
-        //        let telemetryEvent = TelemetryEvent(category: TelemetryEventCategory.action, method: TelemetryEventMethod.change, object: "setting", value: settingsKey.rawValue)
-        //        telemetryEvent.addExtra(key: "to", value: isOn)
-        //        Telemetry.default.recordEvent(telemetryEvent)
-        
         Settings.set(isOn, forToggle: settingsKey)
         ContentBlocker.shared.prefsChanged()
     }
@@ -351,52 +322,11 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         formatter.numberStyle = .decimal
         return formatter.string(from: numberOfTrackersBlocked) ?? "0"
     }
-    
-    private func toggleProtection(isOn: Bool) {
-        //        let telemetryEvent = TelemetryEvent(
-        //            category: TelemetryEventCategory.action,
-        //            method: TelemetryEventMethod.change,
-        //            object: "setting",
-        //            value: SettingsToggle.trackingProtection.rawValue
-        //        )
-        //        telemetryEvent.addExtra(key: "to", value: isOn)
-        //        Telemetry.default.recordEvent(telemetryEvent)
-        //
-        //        GleanMetrics.TrackingProtection.trackingProtectionChanged.record(.init(isEnabled: isOn))
-        //        GleanMetrics.TrackingProtection.hasEverChangedEtp.set(true)
-        
-        delegate?.trackingProtectionDidToggleProtection(enabled: isOn)
-    }
 }
 
 extension TrackingProtectionViewController: TooltipViewDelegate {
     func didTapTooltipDismissButton() {
     }
-}
-
-public protocol OnboardingEventsHandling: AnyObject {
-    var route: ToolTipRoute? { get set }
-    var routePublisher: Published<ToolTipRoute?>.Publisher { get }
-    func send(_ action: Action)
-}
-
-public enum ToolTipRoute: Equatable, Hashable, Codable {
-    case onboarding(OnboardingVersion)
-    case trackingProtection
-    case trackingProtectionShield(OnboardingVersion)
-    case trash(OnboardingVersion)
-    case searchBar
-    case widget
-    case widgetTutorial
-    case menu
-}
-
-public enum OnboardingVersion: Equatable, Hashable, Codable {
-    init(_ shouldShowNewOnboarding: Bool) {
-        self = shouldShowNewOnboarding ? .v2 : .v1
-    }
-    case v2
-    case v1
 }
 
 public enum Action {
@@ -428,3 +358,4 @@ public extension UIImage {
     static let connectionNotSecure = UIImage(named: "lock_blocked")!
     static let connectionSecure = UIImage(named: "lock_verified")!
 }
+

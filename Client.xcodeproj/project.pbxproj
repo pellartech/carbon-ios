@@ -1280,6 +1280,7 @@
 		F920168429DFE91F002C8DC1 /* TrackingProtectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F920168329DFE91F002C8DC1 /* TrackingProtectionViewController.swift */; };
 		F920168629DFE9B7002C8DC1 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = F920168529DFE9B7002C8DC1 /* Common.swift */; };
 		F920168829DFED16002C8DC1 /* UIConstantss+TrackingProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F920168729DFED16002C8DC1 /* UIConstantss+TrackingProtection.swift */; };
+		F920168A29E3DF9A002C8DC1 /* TrackingProtectionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F920168929E3DF9A002C8DC1 /* TrackingProtectionVM.swift */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5332,6 +5333,7 @@
 		F920168329DFE91F002C8DC1 /* TrackingProtectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingProtectionViewController.swift; sourceTree = "<group>"; };
 		F920168529DFE9B7002C8DC1 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		F920168729DFED16002C8DC1 /* UIConstantss+TrackingProtection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIConstantss+TrackingProtection.swift"; sourceTree = "<group>"; };
+		F920168929E3DF9A002C8DC1 /* TrackingProtectionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingProtectionVM.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
@@ -8633,6 +8635,7 @@
 				F920167829DFE77A002C8DC1 /* TrackingProtectionPageStatss.swift */,
 				F920168329DFE91F002C8DC1 /* TrackingProtectionViewController.swift */,
 				F920168529DFE9B7002C8DC1 /* Common.swift */,
+				F920168929E3DF9A002C8DC1 /* TrackingProtectionVM.swift */,
 			);
 			path = "Tracking Protection";
 			sourceTree = "<group>";
@@ -10749,6 +10752,7 @@
 				F886218C270CD3B8007F4562 /* DevicePasscodeRequiredViewController.swift in Sources */,
 				63306D432110B3CD00F25400 /* TabManagerStore.swift in Sources */,
 				D83822001FC7961D00303C12 /* DispatchQueueHelper.swift in Sources */,
+				F920168A29E3DF9A002C8DC1 /* TrackingProtectionVM.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
 				E18BAAFD28E4A44500098AE2 /* TopTabFader.swift in Sources */,
 				C8656D79270F866700E199EA /* CustomizeHomepageSectionCell.swift in Sources */,
