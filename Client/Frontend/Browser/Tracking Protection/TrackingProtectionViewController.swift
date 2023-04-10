@@ -120,11 +120,8 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                     }else if(toggleItem.title == UIConstantss.strings.labelBlockAnalytics ){
                         self.prefs.setString(BlockingStrength.analytics.rawValue,
                                              forKey: ContentBlockingConfig.Prefs.StrengthKey)
-                    } else if(toggleItem.title == UIConstantss.strings.labelBlockSocial ){
+                    } else {
                         self.prefs.setString(BlockingStrength.social.rawValue,
-                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
-                    }else{
-                        self.prefs.setString(BlockingStrength.content.rawValue,
                                              forKey: ContentBlockingConfig.Prefs.StrengthKey)
                     }
                     TabContentBlocker.prefsChanged()
@@ -147,15 +144,24 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                             cell.isOn = false
                             self.blockOtherItem.settingsValue = false
                             self.updateTelemetry(self.blockOtherItem.settingsKey, false)
+                            self.prefs.setString(BlockingStrength.content.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                            TabContentBlocker.prefsChanged()
                         })
                         alertController.addAction(UIAlertAction(title: UIConstantss.strings.settingsBlockOtherYes, style: .destructive) { [unowned self] _ in
                             self.blockOtherItem.settingsValue = true
                             self.updateTelemetry(self.blockOtherItem.settingsKey, true)
+                            self.prefs.setString(BlockingStrength.content.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                            TabContentBlocker.prefsChanged()
                         })
                         self.present(alertController, animated: true, completion: nil)
                     } else {
                         self.blockOtherItem.settingsValue = isOn
                         self.updateTelemetry(blockOtherItem.settingsKey, isOn)
+                        self.prefs.setString(BlockingStrength.content.rawValue,
+                                             forKey: ContentBlockingConfig.Prefs.StrengthKey)
+                        TabContentBlocker.prefsChanged()
                     }
                 }
                 .store(in: &self.subscriptions)
