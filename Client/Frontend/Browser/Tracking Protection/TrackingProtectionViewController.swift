@@ -10,25 +10,19 @@ import Glean
 import Combine
 import Shared
 import Common
-//import UIHelpers
-//import Onboarding
 
-protocol TrackingProtectionDelegate: AnyObject {
+protocol TrackingProtectionDelegate: AnyObject{
     func trackingProtectionDidToggleProtection(enabled: Bool)
 }
 class TrackingProtectionViewController: UIViewController, Themeable {
+    
     var themeObserver: NSObjectProtocol?
-    
     var notificationCenter: Common.NotificationProtocol
-    
-    func applyTheme() {
-        
-    }
     var themeManager: ThemeManager
     var tooltipHeight: Constraint?
-
+    
     // MARK: - Data source
-
+    
     lazy var dataSource = DataSource(
         tableView: self.tableView,
         cellProvider: { tableView, indexPath, itemIdentifier in
@@ -50,7 +44,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                 return nil
             }
         })
-
+    
     // MARK: - Toggles items
     private lazy var trackingProtectionItem = ToggleItem(
         label: UIConstantss.strings.trackingProtectionToggleLabel,
@@ -62,7 +56,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         ToggleItem(label: UIConstantss.strings.labelBlockSocial, settingsKey: .blockSocial)
     ]
     private let blockOtherItem = ToggleItem(label: UIConstantss.strings.labelBlockOther, settingsKey: .blockOther)
-
+    
     // MARK: - Sections
     func secureConnectionSectionItems(title: String, image: UIImage) -> [SectionItem] {
         [
@@ -71,7 +65,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             })
         ]
     }
-
+    
     lazy var tooltipSectionItems = [
         SectionItem(configureCell: { [unowned self] tableView, indexPath in
             let cell = TooltipTableViewCell(title: UIConstantss.strings.tooltipTitleTextForPrivacy, body: UIConstantss.strings.tooltipBodyTextForPrivacy)
@@ -79,7 +73,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             return cell
         })
     ]
-
+    
     lazy var enableTrackersSectionItems = [
         SectionItem(
             configureCell: { [unowned self] tableView, indexPath in
@@ -111,7 +105,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             }
         )
     ]
-
+    
     lazy var trackersSectionItems = toggleItems.map { toggleItem in
         SectionItem(
             configureCell: { [unowned self] _, _ in
@@ -119,15 +113,15 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                 cell.valueChanged.sink { isOn in
                     toggleItem.settingsValue = isOn
                     self.updateTelemetry(toggleItem.settingsKey, isOn)
-
-//                    GleanMetrics
-//                        .TrackingProtection
-//                        .trackerSettingChanged
-//                        .record(.init(
-//                            isEnabled: isOn,
-//                            sourceOfChange: self.sourceOfChange,
-//                            trackerChanged: toggleItem.settingsKey.trackerChanged)
-//                        )
+                    
+                    //                    GleanMetrics
+                    //                        .TrackingProtection
+                    //                        .trackerSettingChanged
+                    //                        .record(.init(
+                    //                            isEnabled: isOn,
+                    //                            sourceOfChange: self.sourceOfChange,
+                    //                            trackerChanged: toggleItem.settingsKey.trackerChanged)
+                    //                        )
                 }
                 .store(in: &self.subscriptions)
                 return cell
@@ -147,39 +141,39 @@ class TrackingProtectionViewController: UIViewController, Themeable {
                             cell.isOn = false
                             self.blockOtherItem.settingsValue = false
                             self.updateTelemetry(self.blockOtherItem.settingsKey, false)
-//                            GleanMetrics
-//                                .TrackingProtection
-//                                .trackerSettingChanged
-//                                .record(.init(
-//                                    isEnabled: false,
-//                                    sourceOfChange: self.sourceOfChange,
-//                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
-//                                ))
+                            //                            GleanMetrics
+                            //                                .TrackingProtection
+                            //                                .trackerSettingChanged
+                            //                                .record(.init(
+                            //                                    isEnabled: false,
+                            //                                    sourceOfChange: self.sourceOfChange,
+                            //                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
+                            //                                ))
                         })
                         alertController.addAction(UIAlertAction(title: UIConstantss.strings.settingsBlockOtherYes, style: .destructive) { [unowned self] _ in
                             self.blockOtherItem.settingsValue = true
                             self.updateTelemetry(self.blockOtherItem.settingsKey, true)
-//                            GleanMetrics
-//                                .TrackingProtection
-//                                .trackerSettingChanged
-//                                .record(.init(
-//                                    isEnabled: true,
-//                                    sourceOfChange: self.sourceOfChange,
-//                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
-//                                ))
+                            //                            GleanMetrics
+                            //                                .TrackingProtection
+                            //                                .trackerSettingChanged
+                            //                                .record(.init(
+                            //                                    isEnabled: true,
+                            //                                    sourceOfChange: self.sourceOfChange,
+                            //                                    trackerChanged: self.blockOtherItem.settingsKey.trackerChanged
+                            //                                ))
                         })
                         self.present(alertController, animated: true, completion: nil)
                     } else {
                         self.blockOtherItem.settingsValue = isOn
                         self.updateTelemetry(blockOtherItem.settingsKey, isOn)
-//                        GleanMetrics
-//                            .TrackingProtection
-//                            .trackerSettingChanged
-//                            .record(.init(
-//                                isEnabled: isOn,
-//                                sourceOfChange: self.sourceOfChange,
-//                                trackerChanged: blockOtherItem.settingsKey.trackerChanged
-//                            ))
+                        //                        GleanMetrics
+                        //                            .TrackingProtection
+                        //                            .trackerSettingChanged
+                        //                            .record(.init(
+                        //                                isEnabled: isOn,
+                        //                                sourceOfChange: self.sourceOfChange,
+                        //                                trackerChanged: blockOtherItem.settingsKey.trackerChanged
+                        //                            ))
                     }
                 }
                 .store(in: &self.subscriptions)
@@ -187,7 +181,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             }
         )
     ]
-
+    
     lazy var statsSectionItems = [
         SectionItem(
             configureCell: { [unowned self] _, _ in
@@ -199,12 +193,10 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             }
         )
     ]
-
+    
     // MARK: - Views
     private var headerHeight: Constraint?
-
-//    private lazy var header = TrackingHeaderView()
-
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.separatorStyle = .singleLine
@@ -212,9 +204,8 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         tableView.registers(SwitchTableViewCell.self)
         return tableView
     }()
-
+    
     weak var delegate: TrackingProtectionDelegate?
-
     private var modalDelegate: ModalDelegate?
     private var sourceOfChange: String {
         if case .settings = state { return "Settings" }  else { return "Panel" }
@@ -229,6 +220,7 @@ class TrackingProtectionViewController: UIViewController, Themeable {
     var state: TrackingProtectionStates
     let favIconPublisher: AnyPublisher<URL?, Never>?
     private var cancellable: AnyCancellable?
+    
     // MARK: - VC Lifecycle
     init(state: TrackingProtectionStates,
          themeManager: ThemeManager = AppContainer.shared.resolve(),
@@ -239,11 +231,11 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         self.notificationCenter = notificationCenter
         self.favIconPublisher = favIconPublisher
         super.init(nibName: nil, bundle: nil)
-
+        
         dataSource.defaultRowAnimation = .middle
-
+        
         var snapshot = NSDiffableDataSourceSnapshot<SectionType, SectionItem>()
-
+        
         if case let .browsing(browsingStatus) = state {
             let title = browsingStatus.isSecureConnection ? UIConstantss.strings.connectionSecure : UIConstantss.strings.connectionNotSecure
             let image = browsingStatus.isSecureConnection ? UIImage.connectionSecure : UIImage.connectionNotSecure
@@ -251,32 +243,33 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             snapshot.appendSections([.secure])
             snapshot.appendItems(secureSectionItems, toSection: .secure)
         }
-
+        
         snapshot.appendSections([.enableTrackers])
         snapshot.appendItems(enableTrackersSectionItems, toSection: .enableTrackers)
-
+        
         if self.trackingProtectionItem.settingsValue {
             snapshot.appendSections([.trackers])
             snapshot.appendItems(trackersSectionItems, toSection: .trackers)
         }
-
+        
         snapshot.appendSections([.stats])
         snapshot.appendItems(statsSectionItems, toSection: .stats)
-
+        
         dataSource.apply(snapshot, animatingDifferences: false)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        updateLegacyTheme()
+        applyTheme()
         title = UIConstantss.strings.trackingProtectionLabel
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: themeManager.currentTheme.colors.actionPrimary]
         navigationController?.navigationBar.tintColor = themeManager.currentTheme.colors.actionPrimary
-
+        
         if case .settings = state {
             let doneButton = UIBarButtonItem(title: UIConstantss.strings.done, style: .plain, target: self, action: #selector(doneTapped))
             doneButton.tintColor = themeManager.currentTheme.colors.actionPrimary
@@ -286,35 +279,29 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             self.navigationController?.navigationBar.layoutIfNeeded()
             self.navigationController?.navigationBar.isTranslucent = false
         }
-
-        if case let .browsing(browsingStatus) = state,
-           let baseDomain = browsingStatus.url.baseDomain {
-//            view.addSubview(header)
-//            header.snp.makeConstraints { make in
-//                self.headerHeight = make.height.equalTo(UIConstantss.layout.trackingProtectionHeaderHeight).constraint
-//                make.leading.trailing.equalToSuperview()
-//                make.top.equalTo(view.safeAreaLayoutGuide).offset(UIConstantss.layout.trackingProtectionHeaderTopOffset)
-//            }
-            if let publisher = favIconPublisher {
-//                header.configure(domain: baseDomain, publisher: publisher)
-            }
-        }
-
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            if case .browsing = state {
-//                make.top.equalTo(header.snp.bottom)
-            } else {
-                make.top.equalTo(view).inset(self.tableViewTopInset)
-            }
+            make.top.equalTo(view).inset(self.tableViewTopInset)
             make.leading.trailing.equalTo(self.view)
             make.bottom.equalTo(self.view)
         }
     }
-
+    
+    private func updateLegacyTheme() {
+        if !NightModeHelper.isActivated() && LegacyThemeManager.instance.systemThemeIsOn {
+            let userInterfaceStyle = traitCollection.userInterfaceStyle
+            LegacyThemeManager.instance.current = userInterfaceStyle == .dark ? LegacyDarkTheme() : LegacyNormalTheme()
+        }
+    }
+    
+    func applyTheme() {
+        let theme = themeManager.currentTheme
+        view.backgroundColor = theme.colors.layer1
+    }
+    
     private func calculatePreferredSize() {
         guard state != .settings else { return }
-
+        
         preferredContentSize = CGSize(
             width: tableView.contentSize.width,
             height: tableView.contentSize.height + (headerHeight?.layoutConstraints[0].constant ?? .zero)
@@ -326,25 +313,25 @@ class TrackingProtectionViewController: UIViewController, Themeable {
             )
         }
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         calculatePreferredSize()
     }
-
+    
     @objc private func doneTapped() {
         self.dismiss(animated: true, completion: nil)
     }
-
+    
     fileprivate func updateTelemetry(_ settingsKey: SettingsToggle, _ isOn: Bool) {
-//        let telemetryEvent = TelemetryEvent(category: TelemetryEventCategory.action, method: TelemetryEventMethod.change, object: "setting", value: settingsKey.rawValue)
-//        telemetryEvent.addExtra(key: "to", value: isOn)
-//        Telemetry.default.recordEvent(telemetryEvent)
-
+        //        let telemetryEvent = TelemetryEvent(category: TelemetryEventCategory.action, method: TelemetryEventMethod.change, object: "setting", value: settingsKey.rawValue)
+        //        telemetryEvent.addExtra(key: "to", value: isOn)
+        //        Telemetry.default.recordEvent(telemetryEvent)
+        
         Settings.set(isOn, forToggle: settingsKey)
         ContentBlocker.shared.prefsChanged()
     }
-
+    
     private func getAppInstallDate() -> String {
         let urlToDocumentsFolder = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
         let dateFormatter = DateFormatter()
@@ -355,27 +342,27 @@ class TrackingProtectionViewController: UIViewController, Themeable {
         }
         return dateFormatter.string(from: Date())
     }
-
+    
     private func getNumberOfTrackersBlocked() -> String {
         let numberOfTrackersBlocked = NSNumber(integerLiteral: UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey))
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         return formatter.string(from: numberOfTrackersBlocked) ?? "0"
     }
-
+    
     private func toggleProtection(isOn: Bool) {
-//        let telemetryEvent = TelemetryEvent(
-//            category: TelemetryEventCategory.action,
-//            method: TelemetryEventMethod.change,
-//            object: "setting",
-//            value: SettingsToggle.trackingProtection.rawValue
-//        )
-//        telemetryEvent.addExtra(key: "to", value: isOn)
-//        Telemetry.default.recordEvent(telemetryEvent)
-//
-//        GleanMetrics.TrackingProtection.trackingProtectionChanged.record(.init(isEnabled: isOn))
-//        GleanMetrics.TrackingProtection.hasEverChangedEtp.set(true)
-
+        //        let telemetryEvent = TelemetryEvent(
+        //            category: TelemetryEventCategory.action,
+        //            method: TelemetryEventMethod.change,
+        //            object: "setting",
+        //            value: SettingsToggle.trackingProtection.rawValue
+        //        )
+        //        telemetryEvent.addExtra(key: "to", value: isOn)
+        //        Telemetry.default.recordEvent(telemetryEvent)
+        //
+        //        GleanMetrics.TrackingProtection.trackingProtectionChanged.record(.init(isEnabled: isOn))
+        //        GleanMetrics.TrackingProtection.hasEverChangedEtp.set(true)
+        
         delegate?.trackingProtectionDidToggleProtection(enabled: isOn)
     }
 }
@@ -420,19 +407,21 @@ public enum Action {
     case startBrowsing
     case widgetDismissed
 }
+
 public extension UITableView {
     func dequeueReusableCells<Cell: UITableViewCell>(_ type: Cell.Type, withIdentifier identifier: String) -> Cell? {
         return self.dequeueReusableCell(withIdentifier: identifier) as? Cell
     }
-
+    
     func dequeueReusableCells<Cell: UITableViewCell>(_ type: Cell.Type, for indexPath: IndexPath) -> Cell? {
         return self.dequeueReusableCell(withIdentifier: String(describing: type), for: indexPath) as? Cell
     }
-
+    
     func registers<Cell: UITableViewCell>(_ type: Cell.Type) {
         register(type, forCellReuseIdentifier: String(describing: type))
     }
 }
+
 public extension UIImage {
     static let connectionNotSecure = UIImage(named: "lock_blocked")!
     static let connectionSecure = UIImage(named: "lock_verified")!
