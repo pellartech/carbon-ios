@@ -8,8 +8,8 @@ import Storage
 
 protocol HomepageContextMenuProtocol {
     func getContextMenuActions(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType) -> [PhotonRowActions]?
-    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType)
-    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType, completionHandler: @escaping () -> PhotonActionSheet?)
+    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType,isFeature : Bool)
+    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType,isFeature : Bool, completionHandler: @escaping () -> PhotonActionSheet?)
 
     func getContextMenuActions(for highlightItem: HighlightItem, with sourceView: UIView?, sectionType: HomepageSectionType) -> [PhotonRowActions]?
     func presentContextMenu(for highlightItem: HighlightItem, with sourceView: UIView?, sectionType: HomepageSectionType)
@@ -18,18 +18,21 @@ protocol HomepageContextMenuProtocol {
 
 extension HomepageContextMenuProtocol {
     // MARK: Site
-    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType) {
-        presentContextMenu(for: site, with: sourceView, sectionType: sectionType, completionHandler: {
-            return self.contextMenu(for: site, with: sourceView, sectionType: sectionType)
+    func presentContextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType,isFeature : Bool) {
+        presentContextMenu(for: site, with: sourceView, sectionType: sectionType,isFeature : isFeature, completionHandler: {
+            return self.contextMenu(for: site, with: sourceView, sectionType: sectionType,isFeature: isFeature)
         })
     }
 
-    func contextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType) -> PhotonActionSheet? {
-        guard let actions = getContextMenuActions(for: site,
+    func contextMenu(for site: Site, with sourceView: UIView?, sectionType: HomepageSectionType, isFeature: Bool) -> PhotonActionSheet? {
+        guard var actions = getContextMenuActions(for: site,
                                                   with: sourceView,
                                                   sectionType: sectionType)
         else { return nil }
 
+        if isFeature{
+            actions.removeLast()
+        }
         let viewModel = PhotonActionSheetViewModel(actions: [actions],
                                                    site: site,
                                                    modalStyle: .overFullScreen)

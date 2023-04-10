@@ -37,6 +37,7 @@ class HomepageContextMenuHelper: HomepageContextMenuProtocol {
     func presentContextMenu(for site: Site,
                             with sourceView: UIView?,
                             sectionType: HomepageSectionType,
+                            isFeature: Bool,
                             completionHandler: @escaping () -> PhotonActionSheet?
     ) {
         fetchBookmarkStatus(for: site) {

@@ -274,6 +274,8 @@ class ThemeSettingsController: ThemedTableViewController {
         } else if indexPath.section == Section.lightDarkPicker.rawValue {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
             LegacyThemeManager.instance.current = indexPath.row == 0 ? LegacyNormalTheme() : LegacyDarkTheme()
+            UserDefaults.standard.setValue(indexPath.row == 0 ? false: true, forKey: NightModeKeys.Status)
+            UserDefaults.standard.setValue(indexPath.row == 0 ? false: true, forKey: NightModeKeys.DarkThemeEnabled)
             themeManager.changeCurrentTheme(indexPath.row == 0 ? .light : .dark)
             TelemetryWrapper.recordEvent(category: .action, method: .press, object: .setting, value: indexPath.row == 0 ? .themeLight : .themeDark)
         }

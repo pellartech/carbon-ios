@@ -1,0 +1,16 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include "Common.xcconfig"
+#include "Release.xcconfig"
+
+MOZ_BUNDLE_DISPLAY_NAME = Carbon
+MOZ_BUNDLE_ID = website.carbon.ios.browser
+CODE_SIGN_ENTITLEMENTS = Client/Entitlements/CarbonApplication.entitlements
+// CODE_SIGN_ENTITLEMENTS = Client/Entitlements/CarbonApplicationRelease.entitlements --> UPDATE when get the browser entitlement
+OTHER_SWIFT_FLAGS = $(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_RELEASE
+MOZ_TODAY_WIDGET_SEARCH_DISPLAY_NAME = Carbon - Search
+MOZ_INTERNAL_URL_SCHEME = carbon-internal

@@ -1,45 +1,54 @@
 #!/usr/bin/env python3
 import os
-import glob
+import glob 
 import re
 import argparse
 
+
+def is_valid_directory(arg):
+    if os.path.isdir(arg):
+        return arg
+    raise argparse.ArgumentTypeError("Directory does not exist: {}".format(arg))
+
+
+def replace_strings_in_directory(dir_path):
+    for filename in glob.glob(os.path.join(dir_path, '**/*.strings'), recursive=True):
+        if filename.endswith(".strings") and "Carbon" not in filename:
+            replace_strings_in_file(filename)
+
+
 def replace_strings_in_file(file_path):
-    print(f"Replacing strings in strings file: {file_path}")
+    print("Replacing strings in strings file {}".format(file_path))
+    try:
+        with open(file_path, 'r') as f:
+            lines : [bytes]  = []
+            try:
+                lines = f.readlines()
+            except:
+                print('cannot read:' + file_path)
+    except IOError:
+        print('cannot open:' + file_path)
+        return
 
-    brand_names = ['firefoksa', 'firefoxen', 'firefoxu', 'firefoxe', 'firefoxban', 'firefoksie', 'firefox', 'mozilla']
-    new_lines = []
+    brandnames = ['firefoksa', 'firefoxen', 'firefoxu', 'firefoxe', 'firefoxban', 'firefoksie', 'firefox', 'mozilla']
 
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-
+    newlines = []
     for line in lines:
         parts = line.split('=')
         if len(parts) > 1:
-            key, value = parts[0], parts[1]
-
-            for name in brand_names:
+            key, value = parts
+            for name in brandnames:
                 value = re.sub(name, 'Carbon', value, flags=re.IGNORECASE)
-
-            new_lines.append(f"{key}={value}")
+            newlines.append(f"{key}={value}")
         elif line.strip().endswith(';'):
-            for name in brand_names:
+            for name in brandnames:
                 line = re.sub(name, 'Carbon', line, flags=re.IGNORECASE)
-            new_lines.append(line)
+            newlines.append(line)
         else:
-            new_lines.append(line)
+            newlines.append(line)
 
-    # writing to file
-    with open(file_path, 'w') as file:
-        file.writelines(new_lines)
-
-
-def replace_strings_in_directory(directory_path):
-    for file_path in glob.glob(f"{directory_path}/**/*.strings", recursive=True):
-        if not "Carbon" in file_path and file_path.endswith(".strings"):
-            replace_strings_in_file(file_path)
-        else:
-            print(f"File extension not valid: {file_path}")
+    with open(file_path, 'w') as f:
+        f.writelines(newlines)
 
 
 if __name__ == "__main__":
