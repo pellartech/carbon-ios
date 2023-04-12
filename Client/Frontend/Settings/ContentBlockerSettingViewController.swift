@@ -8,7 +8,7 @@ import Shared
 extension BlockingStrength {
     var settingStatus: String {
         switch self {
-        case .basic:
+        case .basic, .adblock,.analytics,.social,.content:
             return .TrackingProtectionOptionBlockListLevelStandardStatus
         case .strict:
             return .TrackingProtectionOptionBlockListLevelStrict
@@ -17,7 +17,7 @@ extension BlockingStrength {
 
     var settingTitle: String {
         switch self {
-        case .basic:
+        case .basic, .adblock,.analytics,.social,.content:
             return .TrackingProtectionOptionBlockListLevelStandard
         case .strict:
             return .TrackingProtectionOptionBlockListLevelStrict
@@ -26,7 +26,7 @@ extension BlockingStrength {
 
     var settingSubtitle: String {
         switch self {
-        case .basic:
+        case .basic, .adblock,.analytics,.social,.content:
             return .TrackingProtectionStandardLevelDescription
         case .strict:
             return .TrackingProtectionStrictLevelDescription
@@ -35,7 +35,7 @@ extension BlockingStrength {
 
     static func accessibilityId(for strength: BlockingStrength) -> String {
         switch strength {
-        case .basic:
+        case .basic, .adblock,.analytics,.social,.content:
             return "Settings.TrackingProtectionOption.BlockListBasic"
         case .strict:
             return "Settings.TrackingProtectionOption.BlockListStrict"

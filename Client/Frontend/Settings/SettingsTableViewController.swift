@@ -172,7 +172,7 @@ class SettingSection: Setting {
     }
 }
 
-private class PaddedSwitch: UIView {
+ class PaddedSwitch: UIView {
     fileprivate static let Padding: CGFloat = 8
 
     init(switchView: UISwitch) {
