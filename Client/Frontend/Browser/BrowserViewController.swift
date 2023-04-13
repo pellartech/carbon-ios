@@ -29,8 +29,6 @@ enum ReferringPage {
 }
 
 class BrowserViewController: UIViewController {
-    static let userDefaultsTrackersBlockedKey = "lifetimeTrackersBlocked"
-
     private enum UX {
         static let ShowHeaderTapAreaHeight: CGFloat = 32
         static let ActionSheetTitleMaxLength = 120
