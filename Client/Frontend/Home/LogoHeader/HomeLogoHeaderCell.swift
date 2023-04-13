@@ -242,8 +242,13 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-
+        dataModel[1].value = "\(getNumberOfLifetimeTrackersBlocked())"
     }
+    
+    private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
+        return  UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
+    }
+
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
     }
@@ -590,6 +595,7 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         iconImageView.backgroundColor = data.color!
         iconView.backgroundColor = data.color!
     }
+  
     func setUI(data : StatsModel,index : Int){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title

@@ -8,7 +8,10 @@ struct TPPageStats {
 
     var total: Int {
         var total = 0
-        domains.forEach { total += $0.1.count }
+        domains.forEach {
+            total += $0.value.count
+            print("domain========================================================= \(total)")
+        }
         return total
     }
 

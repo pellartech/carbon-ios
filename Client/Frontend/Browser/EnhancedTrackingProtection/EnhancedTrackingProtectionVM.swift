@@ -45,8 +45,8 @@ class EnhancedTrackingProtectionMenuVM {
     var globalETPIsEnabled: Bool {
         return FirefoxTabContentBlocker.isTrackingProtectionEnabled(prefs: profile.prefs)
     }
-
-    // MARK: - Initializers
+    
+   // MARK: - Initializers
 
     init(tab: Tab, profile: Profile) {
         self.tab = tab

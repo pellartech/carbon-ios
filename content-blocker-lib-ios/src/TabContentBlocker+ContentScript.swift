@@ -35,8 +35,20 @@ extension TabContentBlocker {
                     guard let listItem = listItem else { return }
 
                     self.stats = self.stats.create(matchingBlocklist: listItem, host: url.host ?? "")
+                    print("Stats---------------------------------------------\(self.stats.total)")
+                    
+                    let numberOfTrackersBlocked = self.getNumberOfLifetimeTrackersBlocked()
+                    self.AdCount = numberOfTrackersBlocked + self.stats.total
+                    self.setNumberOfLifetimeTrackersBlocked(numberOfTrackers: self.AdCount)
                 }
             }
         }
+    }
+    private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
+        return  UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
+    }
+
+    private func setNumberOfLifetimeTrackersBlocked(numberOfTrackers: Int) {
+        UserDefaults.standard.set(numberOfTrackers, forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
     }
 }
