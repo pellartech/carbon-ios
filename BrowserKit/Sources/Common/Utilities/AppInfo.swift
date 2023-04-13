@@ -27,15 +27,6 @@ open class AppInfo {
         return applicationBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
 
-    
-    static var productName: String {
-        return Bundle.main.infoDictionary!["CFBundleName"] as! String
-    }
-
-    static var shortProductName: String {
-        return  "Carbon"
-    }
-    
     public static var buildNumber: String {
         return applicationBundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as! String
     }

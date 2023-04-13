@@ -44,11 +44,6 @@ enum BlocklistFileName: String, CaseIterable {
     var filename: String { return self.rawValue }
 
     static var basic: [BlocklistFileName] { return [.advertisingCookies, .analyticsCookies, .socialCookies, .cryptomining, .fingerprinting] }
-    static var adblock: [BlocklistFileName] { return [.advertisingCookies] }
-    static var analytics: [BlocklistFileName] { return [.analyticsCookies] }
-    static var social: [BlocklistFileName] { return [.socialCookies] }
-    static var content: [BlocklistFileName] { return [.socialCookies] }
-
     static var strict: [BlocklistFileName] { return [.advertisingURLs, .analyticsURLs, .socialURLs, cryptomining, fingerprinting] }
 
     static func listsForMode(strict: Bool) -> [BlocklistFileName] {

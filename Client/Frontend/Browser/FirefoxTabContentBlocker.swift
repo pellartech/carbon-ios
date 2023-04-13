@@ -20,11 +20,8 @@ struct ContentBlockingConfig {
 enum BlockingStrength: String {
     case basic
     case strict
-    case adblock
-    case analytics
-    case social
-    case content
-    static let allOptions: [BlockingStrength] = [.basic, .strict, .adblock,.analytics, .social, .content]
+
+    static let allOptions: [BlockingStrength] = [.basic, .strict]
 }
 
 /**
