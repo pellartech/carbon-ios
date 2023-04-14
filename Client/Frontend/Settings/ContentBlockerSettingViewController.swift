@@ -164,14 +164,19 @@ class TPAccessoryInfo: ThemedTableViewController {
 class ContentBlockerSettingViewController: SettingsTableViewController {
     private let button = UIButton()
     let prefs: Prefs
-    var currentBlockingStrength: BlockingStrength
+    var advertisingStrength : BlockingStrength
+    var analyticsStrength : BlockingStrength
+    var socialStrength : BlockingStrength
+    var contentStrength : BlockingStrength
     var adCount = 0
     
     init(prefs: Prefs) {
         self.prefs = prefs
 
-        currentBlockingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .advertising
-
+        advertisingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .advertising
+        analyticsStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .analytics
+        socialStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.socialKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .social
+        contentStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.contentKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .content
         super.init(style: .grouped)
         self.adCount = getNumberOfLifetimeTrackersBlocked()
         self.title = .SettingsTrackingProtectionSectionName
@@ -187,31 +192,55 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
         tableView.reloadData()
     }
 
+    func valueChanged(option:BlockingStrength) -> Bool{
+        var value = false
+        switch option{
+        case .advertising:
+            let  prefsValue = prefs.stringForKey(ContentBlockingConfig.Prefs.advertisingKey)
+            value = prefsValue == advertisingStrength.rawValue
+        case .analytics:
+            let  prefsValue = prefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey)
+            value = prefsValue == analyticsStrength.rawValue
+        case .social:
+            let  prefsValue = prefs.stringForKey(ContentBlockingConfig.Prefs.socialKey)
+            value = prefsValue == socialStrength.rawValue
+        case .content:
+            let  prefsValue = prefs.stringForKey(ContentBlockingConfig.Prefs.contentKey)
+            value = prefsValue == contentStrength.rawValue
+        }
+        return value
+    }
     override func generateSettings() -> [SettingSection] {
-        let strengthSetting: [CheckmarkSetting] = BlockingStrength.allOptions.map { option in
+        let strengthSetting: [TrackerBlockSetting] = BlockingStrength.allOptions.map { option in
             let id = BlockingStrength.accessibilityId(for: option)
-            let setting = CheckmarkSetting(
+            let setting = TrackerBlockSetting(
                 title: NSAttributedString(string: option.settingTitle),
                 subtitle: NSAttributedString(string: option.settingSubtitle),
                 accessibilityIdentifier: id,
-                isChecked: { return false },
-                onChecked: {
-                    self.currentBlockingStrength = option
-                    self.prefs.setString(self.currentBlockingStrength.rawValue,
-                                         forKey: ContentBlockingConfig.Prefs.StrengthKey)
-                    TabContentBlocker.prefsChanged()
-                    self.tableView.reloadData()
-
-                    let extras = [TelemetryWrapper.EventExtraKey.preference.rawValue: "ETP-strength",
-                                  TelemetryWrapper.EventExtraKey.preferenceChanged.rawValue: option.rawValue]
-                    TelemetryWrapper.recordEvent(category: .action,
-                                                 method: .change,
-                                                 object: .setting,
-                                                 extras: extras)
-
+                isChecked: valueChanged(option: option),
+                onChecked:
+                    {
+                        switch option{
+                        case .advertising:
+                            self.prefs.setString(self.advertisingStrength.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.advertisingKey)
+                           
+                        case .analytics:
+                            self.prefs.setString(self.analyticsStrength.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.analyticsKey)
+                        case .social:
+                            self.prefs.setString(self.socialStrength.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.socialKey)
+                        case .content:
+                            self.prefs.setString(self.contentStrength.rawValue,
+                                                 forKey: ContentBlockingConfig.Prefs.contentKey)
+                        }
+                        TabContentBlocker.prefsChanged()
                     if option == .content {
                         self.button.isHidden = true
                     }
+                    
+                    
             })
 
             setting.onAccessoryButtonTapped = {
@@ -287,7 +316,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
             return defaultFooter
         }
 
-        if currentBlockingStrength == .advertising {
+        if advertisingStrength == .advertising {
             return nil
         }
 

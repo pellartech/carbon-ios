@@ -982,7 +982,7 @@ class ContentBlockerSetting: Setting {
         if isOn {
             let currentBlockingStrength = profile
                 .prefs
-                .stringForKey(ContentBlockingConfig.Prefs.StrengthKey)
+                .stringForKey(ContentBlockingConfig.Prefs.advertisingKey)
                 .flatMap(BlockingStrength.init(rawValue:)) ?? .advertising
             return NSAttributedString(string: currentBlockingStrength.settingStatus)
         } else {

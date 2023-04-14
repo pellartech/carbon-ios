@@ -278,7 +278,7 @@ class TelemetryWrapper: TelemetryWrapperProtocol {
             GleanMetrics.TrackingProtection.enabled.set(true)
         }
         // Tracking protection - strength
-        if let tpStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey) {
+        if let tpStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.contentKey) {
             GleanMetrics.TrackingProtection.strength.set(tpStrength)
         } else {
             GleanMetrics.TrackingProtection.strength.set("basic")

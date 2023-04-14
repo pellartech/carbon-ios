@@ -107,7 +107,7 @@ final class RatingPromptManager {
 
         // One of the following
         let isBrowserDefault = RatingPromptManager.isBrowserDefault
-        let hasTPStrict = profile.prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap({BlockingStrength(rawValue: $0)}) == .content
+        let hasTPStrict = profile.prefs.stringForKey(ContentBlockingConfig.Prefs.contentKey).flatMap({BlockingStrength(rawValue: $0)}) == .content
         guard isBrowserDefault
                 || hasMinimumMobileBookmarksCount
                 || hasTPStrict

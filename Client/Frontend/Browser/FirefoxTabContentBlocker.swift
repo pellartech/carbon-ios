@@ -8,7 +8,10 @@ import Shared
 
 struct ContentBlockingConfig {
     struct Prefs {
-        static let StrengthKey = "prefkey.trackingprotection.strength"
+        static let advertisingKey = "prefkey.trackingprotection.advertising"
+        static let analyticsKey = "prefkey.trackingprotection.analytics"
+        static let socialKey = "prefkey.trackingprotection.social"
+        static let contentKey = "prefkey.trackingprotection.content"
         static let EnabledKey = "prefkey.trackingprotection.normalbrowsing"
     }
 
@@ -57,7 +60,7 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     var blockingStrengthPref: BlockingStrength {
-        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap(BlockingStrength.init) ?? .advertising
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.advertisingKey).flatMap(BlockingStrength.init) ?? .advertising
     }
 
     init(tab: ContentBlockerTab, prefs: Prefs) {
