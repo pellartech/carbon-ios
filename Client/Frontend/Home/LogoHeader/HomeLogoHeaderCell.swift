@@ -243,9 +243,9 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         super.init(frame: frame)
         setupView()
         NotificationCenter.default.addObserver(self, selector: #selector(adcountTriggers), name:Notification.Name("AdblockCountNotification"), object: nil)
-        var blockedCount = getNumberOfLifetimeTrackersBlocked()
+        let blockedCount = getNumberOfLifetimeTrackersBlocked()
         dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\((5/3) * blockedCount)KB"
+        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
     }
     
     private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
@@ -253,9 +253,9 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
 
     @objc func adcountTriggers(notification : Notification){
-        var blockedCount = getNumberOfLifetimeTrackersBlocked()
+        let blockedCount = getNumberOfLifetimeTrackersBlocked()
         dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\((5/3) * blockedCount)KB"
+        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
         self.tableView.reloadData()
     }
     override func layoutIfNeeded() {
@@ -459,7 +459,7 @@ class DataTableCell: UITableViewCell {
             static let top: CGFloat = 10
             static let trailing: CGFloat = -15
             static let height: CGFloat = 10
-            static let width: CGFloat = 30
+            static let width: CGFloat = 50
         }
     }
     
