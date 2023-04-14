@@ -655,7 +655,7 @@ class TrackerBlockSetting: Setting {
     }
     
     @objc func switchValueChanged(switches : UISwitch){
-        if switches.isEnabled{
+        if switches.isOn{
             onChecked()
         }else{
             offChecked()
