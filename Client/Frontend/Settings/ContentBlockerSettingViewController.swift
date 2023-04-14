@@ -8,36 +8,44 @@ import Shared
 extension BlockingStrength {
     var settingStatus: String {
         switch self {
-        case .basic:
-            return .TrackingProtectionOptionBlockListLevelStandardStatus
-        case .strict:
-            return .TrackingProtectionOptionBlockListLevelStrict
+        case .advertising:
+            return "Advertising"
+        case .analytics:
+            return "Analytics"
+        case .social:
+            return "Social"
+        case .content:
+            return "Content"
         }
     }
 
     var settingTitle: String {
         switch self {
-        case .basic:
-            return .TrackingProtectionOptionBlockListLevelStandard
-        case .strict:
-            return .TrackingProtectionOptionBlockListLevelStrict
+        case .advertising:
+            return "Advertising"
+        case .analytics:
+            return "Analytics"
+        case .social:
+            return "Social"
+        case .content:
+            return "Content"
         }
     }
 
     var settingSubtitle: String {
         switch self {
-        case .basic:
-            return .TrackingProtectionStandardLevelDescription
-        case .strict:
-            return .TrackingProtectionStrictLevelDescription
+        case .advertising,.analytics,.social:
+            return ""
+        case .content:
+            return ""
         }
     }
 
     static func accessibilityId(for strength: BlockingStrength) -> String {
         switch strength {
-        case .basic:
+        case .advertising,.analytics,.social:
             return "Settings.TrackingProtectionOption.BlockListBasic"
-        case .strict:
+        case .content:
             return "Settings.TrackingProtectionOption.BlockListStrict"
         }
     }
@@ -157,17 +165,20 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
     private let button = UIButton()
     let prefs: Prefs
     var currentBlockingStrength: BlockingStrength
-
+    var adCount = 0
+    
     init(prefs: Prefs) {
         self.prefs = prefs
 
-        currentBlockingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .basic
+        currentBlockingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .advertising
 
         super.init(style: .grouped)
-
+        self.adCount = getNumberOfLifetimeTrackersBlocked()
         self.title = .SettingsTrackingProtectionSectionName
     }
-
+    private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
+        return  UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -181,10 +192,9 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
             let id = BlockingStrength.accessibilityId(for: option)
             let setting = CheckmarkSetting(
                 title: NSAttributedString(string: option.settingTitle),
-                style: .leftSide,
                 subtitle: NSAttributedString(string: option.settingSubtitle),
                 accessibilityIdentifier: id,
-                isChecked: { return option == self.currentBlockingStrength },
+                isChecked: { return false },
                 onChecked: {
                     self.currentBlockingStrength = option
                     self.prefs.setString(self.currentBlockingStrength.rawValue,
@@ -199,14 +209,14 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
                                                  object: .setting,
                                                  extras: extras)
 
-                    if option == .strict {
+                    if option == .content {
                         self.button.isHidden = true
                     }
             })
 
             setting.onAccessoryButtonTapped = {
                 let vc = TPAccessoryInfo()
-                vc.isStrictMode = option == .strict
+                vc.isStrictMode = option == .content
                 self.navigationController?.pushViewController(vc, animated: true)
             }
 
@@ -235,8 +245,19 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
         // The bottom of the block lists section has a More Info button, implemented as a custom footer view,
         // SettingSection needs footerTitle set to create a footer, which we then override the view for.
         let blockListsTitle: String = .TrackingProtectionOptionProtectionLevelTitle
-        let secondSection = SettingSection(title: NSAttributedString(string: blockListsTitle), footerTitle: optionalFooterTitle, children: strengthSetting)
-        return [firstSection, secondSection]
+        let secondSection = SettingSection(title:NSAttributedString(string: "Trackers and Scripts to block") , footerTitle: optionalFooterTitle, children: strengthSetting)
+        
+        let endSetting = TrackingSetting(
+            title: NSAttributedString(string: "Trackers blocked since Apr 14, 2023"),
+            subtitle: NSAttributedString(string: "\(self.adCount)",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 25)]),
+            accessibilityIdentifier: "id",
+            isChecked: { return false },
+            onChecked: {
+               
+        })
+        let thirdSection = SettingSection(title:nil, footerTitle: nil, children: [endSetting])
+
+        return [firstSection, secondSection, thirdSection]
     }
 
     // The first section header gets a More Info link
@@ -266,7 +287,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
             return defaultFooter
         }
 
-        if currentBlockingStrength == .basic {
+        if currentBlockingStrength == .advertising {
             return nil
         }
 

@@ -525,7 +525,6 @@ class CheckmarkSetting: Setting {
     let onChecked: () -> Void
     let isChecked: () -> Bool
     private let subtitle: NSAttributedString?
-    let checkmarkStyle: CheckmarkSettingStyle
 
     override var status: NSAttributedString? {
         return subtitle
@@ -533,7 +532,6 @@ class CheckmarkSetting: Setting {
 
     init(
         title: NSAttributedString,
-        style: CheckmarkSettingStyle = .rightSide,
         subtitle: NSAttributedString?,
         accessibilityIdentifier: String? = nil,
         isChecked: @escaping () -> Bool,
@@ -542,7 +540,6 @@ class CheckmarkSetting: Setting {
         self.subtitle = subtitle
         self.onChecked = onChecked
         self.isChecked = isChecked
-        self.checkmarkStyle = style
         super.init(title: title)
         self.accessibilityIdentifier = accessibilityIdentifier
     }
@@ -550,15 +547,95 @@ class CheckmarkSetting: Setting {
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
 
-        if checkmarkStyle == .rightSide {
-            cell.accessoryType = isChecked() ? .checkmark : .none
-        } else {
+    
             let window = UIWindow.keyWindow
             let safeAreaInsets = window?.safeAreaInsets.left ?? 0
             cell.indentationWidth = 42 + safeAreaInsets
             cell.indentationLevel = 1
 
-            cell.accessoryType = .detailButton
+        let control = UISwitch()
+        control.onTintColor = theme.colors.actionPrimary
+//        control.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
+//        control.accessibilityIdentifier = prefKey
+        control.isEnabled = enabled
+
+//        displayBool(control)
+        if let title = title {
+            if let status = status {
+                control.accessibilityLabel = "\(title.string), \(status.string)"
+            } else {
+                control.accessibilityLabel = title.string
+            }
+            cell.accessibilityLabel = nil
+        }
+        cell.accessoryView = PaddedSwitch(switchView: control)
+        cell.selectionStyle = .none
+        
+            let checkColor = isChecked() ? theme.colors.actionPrimary : UIColor.clear
+            let check = UILabel()
+            cell.contentView.addSubview(check)
+            check.snp.makeConstraints { make in
+                make.height.equalTo(20)
+                make.width.equalTo(24)
+                make.top.equalToSuperview().offset(10)
+                make.leading.equalToSuperview().offset(20)
+            }
+            check.text = "\u{2713}"
+            check.font = UIFont.systemFont(ofSize: 20)
+            check.textColor = checkColor
+
+            let result = NSMutableAttributedString()
+            if let str = title?.string {
+                result.append(NSAttributedString(string: str,
+                                                 attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary]))
+            }
+            cell.textLabel?.assign(attributed: result, theme: theme)
+    
+
+        if !enabled {
+            cell.subviews.forEach { $0.alpha = 0.5 }
+        }
+    }
+
+    override func onClick(_ navigationController: UINavigationController?) {
+        // Force editing to end for any focused text fields so they can finish up validation first.
+        navigationController?.view.endEditing(true)
+        if !isChecked() {
+            onChecked()
+        }
+    }
+}
+
+class TrackingSetting: Setting {
+    let onChecked: () -> Void
+    let isChecked: () -> Bool
+    private let subtitle: NSAttributedString?
+
+    override var status: NSAttributedString? {
+        return subtitle
+    }
+
+    init(
+        title: NSAttributedString,
+        subtitle: NSAttributedString?,
+        accessibilityIdentifier: String? = nil,
+        isChecked: @escaping () -> Bool,
+        onChecked: @escaping () -> Void
+    ) {
+        self.subtitle = subtitle
+        self.onChecked = onChecked
+        self.isChecked = isChecked
+        super.init(title: title)
+        self.accessibilityIdentifier = accessibilityIdentifier
+    }
+
+    override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
+        super.onConfigureCell(cell, theme: theme)
+            let window = UIWindow.keyWindow
+            let safeAreaInsets = window?.safeAreaInsets.left ?? 0
+            cell.indentationWidth = 42 + safeAreaInsets
+            cell.indentationLevel = 1
+
 
             let checkColor = isChecked() ? theme.colors.actionPrimary : UIColor.clear
             let check = UILabel()
@@ -579,7 +656,7 @@ class CheckmarkSetting: Setting {
                                                  attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary]))
             }
             cell.textLabel?.assign(attributed: result, theme: theme)
-        }
+    
 
         if !enabled {
             cell.subviews.forEach { $0.alpha = 0.5 }

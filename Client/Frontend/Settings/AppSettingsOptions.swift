@@ -983,7 +983,7 @@ class ContentBlockerSetting: Setting {
             let currentBlockingStrength = profile
                 .prefs
                 .stringForKey(ContentBlockingConfig.Prefs.StrengthKey)
-                .flatMap(BlockingStrength.init(rawValue:)) ?? .basic
+                .flatMap(BlockingStrength.init(rawValue:)) ?? .advertising
             return NSAttributedString(string: currentBlockingStrength.settingStatus)
         } else {
             return NSAttributedString(string: .Settings.Homepage.Shortcuts.ToggleOff)

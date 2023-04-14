@@ -18,10 +18,11 @@ struct ContentBlockingConfig {
 }
 
 enum BlockingStrength: String {
-    case basic
-    case strict
-
-    static let allOptions: [BlockingStrength] = [.basic, .strict]
+    case advertising
+    case analytics
+    case social
+    case content
+    static let allOptions: [BlockingStrength] = [.advertising, .analytics, .social ,.content]
 }
 
 /**
@@ -56,7 +57,7 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     var blockingStrengthPref: BlockingStrength {
-        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap(BlockingStrength.init) ?? .basic
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap(BlockingStrength.init) ?? .advertising
     }
 
     init(tab: ContentBlockerTab, prefs: Prefs) {
@@ -67,7 +68,7 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
+        let rules = BlocklistFileName.listsForMode(strict: blockingStrengthPref == .content)
         ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
     }
 
@@ -79,7 +80,7 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
-        return BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
+        return BlocklistFileName.listsForMode(strict: blockingStrengthPref == .content)
     }
 
     override func notifyContentBlockingChanged() {
