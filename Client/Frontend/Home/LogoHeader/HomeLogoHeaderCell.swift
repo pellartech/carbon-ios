@@ -242,6 +242,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        NotificationCenter.default.addObserver(self, selector: #selector(adcountTriggers), name:Notification.Name("AdblockCountNotification"), object: nil)
         dataModel[1].value = "\(getNumberOfLifetimeTrackersBlocked())"
     }
     
@@ -249,6 +250,10 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return  UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
     }
 
+    @objc func adcountTriggers(notification : Notification){
+        dataModel[1].value = "\(getNumberOfLifetimeTrackersBlocked())"
+        self.tableView.reloadData()
+    }
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
     }

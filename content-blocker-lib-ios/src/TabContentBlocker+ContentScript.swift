@@ -40,6 +40,7 @@ extension TabContentBlocker {
                     let numberOfTrackersBlocked = self.getNumberOfLifetimeTrackersBlocked()
                     self.AdCount = numberOfTrackersBlocked + self.stats.total
                     self.setNumberOfLifetimeTrackersBlocked(numberOfTrackers: self.AdCount)
+                    NotificationCenter.default.post(name:  Notification.Name("AdblockCountNotification"), object: nil)
                 }
             }
         }
