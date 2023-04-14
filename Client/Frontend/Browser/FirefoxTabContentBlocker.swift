@@ -59,10 +59,18 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
         return userPrefs.boolForKey(ContentBlockingConfig.Prefs.EnabledKey) ?? ContentBlockingConfig.Defaults.NormalBrowsing
     }
 
-    var blockingStrengthPref: BlockingStrength {
+    var blockingAdvertisingPref: BlockingStrength {
         return userPrefs.stringForKey(ContentBlockingConfig.Prefs.advertisingKey).flatMap(BlockingStrength.init) ?? .advertising
     }
-
+    var blockingAnalyticsPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
+    var blockingSocialPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.socialKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
+    var blockingContentPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.contentKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
     init(tab: ContentBlockerTab, prefs: Prefs) {
         userPrefs = prefs
         super.init(tab: tab)
@@ -71,8 +79,24 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strict: blockingStrengthPref == .content)
-        ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
+        var rules1 = [BlocklistFileName]()
+        var rules2 = [BlocklistFileName]()
+        var rules3 = [BlocklistFileName]()
+        var rules4 = [BlocklistFileName]()
+        
+        if (blockingAdvertisingPref == .advertising){
+            rules1 = BlocklistFileName.advertising
+        }
+        if (blockingAnalyticsPref == .analytics){
+            rules2 = BlocklistFileName.analytics
+        }
+        if (blockingSocialPref == .social){
+            rules3 = BlocklistFileName.social
+        }
+        if (blockingContentPref == .content){
+            rules4 = BlocklistFileName.content
+        }
+        ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules1 + rules2 + rules3 + rules4 )
     }
 
     override func notifiedTabSetupRequired() {
@@ -83,7 +107,24 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
-        return BlocklistFileName.listsForMode(strict: blockingStrengthPref == .content)
+        var rules1 = [BlocklistFileName]()
+        var rules2 = [BlocklistFileName]()
+        var rules3 = [BlocklistFileName]()
+        var rules4 = [BlocklistFileName]()
+        
+        if (blockingAdvertisingPref == .advertising){
+            rules1 = BlocklistFileName.advertising
+        }
+        if (blockingAnalyticsPref == .analytics){
+            rules2 = BlocklistFileName.analytics
+        }
+        if (blockingSocialPref == .social){
+            rules3 = BlocklistFileName.social
+        }
+        if (blockingContentPref == .content){
+            rules4 = BlocklistFileName.content
+        }
+        return rules1 + rules2 + rules3 + rules4 
     }
 
     override func notifyContentBlockingChanged() {

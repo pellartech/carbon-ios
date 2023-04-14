@@ -632,7 +632,8 @@ class TrackerBlockSetting: Setting {
         control.onTintColor = theme.colors.actionPrimary
         control.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         control.isOn = self.isChecked
-        
+        control.isEnabled = enabled
+
         if let title = title {
             if let status = status {
                 control.accessibilityLabel = "\(title.string), \(status.string)"
