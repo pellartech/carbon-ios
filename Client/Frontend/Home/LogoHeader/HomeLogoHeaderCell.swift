@@ -36,7 +36,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         struct ComingSoonView {
             static let constant: CGFloat = 10
             static let viewHeight: CGFloat = 140
-            static let featureViewHeight: CGFloat = 144
+            static let featureViewHeight: CGFloat = 250
             static let stackViewHeight: CGFloat = 174
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
@@ -59,7 +59,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let YAnchor: CGFloat = -45
             static let font : CGFloat = 13
             static let viewMoreFont : CGFloat = 10
-            static let viewMoreYAnchor: CGFloat = -50
+            static let viewMoreYAnchor: CGFloat = -100
         }
         struct CollectionView {
             static let leadingAnchor: CGFloat = 30
@@ -67,7 +67,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let trailingAnchor: CGFloat = -30
             static let leading: CGFloat = 10
             static let widthAnchor: CGFloat = -10
-            static let featuretopAnchor: CGFloat = 5
+            static let featuretopAnchor: CGFloat = 50
 
         }
     }
@@ -211,7 +211,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     
     private lazy var featureCollectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.collectionViewLayout = layout
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -231,7 +231,16 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
     
-    private var featuredModel = [FeatureModel(title: "ChatGPT", icon:"ic_chatGPT",color: UIColor(red: 18, green: 163, blue: 127, alpha: 1),url: "https://chat.openai.com"),FeatureModel(title: "OpenSea", icon: "ic_openSea",color: UIColor(red: 32, green: 129, blue: 226, alpha: 1),url: "https://opensea.io"),FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com")]
+    private var featuredModel = [
+        FeatureModel(title: "Chainge", icon:"ic_chainge",color: UIColor(red: 36, green: 38, blue: 50, alpha: 1),url: " https://openapi.chainge.finance/app/"),
+        FeatureModel(title: "PancakeSwap", icon: "ic_pancakeswap",color: UIColor(red: 13, green: 215, blue: 203, alpha: 1),url: "https://pancakeswap.finance/info/pairs/0x43c2abe5e3bcec619072d8668ac83ad825da707f?chain=bsc"),
+        FeatureModel(title: "Biswap", icon: "ic_biswap",color: UIColor(red: 0, green: 0, blue: 0, alpha: 0),url: "https://biswap.org/swap?outputCurrency=0x04756126F044634C9a0f0E985e60c88a51ACC206&utm_source=BD_carb&utm_medium=BD_btnswap&utm_campaign=BD_csixswap"),
+        FeatureModel(title: "Beefy", icon: "ic_beefy",color: UIColor(red: 255, green: 255, blue: 255, alpha: 1),url: "https://app.beefy.com/vault/cakev2-csix-cake"),
+        FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com"),
+        FeatureModel(title: "Kukoin", icon: "ic_kukoin",color: UIColor(red: 89, green: 206, blue: 161, alpha: 1),url: "https://www.kucoin.com"),
+        FeatureModel(title: "Floki", icon: "ic_floki",color: UIColor(red: 0, green: 0, blue: 0, alpha: 0),url: "https://floki.com"),
+        FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),
+    ]
     private var viewMoredata = FeatureModel(title: "View more", icon: "", color: UIColor.clear, url: "https://carbon.website/app-store/")
 
     private var wallpaperManager =  WallpaperManager()
@@ -387,8 +396,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         case featureCollectionView:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
             cell.setUIFeature(data: featuredModel[indexPath.row],index: indexPath.row)
-            cell.setNeedsLayout()
-            cell.layoutIfNeeded()
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ComingSoonCollectionCell", for: indexPath) as! ComingSoonCollectionCell
@@ -404,9 +411,13 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return collectionView == statsCollectionView ? 10 : 20
+        return collectionView == statsCollectionView ? 10 : 25
     }
-
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+//        return collectionView == featureCollectionView ? 30 : 10
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == featureCollectionView{
             delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: false)
@@ -552,6 +563,8 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         label.textColor = wallpaperManager.currentWallpaper.textColor
         label.font = UIFont.boldSystemFont(ofSize: UX.Value.font)
         label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
