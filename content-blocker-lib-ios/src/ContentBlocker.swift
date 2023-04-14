@@ -43,12 +43,12 @@ enum BlocklistFileName: String, CaseIterable {
 
     var filename: String { return self.rawValue }
 
-    static var basic: [BlocklistFileName] { return [.advertisingCookies, .analyticsCookies, .socialCookies, .cryptomining, .fingerprinting] }
-    static var strict: [BlocklistFileName] { return [.advertisingURLs, .analyticsURLs, .socialURLs, cryptomining, fingerprinting] }
+    static var advertising: [BlocklistFileName] { return [.advertisingCookies,.advertisingURLs, .analyticsCookies, .cryptomining, .fingerprinting] }
+    static var analytics: [BlocklistFileName] { return [ .analyticsURLs,.analyticsCookies, .cryptomining, .fingerprinting] }
+    static var social: [BlocklistFileName] { return [ .socialCookies, .socialURLs, .cryptomining, .fingerprinting] }
+    static var content: [BlocklistFileName] { return [.advertisingCookies, .advertisingURLs,.analyticsCookies, .analyticsURLs,.socialCookies, .socialURLs, .cryptomining, .fingerprinting] }
 
-    static func listsForMode(strict: Bool) -> [BlocklistFileName] {
-        return strict ? BlocklistFileName.strict : BlocklistFileName.basic
-    }
+
 }
 
 enum BlockerStatus: String {

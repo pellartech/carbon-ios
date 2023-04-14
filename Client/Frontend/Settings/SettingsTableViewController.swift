@@ -23,10 +23,10 @@ extension UILabel {
         }
         attributedText = attributed
     }
-
+    
     func heightForLabel(_ label: UILabel, width: CGFloat, text: String?) -> CGFloat {
         guard let text = text else { return 0 }
-
+        
         let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
         let attrs = [NSAttributedString.Key.font: label.font as Any]
         let boundingRect = NSString(string: text).boundingRect(
@@ -45,39 +45,39 @@ class Setting: NSObject {
     fileprivate var _cellHeight: CGFloat?
     fileprivate var _image: UIImage?
     var theme: Theme!
-
+    
     weak var delegate: SettingsDelegate?
-
+    
     // The url the SettingsContentViewController will show, e.g. Licenses and Privacy Policy.
     var url: URL? { return nil }
-
+    
     // The title shown on the pref.
     var title: NSAttributedString? { return _title }
     var footerTitle: NSAttributedString? { return _footerTitle }
     var cellHeight: CGFloat? { return _cellHeight}
     fileprivate(set) var accessibilityIdentifier: String?
-
+    
     // An optional second line of text shown on the pref.
     var status: NSAttributedString? { return nil }
-
+    
     // Whether or not to show this pref.
     var hidden: Bool { return false }
-
+    
     var style: UITableViewCell.CellStyle { return .subtitle }
-
+    
     var accessoryType: UITableViewCell.AccessoryType { return .none }
-
+    
     var accessoryView: UIImageView? { return nil }
-
+    
     var textAlignment: NSTextAlignment { return .natural }
-
+    
     var image: UIImage? { return _image }
-
+    
     var enabled: Bool = true
-
+    
     func accessoryButtonTapped() { onAccessoryButtonTapped?() }
     var onAccessoryButtonTapped: (() -> Void)?
-
+    
     // Called when the cell is setup. Call if you need the default behaviour.
     func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         self.theme = theme
@@ -105,25 +105,25 @@ class Setting: NSObject {
         cell.accessibilityTraits = UIAccessibilityTraits.button
         cell.indentationWidth = 0
         cell.layoutMargins = .zero
-
+        
         let backgroundView = UIView()
         backgroundView.backgroundColor = theme.colors.layer5Hover
         backgroundView.bounds = cell.bounds
         cell.selectedBackgroundView = backgroundView
-
+        
         // So that the separator line goes all the way to the left edge.
         cell.separatorInset = .zero
         if let cell = cell as? ThemedTableViewCell {
             cell.applyTheme(theme: theme)
         }
     }
-
+    
     // Called when the pref is tapped.
     func onClick(_ navigationController: UINavigationController?) { return }
-
+    
     // Called when the pref is long-pressed.
     func onLongPress(_ navigationController: UINavigationController?) { return }
-
+    
     // Helper method to set up and push a SettingsContentViewController
     func setUpAndPushSettingsContentViewController(_ navigationController: UINavigationController?, _ url: URL? = nil) {
         if let url = self.url {
@@ -133,7 +133,7 @@ class Setting: NSObject {
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
-
+    
     init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, delegate: SettingsDelegate? = nil, enabled: Bool? = nil) {
         self._title = title
         self._footerTitle = footerTitle
@@ -146,12 +146,12 @@ class Setting: NSObject {
 // A setting in the sections panel. Contains a sublist of Settings
 class SettingSection: Setting {
     fileprivate let children: [Setting]
-
+    
     init(title: NSAttributedString? = nil, footerTitle: NSAttributedString? = nil, cellHeight: CGFloat? = nil, children: [Setting]) {
         self.children = children
         super.init(title: title, footerTitle: footerTitle, cellHeight: cellHeight)
     }
-
+    
     var count: Int {
         var count = 0
         for setting in children where !setting.hidden {
@@ -159,7 +159,7 @@ class SettingSection: Setting {
         }
         return count
     }
-
+    
     subscript(val: Int) -> Setting? {
         var i = 0
         for setting in children where !setting.hidden {
@@ -174,16 +174,16 @@ class SettingSection: Setting {
 
 private class PaddedSwitch: UIView {
     fileprivate static let Padding: CGFloat = 8
-
+    
     init(switchView: UISwitch) {
         super.init(frame: .zero)
-
+        
         addSubview(switchView)
-
+        
         frame.size = CGSize(width: switchView.frame.width + PaddedSwitch.Padding, height: switchView.frame.height)
         switchView.frame.origin = CGPoint(x: PaddedSwitch.Padding, y: 0)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -193,13 +193,13 @@ private class PaddedSwitch: UIView {
 // Takes and optional settingsDidChange callback and status text.
 class BoolSetting: Setting, FeatureFlaggable {
     let prefKey: String? // Sometimes a subclass will manage its own pref setting. In that case the prefkey will be nil
-
+    
     fileprivate let prefs: Prefs?
     fileprivate let defaultValue: Bool?
     fileprivate let settingDidChange: ((Bool) -> Void)?
     fileprivate let statusText: NSAttributedString?
     fileprivate let featureFlagName: NimbusFeatureFlagID?
-
+    
     init(
         prefs: Prefs?,
         prefKey: String? = nil,
@@ -217,7 +217,7 @@ class BoolSetting: Setting, FeatureFlaggable {
         self.featureFlagName = featureFlagName
         super.init(title: attributedTitleText)
     }
-
+    
     convenience init(
         prefs: Prefs,
         theme: Theme,
@@ -243,7 +243,7 @@ class BoolSetting: Setting, FeatureFlaggable {
             attributedStatusText: statusTextAttributedString,
             settingDidChange: settingDidChange)
     }
-
+    
     convenience init(
         with featureFlagID: NimbusFeatureFlagID,
         titleText: NSAttributedString,
@@ -256,20 +256,20 @@ class BoolSetting: Setting, FeatureFlaggable {
             featureFlagName: featureFlagID,
             settingDidChange: settingDidChange)
     }
-
+    
     override var status: NSAttributedString? {
         return statusText
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
-
+        
         let control = UISwitch()
         control.onTintColor = theme.colors.actionPrimary
         control.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         control.accessibilityIdentifier = prefKey
         control.isEnabled = enabled
-
+        
         displayBool(control)
         if let title = title {
             if let status = status {
@@ -281,16 +281,16 @@ class BoolSetting: Setting, FeatureFlaggable {
         }
         cell.accessoryView = PaddedSwitch(switchView: control)
         cell.selectionStyle = .none
-
+        
         if !enabled {
             cell.subviews.forEach { $0.alpha = 0.5 }
         }
     }
-
+    
     @objc func switchValueChanged(_ control: UISwitch) {
         writeBool(control)
         settingDidChange?(control.isOn)
-
+        
         if let featureFlagName = featureFlagName {
             TelemetryWrapper.recordEvent(category: .action,
                                          method: .change,
@@ -304,7 +304,7 @@ class BoolSetting: Setting, FeatureFlaggable {
                                          extras: ["pref": prefKey as Any, "to": control.isOn])
         }
     }
-
+    
     // These methods allow a subclass to control how the pref is saved
     func displayBool(_ control: UISwitch) {
         if let featureFlagName = featureFlagName {
@@ -314,7 +314,7 @@ class BoolSetting: Setting, FeatureFlaggable {
             control.isOn = prefs?.boolForKey(key) ?? defaultValue
         }
     }
-
+    
     func writeBool(_ control: UISwitch) {
         if let featureFlagName = featureFlagName {
             featureFlags.set(feature: featureFlagName, to: control.isOn)
@@ -328,16 +328,16 @@ class BoolSetting: Setting, FeatureFlaggable {
 class PrefPersister: SettingValuePersister {
     fileprivate let prefs: Prefs
     let prefKey: String
-
+    
     init(prefs: Prefs, prefKey: String) {
         self.prefs = prefs
         self.prefKey = prefKey
     }
-
+    
     func readPersistedValue() -> String? {
         return prefs.stringForKey(prefKey)
     }
-
+    
     func writePersistedValue(value: String?) {
         if let value = value {
             prefs.setString(value, forKey: prefKey)
@@ -368,7 +368,7 @@ class StringPrefSetting: StringSetting {
 
 class WebPageSetting: StringPrefSetting {
     let isChecked: () -> Bool
-
+    
     init(
         prefs: Prefs,
         prefKey: String,
@@ -390,18 +390,18 @@ class WebPageSetting: StringPrefSetting {
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
     }
-
+    
     override func prepareValidValue(userInput value: String?) -> String? {
         guard let value = value else { return nil }
         return URIFixup.getURL(value)?.absoluteString
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
         cell.accessoryType = isChecked() ? .checkmark : .none
         textField.textAlignment = .left
     }
-
+    
     static func isURLOrEmpty(_ string: String?) -> Bool {
         guard let string = string, !string.isEmpty else {
             return true
@@ -420,15 +420,15 @@ protocol SettingValuePersister {
 /// If settingIsValid returns false, the Setting will not change and the text remains red.
 class StringSetting: Setting, UITextFieldDelegate {
     var Padding: CGFloat = 15
-
+    
     fileprivate let defaultValue: String?
     fileprivate let placeholder: String
     fileprivate let settingDidChange: ((String?) -> Void)?
     fileprivate let settingIsValid: ((String?) -> Bool)?
     fileprivate let persister: SettingValuePersister
-
+    
     let textField = UITextField()
-
+    
     init(
         defaultValue: String? = nil,
         placeholder: String,
@@ -442,11 +442,11 @@ class StringSetting: Setting, UITextFieldDelegate {
         self.settingIsValid = isValueValid
         self.placeholder = placeholder
         self.persister = persister
-
+        
         super.init()
         self.accessibilityIdentifier = accessibilityIdentifier
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
         if let id = accessibilityIdentifier {
@@ -454,7 +454,7 @@ class StringSetting: Setting, UITextFieldDelegate {
         }
         let placeholderColor = theme.colors.textSecondary
         textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: placeholderColor])
-
+        
         cell.tintColor = self.persister.readPersistedValue() != nil ? theme.colors.actionPrimary : UIColor.clear
         textField.textAlignment = .center
         textField.delegate = self
@@ -463,9 +463,9 @@ class StringSetting: Setting, UITextFieldDelegate {
         cell.isUserInteractionEnabled = true
         cell.accessibilityTraits = UIAccessibilityTraits.none
         cell.contentView.addSubview(textField)
-
+        
         textField.font = DynamicFontHelper.defaultHelper.DefaultStandardFont
-
+        
         textField.snp.makeConstraints { make in
             make.height.equalTo(44)
             make.trailing.equalTo(cell.contentView).offset(-Padding)
@@ -476,35 +476,35 @@ class StringSetting: Setting, UITextFieldDelegate {
             textFieldDidChange(textField)
         }
     }
-
+    
     override func onClick(_ navigationController: UINavigationController?) {
         textField.becomeFirstResponder()
     }
-
+    
     fileprivate func isValid(_ value: String?) -> Bool {
         guard let test = settingIsValid else {
             return true
         }
         return test(prepareValidValue(userInput: value))
     }
-
+    
     /// This gives subclasses an opportunity to treat the user input string
     /// before it is saved or tested.
     /// Default implementation does nothing.
     func prepareValidValue(userInput value: String?) -> String? {
         return value
     }
-
+    
     @objc func textFieldDidChange(_ textField: UITextField) {
         let color = isValid(textField.text) ? theme.colors.textPrimary : theme.colors.textWarning
         textField.textColor = color
     }
-
+    
     @objc func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return isValid(textField.text)
     }
-
+    
     @objc func textFieldDidEndEditing(_ textField: UITextField) {
         let text = textField.text
         if !isValid(text) {
@@ -526,11 +526,11 @@ class CheckmarkSetting: Setting {
     let isChecked: () -> Bool
     private let subtitle: NSAttributedString?
     let checkmarkStyle: CheckmarkSettingStyle
-
+    
     override var status: NSAttributedString? {
         return subtitle
     }
-
+    
     init(
         title: NSAttributedString,
         style: CheckmarkSettingStyle = .rightSide,
@@ -546,10 +546,10 @@ class CheckmarkSetting: Setting {
         super.init(title: title)
         self.accessibilityIdentifier = accessibilityIdentifier
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
-
+        
         if checkmarkStyle == .rightSide {
             cell.accessoryType = isChecked() ? .checkmark : .none
         } else {
@@ -557,9 +557,9 @@ class CheckmarkSetting: Setting {
             let safeAreaInsets = window?.safeAreaInsets.left ?? 0
             cell.indentationWidth = 42 + safeAreaInsets
             cell.indentationLevel = 1
-
+            
             cell.accessoryType = .detailButton
-
+            
             let checkColor = isChecked() ? theme.colors.actionPrimary : UIColor.clear
             let check = UILabel()
             cell.contentView.addSubview(check)
@@ -572,7 +572,7 @@ class CheckmarkSetting: Setting {
             check.text = "\u{2713}"
             check.font = UIFont.systemFont(ofSize: 20)
             check.textColor = checkColor
-
+            
             let result = NSMutableAttributedString()
             if let str = title?.string {
                 result.append(NSAttributedString(string: str,
@@ -580,12 +580,154 @@ class CheckmarkSetting: Setting {
             }
             cell.textLabel?.assign(attributed: result, theme: theme)
         }
-
+        
         if !enabled {
             cell.subviews.forEach { $0.alpha = 0.5 }
         }
     }
+    
+    override func onClick(_ navigationController: UINavigationController?) {
+        // Force editing to end for any focused text fields so they can finish up validation first.
+        navigationController?.view.endEditing(true)
+        if !isChecked() {
+            onChecked()
+        }
+    }
+}
 
+class TrackerBlockSetting: Setting {
+    let onChecked: () -> Void
+    let offChecked: () -> Void
+    let isChecked: Bool
+    private let subtitle: NSAttributedString?
+    
+    override var status: NSAttributedString? {
+        return subtitle
+    }
+    
+    init(
+        title: NSAttributedString,
+        subtitle: NSAttributedString?,
+        accessibilityIdentifier: String? = nil,
+        isChecked: Bool,
+        onChecked: @escaping () -> Void,
+        offChecked: @escaping () -> Void
+    ) {
+        self.subtitle = subtitle
+        self.onChecked = onChecked
+        self.offChecked = offChecked
+        self.isChecked = isChecked
+        super.init(title: title)
+        self.accessibilityIdentifier = accessibilityIdentifier
+    }
+    
+    override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
+        super.onConfigureCell(cell, theme: theme)
+        let window = UIWindow.keyWindow
+        let safeAreaInsets = window?.safeAreaInsets.left ?? 0
+        cell.indentationWidth = 42 + safeAreaInsets
+        cell.indentationLevel = 1
+        
+        let control = UISwitch()
+        control.onTintColor = theme.colors.actionPrimary
+        control.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
+        control.isOn = self.isChecked
+        control.isEnabled = enabled
+
+        if let title = title {
+            if let status = status {
+                control.accessibilityLabel = "\(title.string), \(status.string)"
+            } else {
+                control.accessibilityLabel = title.string
+            }
+            cell.accessibilityLabel = nil
+        }
+        cell.accessoryView = PaddedSwitch(switchView: control)
+        cell.selectionStyle = .none
+        let result = NSMutableAttributedString()
+        if let str = title?.string {
+            result.append(NSAttributedString(string: str,
+                                             attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary]))
+        }
+        cell.textLabel?.assign(attributed: result, theme: theme)
+        if !enabled {
+            cell.subviews.forEach { $0.alpha = 0.5 }
+        }
+    }
+    
+    @objc func switchValueChanged(switches : UISwitch){
+        if switches.isOn{
+            onChecked()
+        }else{
+            offChecked()
+        }
+    }
+    override func onClick(_ navigationController: UINavigationController?) {
+        // Force editing to end for any focused text fields so they can finish up validation first.
+        navigationController?.view.endEditing(true)
+        if !isChecked {
+            onChecked()
+        }
+    }
+}
+
+class TrackingSetting: Setting {
+    let onChecked: () -> Void
+    let isChecked: () -> Bool
+    private let subtitle: NSAttributedString?
+    
+    override var status: NSAttributedString? {
+        return subtitle
+    }
+    
+    init(
+        title: NSAttributedString,
+        subtitle: NSAttributedString?,
+        accessibilityIdentifier: String? = nil,
+        isChecked: @escaping () -> Bool,
+        onChecked: @escaping () -> Void
+    ) {
+        self.subtitle = subtitle
+        self.onChecked = onChecked
+        self.isChecked = isChecked
+        super.init(title: title)
+        self.accessibilityIdentifier = accessibilityIdentifier
+    }
+    
+    override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
+        super.onConfigureCell(cell, theme: theme)
+        let window = UIWindow.keyWindow
+        let safeAreaInsets = window?.safeAreaInsets.left ?? 0
+        cell.indentationWidth = 42 + safeAreaInsets
+        cell.indentationLevel = 1
+        
+        
+        let checkColor = isChecked() ? theme.colors.actionPrimary : UIColor.clear
+        let check = UILabel()
+        cell.contentView.addSubview(check)
+        check.snp.makeConstraints { make in
+            make.height.equalTo(20)
+            make.width.equalTo(24)
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalToSuperview().offset(20)
+        }
+        check.text = "\u{2713}"
+        check.font = UIFont.systemFont(ofSize: 20)
+        check.textColor = checkColor
+        
+        let result = NSMutableAttributedString()
+        if let str = title?.string {
+            result.append(NSAttributedString(string: str,
+                                             attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary]))
+        }
+        cell.textLabel?.assign(attributed: result, theme: theme)
+        
+        
+        if !enabled {
+            cell.subviews.forEach { $0.alpha = 0.5 }
+        }
+    }
+    
     override func onClick(_ navigationController: UINavigationController?) {
         // Force editing to end for any focused text fields so they can finish up validation first.
         navigationController?.view.endEditing(true)
@@ -601,11 +743,11 @@ class CheckmarkSetting: Setting {
 /// false then the 'button' appears disabled.
 class ButtonSetting: Setting {
     var Padding: CGFloat = 8
-
+    
     let onButtonClick: (UINavigationController?) -> Void
     let destructive: Bool
     let isEnabled: (() -> Bool)?
-
+    
     init(title: NSAttributedString?, destructive: Bool = false, accessibilityIdentifier: String, isEnabled: (() -> Bool)? = nil, onClick: @escaping (UINavigationController?) -> Void) {
         self.onButtonClick = onClick
         self.destructive = destructive
@@ -613,10 +755,10 @@ class ButtonSetting: Setting {
         super.init(title: title)
         self.accessibilityIdentifier = accessibilityIdentifier
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
-
+        
         if isEnabled?() ?? true {
             cell.textLabel?.textColor = destructive ? theme.colors.textWarning : theme.colors.actionPrimary
         } else {
@@ -631,7 +773,7 @@ class ButtonSetting: Setting {
         cell.accessibilityTraits = UIAccessibilityTraits.button
         cell.selectionStyle = .none
     }
-
+    
     override func onClick(_ navigationController: UINavigationController?) {
         // Force editing to end for any focused text fields so they can finish up validation first.
         navigationController?.view.endEditing(true)
@@ -641,29 +783,27 @@ class ButtonSetting: Setting {
     }
 }
 
-// A helper class for prefs that deal with sync. Handles reloading the tableView data if changes to
-// the fxAccount happen.
 class AccountSetting: Setting {
     unowned var settings: SettingsTableViewController
-
+    
     var profile: Profile {
         return settings.profile
     }
-
+    
     override var title: NSAttributedString? { return nil }
-
+    
     init(settings: SettingsTableViewController) {
         self.settings = settings
         super.init(title: nil)
     }
-
+    
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
         if settings.profile.rustFxA.userProfile != nil {
             cell.selectionStyle = .none
         }
     }
-
+    
     override var accessoryType: UITableViewCell.AccessoryType { return .none }
 }
 
@@ -683,89 +823,85 @@ protocol SettingsDelegate: AnyObject {
 // The base settings view controller.
 class SettingsTableViewController: ThemedTableViewController {
     typealias SettingsGenerator = (SettingsTableViewController, SettingsDelegate?) -> [SettingSection]
-
+    
     fileprivate let Identifier = "CellIdentifier"
     var settings = [SettingSection]()
-
+    
     weak var settingsDelegate: SettingsDelegate?
-
+    
     var profile: Profile!
     var tabManager: TabManager!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Identifier)
         tableView.register(ThemedTableSectionHeaderFooterView.self,
                            forHeaderFooterViewReuseIdentifier: ThemedTableSectionHeaderFooterView.cellIdentifier)
         tableView.tableFooterView = UIView(frame: CGRect(width: view.frame.width, height: 30))
         tableView.estimatedRowHeight = 44
         tableView.estimatedSectionHeaderHeight = 44
-
+        
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
         tableView.addGestureRecognizer(longPressGestureRecognizer)
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         settings = generateSettings()
         NotificationCenter.default.addObserver(self, selector: #selector(syncDidChangeState), name: .ProfileDidStartSyncing, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(syncDidChangeState), name: .ProfileDidFinishSyncing, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(firefoxAccountDidChange), name: .FirefoxAccountChanged, object: nil)
-
+        
         applyTheme()
     }
-
+    
     override func applyTheme() {
         settings = generateSettings()
         super.applyTheme()
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         refresh()
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
+        
         [Notification.Name.ProfileDidStartSyncing, Notification.Name.ProfileDidFinishSyncing, Notification.Name.FirefoxAccountChanged].forEach { name in
             NotificationCenter.default.removeObserver(self, name: name, object: nil)
         }
     }
-
-    // Override to provide settings in subclasses
+    
     func generateSettings() -> [SettingSection] {
         return []
     }
-
+    
     @objc fileprivate func syncDidChangeState() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
     }
-
+    
     @objc fileprivate func refresh() {
-        // Through-out, be aware that modifying the control while a refresh is in progress is /not/ supported and will likely crash the app.
-        // self.profile.rustAccount.refreshProfile()
-        // TODO [rustfxa] listen to notification and refresh profile
     }
-
+    
     @objc func firefoxAccountDidChange() {
         self.tableView.reloadData()
     }
-
+    
     @objc func didLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
         let location = gestureRecognizer.location(in: tableView)
         guard let indexPath = tableView.indexPathForRow(at: location), gestureRecognizer.state == .began else { return }
-
+        
         let section = settings[indexPath.section]
         if let setting = section[indexPath.row], setting.enabled {
             setting.onLongPress(navigationController)
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = settings[indexPath.section]
         if let setting = section[indexPath.row] {
@@ -776,19 +912,19 @@ class SettingsTableViewController: ThemedTableViewController {
         }
         return super.tableView(tableView, cellForRowAt: indexPath)
     }
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return settings.count
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let section = settings[section]
         return section.count
     }
-
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ThemedTableSectionHeaderFooterView.cellIdentifier) as? ThemedTableSectionHeaderFooterView else { return nil }
-
+        
         let sectionSetting = settings[section]
         if let sectionTitle = sectionSetting.title?.string {
             headerView.titleLabel.text = sectionTitle.uppercased()
@@ -796,23 +932,19 @@ class SettingsTableViewController: ThemedTableViewController {
         headerView.applyTheme(theme: themeManager.currentTheme)
         return headerView
     }
-
+    
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let sectionSetting = settings[section]
-
+        
         guard let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ThemedTableSectionHeaderFooterView.cellIdentifier) as? ThemedTableSectionHeaderFooterView,
-                let sectionFooter = sectionSetting.footerTitle?.string else { return nil }
-
+              let sectionFooter = sectionSetting.footerTitle?.string else { return nil }
+        
         footerView.titleLabel.text = sectionFooter
         footerView.titleAlignment = .top
         footerView.applyTheme(theme: themeManager.currentTheme)
         return footerView
     }
 
-    // To hide a footer dynamically requires returning nil from viewForFooterInSection
-    // and setting the height to zero.
-    // However, we also want the height dynamically calculated, there is a magic constant
-    // for that: `UITableViewAutomaticDimension`.
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         let sectionSetting = settings[section]
         if sectionSetting.footerTitle?.string != nil {
@@ -820,29 +952,29 @@ class SettingsTableViewController: ThemedTableViewController {
         }
         return 0
     }
-
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
-
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let section = settings[indexPath.section]
         if let setting = section[indexPath.row], let height = setting.cellHeight {
             return height
         }
-
+        
         return UITableView.automaticDimension
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        
         let section = settings[indexPath.section]
         if let setting = section[indexPath.row], setting.enabled {
             setting.onClick(navigationController)
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         let section = settings[indexPath.section]
         if let setting = section[indexPath.row] {

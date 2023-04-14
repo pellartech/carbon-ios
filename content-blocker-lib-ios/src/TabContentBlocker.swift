@@ -21,7 +21,8 @@ class TabContentBlocker {
     var isEnabled: Bool {
         return false
     }
-
+    var AdCount = 0
+    
     @objc func notifiedTabSetupRequired() {}
 
     func currentlyEnabledLists() -> [BlocklistFileName] {

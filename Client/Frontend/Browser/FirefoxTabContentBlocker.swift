@@ -8,7 +8,10 @@ import Shared
 
 struct ContentBlockingConfig {
     struct Prefs {
-        static let StrengthKey = "prefkey.trackingprotection.strength"
+        static let advertisingKey = "prefkey.trackingprotection.advertising"
+        static let analyticsKey = "prefkey.trackingprotection.analytics"
+        static let socialKey = "prefkey.trackingprotection.social"
+        static let contentKey = "prefkey.trackingprotection.content"
         static let EnabledKey = "prefkey.trackingprotection.normalbrowsing"
     }
 
@@ -18,10 +21,11 @@ struct ContentBlockingConfig {
 }
 
 enum BlockingStrength: String {
-    case basic
-    case strict
-
-    static let allOptions: [BlockingStrength] = [.basic, .strict]
+    case advertising
+    case analytics
+    case social
+    case content
+    static let allOptions: [BlockingStrength] = [.advertising, .analytics, .social ,.content]
 }
 
 /**
@@ -55,10 +59,18 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
         return userPrefs.boolForKey(ContentBlockingConfig.Prefs.EnabledKey) ?? ContentBlockingConfig.Defaults.NormalBrowsing
     }
 
-    var blockingStrengthPref: BlockingStrength {
-        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.StrengthKey).flatMap(BlockingStrength.init) ?? .basic
+    var blockingAdvertisingPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.advertisingKey).flatMap(BlockingStrength.init) ?? .advertising
     }
-
+    var blockingAnalyticsPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
+    var blockingSocialPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.socialKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
+    var blockingContentPref: BlockingStrength {
+        return userPrefs.stringForKey(ContentBlockingConfig.Prefs.contentKey).flatMap(BlockingStrength.init) ?? .advertising
+    }
     init(tab: ContentBlockerTab, prefs: Prefs) {
         userPrefs = prefs
         super.init(tab: tab)
@@ -67,8 +79,24 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
-        ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules)
+        var rules1 = [BlocklistFileName]()
+        var rules2 = [BlocklistFileName]()
+        var rules3 = [BlocklistFileName]()
+        var rules4 = [BlocklistFileName]()
+        
+        if (blockingAdvertisingPref == .advertising){
+            rules1 = BlocklistFileName.advertising
+        }
+        if (blockingAnalyticsPref == .analytics){
+            rules2 = BlocklistFileName.analytics
+        }
+        if (blockingSocialPref == .social){
+            rules3 = BlocklistFileName.social
+        }
+        if (blockingContentPref == .content){
+            rules4 = BlocklistFileName.content
+        }
+        ContentBlocker.shared.setupTrackingProtection(forTab: tab, isEnabled: isEnabled, rules: rules1 + rules2 + rules3 + rules4 )
     }
 
     override func notifiedTabSetupRequired() {
@@ -79,7 +107,24 @@ class FirefoxTabContentBlocker: TabContentBlocker, TabContentScript {
     }
 
     override func currentlyEnabledLists() -> [BlocklistFileName] {
-        return BlocklistFileName.listsForMode(strict: blockingStrengthPref == .strict)
+        var rules1 = [BlocklistFileName]()
+        var rules2 = [BlocklistFileName]()
+        var rules3 = [BlocklistFileName]()
+        var rules4 = [BlocklistFileName]()
+        
+        if (blockingAdvertisingPref == .advertising){
+            rules1 = BlocklistFileName.advertising
+        }
+        if (blockingAnalyticsPref == .analytics){
+            rules2 = BlocklistFileName.analytics
+        }
+        if (blockingSocialPref == .social){
+            rules3 = BlocklistFileName.social
+        }
+        if (blockingContentPref == .content){
+            rules4 = BlocklistFileName.content
+        }
+        return rules1 + rules2 + rules3 + rules4 
     }
 
     override func notifyContentBlockingChanged() {

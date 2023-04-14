@@ -251,7 +251,21 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        NotificationCenter.default.addObserver(self, selector: #selector(adcountTriggers), name:Notification.Name("AdblockCountNotification"), object: nil)
+        let blockedCount = getNumberOfLifetimeTrackersBlocked()
+        dataModel[1].value = "\(blockedCount)"
+        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+    }
+    
+    private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
+        return  UserDefaults.standard.integer(forKey: BrowserViewController.userDefaultsTrackersBlockedKey)
+    }
 
+    @objc func adcountTriggers(notification : Notification){
+        let blockedCount = getNumberOfLifetimeTrackersBlocked()
+        dataModel[1].value = "\(blockedCount)"
+        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+        self.tableView.reloadData()
     }
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
@@ -456,7 +470,7 @@ class DataTableCell: UITableViewCell {
             static let top: CGFloat = 10
             static let trailing: CGFloat = -15
             static let height: CGFloat = 10
-            static let width: CGFloat = 30
+            static let width: CGFloat = 50
         }
     }
     
@@ -603,6 +617,7 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         iconImageView.backgroundColor = data.color!
         iconView.backgroundColor = data.color!
     }
+  
     func setUI(data : StatsModel,index : Int){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title

@@ -33,6 +33,7 @@ class BrowserViewController: UIViewController {
         static let ShowHeaderTapAreaHeight: CGFloat = 32
         static let ActionSheetTitleMaxLength = 120
     }
+    static let userDefaultsTrackersBlockedKey = "lifetimeTrackersBlocked"
 
     private let KVOs: [KVOConstants] = [
         .estimatedProgress,
@@ -1814,6 +1815,7 @@ extension BrowserViewController: TabDelegate {
 
         let blocker = FirefoxTabContentBlocker(tab: tab, prefs: profile.prefs)
         tab.contentBlocker = blocker
+        blocker.AdCount
         tab.addContentScript(blocker, name: FirefoxTabContentBlocker.name())
 
         tab.addContentScript(FocusHelper(tab: tab), name: FocusHelper.name())

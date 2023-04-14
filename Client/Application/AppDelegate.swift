@@ -101,6 +101,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    level: .info,
                    category: .lifecycle)
 
+        
+        profile.prefs.setString("advertising",
+                             forKey: ContentBlockingConfig.Prefs.advertisingKey)
+        profile.prefs.setString("analytics",
+                             forKey: ContentBlockingConfig.Prefs.analyticsKey)
+        profile.prefs.setString("social",
+                             forKey: ContentBlockingConfig.Prefs.socialKey)
         return true
     }
 
