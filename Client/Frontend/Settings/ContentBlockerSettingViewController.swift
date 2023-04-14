@@ -173,7 +173,7 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
     init(prefs: Prefs) {
         self.prefs = prefs
 
-        advertisingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .advertising
+        advertisingStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.advertisingKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .advertising
         analyticsStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.analyticsKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .analytics
         socialStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.socialKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .social
         contentStrength = prefs.stringForKey(ContentBlockingConfig.Prefs.contentKey).flatMap({BlockingStrength(rawValue: $0)}) ?? .content

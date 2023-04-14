@@ -980,13 +980,9 @@ class ContentBlockerSetting: Setting {
         let isOn = profile.prefs.boolForKey(ContentBlockingConfig.Prefs.EnabledKey) ?? ContentBlockingConfig.Defaults.NormalBrowsing
 
         if isOn {
-            let currentBlockingStrength = profile
-                .prefs
-                .stringForKey(ContentBlockingConfig.Prefs.advertisingKey)
-                .flatMap(BlockingStrength.init(rawValue:)) ?? .advertising
-            return NSAttributedString(string: currentBlockingStrength.settingStatus)
+            return NSAttributedString(string:"Enabled")
         } else {
-            return NSAttributedString(string: .Settings.Homepage.Shortcuts.ToggleOff)
+            return NSAttributedString(string: "Disabled")
         }
     }
 
