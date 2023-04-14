@@ -241,6 +241,28 @@ class ContentBlockerSettingViewController: SettingsTableViewController {
                     }
                     
                     
+            },
+                offChecked:
+                    {
+                        switch option{
+                        case .advertising:
+                            self.prefs.setString("",
+                                                 forKey: ContentBlockingConfig.Prefs.advertisingKey)
+                           
+                        case .analytics:
+                            self.prefs.setString("",
+                                                 forKey: ContentBlockingConfig.Prefs.analyticsKey)
+                        case .social:
+                            self.prefs.setString("",
+                                                 forKey: ContentBlockingConfig.Prefs.socialKey)
+                        case .content:
+                            self.prefs.setString("",
+                                                 forKey: ContentBlockingConfig.Prefs.contentKey)
+                        }
+                        TabContentBlocker.prefsChanged()
+                    if option == .content {
+                        self.button.isHidden = true
+                    }
             })
 
             setting.onAccessoryButtonTapped = {
