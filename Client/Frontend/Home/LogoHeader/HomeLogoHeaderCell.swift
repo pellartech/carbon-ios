@@ -37,7 +37,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let constant: CGFloat = 10
             static let viewHeight: CGFloat = 140
             static let featureViewHeight: CGFloat = 250
-            static let stackViewHeight: CGFloat = 174
+            static let stackViewHeight: CGFloat = 280
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
             static let alpha: CGFloat = 0.3
