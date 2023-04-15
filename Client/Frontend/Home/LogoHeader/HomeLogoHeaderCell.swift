@@ -252,9 +252,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         super.init(frame: frame)
         setupView()
         NotificationCenter.default.addObserver(self, selector: #selector(adcountTriggers), name:Notification.Name("AdblockCountNotification"), object: nil)
-        let blockedCount = getNumberOfLifetimeTrackersBlocked()
-        dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+        setModelValue()
     }
     
     private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
@@ -262,9 +260,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
 
     @objc func adcountTriggers(notification : Notification){
+        setModelValue()
+    }
+    
+    func setModelValue(){
         let blockedCount = getNumberOfLifetimeTrackersBlocked()
         dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+        let doubleStr = String(format: "%.2f", 1.6 * Double(blockedCount))
+        dataModel[0].value = "\(doubleStr)KB"
         self.tableView.reloadData()
     }
     override func layoutIfNeeded() {
@@ -485,6 +488,8 @@ class DataTableCell: UITableViewCell {
         label.textColor = wallpaperManager.currentWallpaper.textColor
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
