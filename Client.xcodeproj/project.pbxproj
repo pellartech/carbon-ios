@@ -1273,7 +1273,6 @@
 		F8AAC1B429663619000BCDEC /* RustAutofill.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B329663618000BCDEC /* RustAutofill.swift */; };
 		F8AAC1B7296637CE000BCDEC /* RustAutofillTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B5296637B7000BCDEC /* RustAutofillTests.swift */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
-		F9791B2A29EAC84300191434 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9791B2929EAC84300191434 /* Units.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5313,7 +5312,6 @@
 		F8EF4290ACE53B2692EA362F /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/LoginManager.strings; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
-		F9791B2929EAC84300191434 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -6109,7 +6107,6 @@
 				DA27EEDA28BADF4700DD6F5D /* MenuBuilderHelper.swift */,
 				E1463D012981DA190074E16E /* NotificationManager.swift */,
 				96A5F73729928B3700234E5F /* GeneralizedImageFetcher.swift */,
-				F9791B2929EAC84300191434 /* Units.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -10384,7 +10381,6 @@
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
 				E1CD81BC290C5C3F00124B27 /* DevicePickerTableViewCell.swift in Sources */,
 				8AD40FD527BB1C1000672675 /* LockButton.swift in Sources */,
-				F9791B2A29EAC84300191434 /* Units.swift in Sources */,
 				5F130D2E2483508E00B0F7D0 /* FxAWebViewModel.swift in Sources */,
 				E571EE772875694C0051D9AA /* MockPocketSponsoredStoriesProvider.swift in Sources */,
 				2109478928AFD24C00B73D44 /* OnboardingViewControllerProtocol.swift in Sources */,
