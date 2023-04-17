@@ -37,7 +37,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             static let constant: CGFloat = 10
             static let viewHeight: CGFloat = 140
             static let featureViewHeight: CGFloat = 250
-            static let stackViewHeight: CGFloat = 174
+            static let stackViewHeight: CGFloat = 280
             static let trailingConstant: CGFloat = -10
             static let radius: CGFloat = 15
             static let alpha: CGFloat = 0.3
@@ -232,7 +232,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
     
     private var featuredModel = [
-        FeatureModel(title: "Chainge", icon:"ic_chainge",color: UIColor(red: 36, green: 38, blue: 50, alpha: 1),url: " https://openapi.chainge.finance/app/"),
+        FeatureModel(title: "Chainge", icon:"ic_chainge",color: UIColor(red: 36, green: 38, blue: 50, alpha: 1),url: "https://openapi.chainge.finance/app/"),
         FeatureModel(title: "PancakeSwap", icon: "ic_pancakeswap",color: UIColor(red: 13, green: 215, blue: 203, alpha: 1),url: "https://pancakeswap.finance/info/pairs/0x43c2abe5e3bcec619072d8668ac83ad825da707f?chain=bsc"),
         FeatureModel(title: "Biswap", icon: "ic_biswap",color: UIColor(red: 0, green: 0, blue: 0, alpha: 0),url: "https://biswap.org/swap?outputCurrency=0x04756126F044634C9a0f0E985e60c88a51ACC206&utm_source=BD_carb&utm_medium=BD_btnswap&utm_campaign=BD_csixswap"),
         FeatureModel(title: "Beefy", icon: "ic_beefy",color: UIColor(red: 255, green: 255, blue: 255, alpha: 1),url: "https://app.beefy.com/vault/cakev2-csix-cake"),
@@ -252,9 +252,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         super.init(frame: frame)
         setupView()
         NotificationCenter.default.addObserver(self, selector: #selector(adcountTriggers), name:Notification.Name("AdblockCountNotification"), object: nil)
-        let blockedCount = getNumberOfLifetimeTrackersBlocked()
-        dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+        setModelValue()
     }
     
     private func getNumberOfLifetimeTrackersBlocked(userDefaults: UserDefaults = UserDefaults.standard) -> Int {
@@ -262,9 +260,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
 
     @objc func adcountTriggers(notification : Notification){
+        setModelValue()
+    }
+    
+    func setModelValue(){
         let blockedCount = getNumberOfLifetimeTrackersBlocked()
         dataModel[1].value = "\(blockedCount)"
-        dataModel[0].value = "\(1.6 * Double(blockedCount))KB"
+        let doubleStr = String(format: "%.2f", 1.6 * Double(blockedCount))
+        dataModel[0].value = "\(doubleStr)KB"
         self.tableView.reloadData()
     }
     override func layoutIfNeeded() {
@@ -427,10 +430,6 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return collectionView == statsCollectionView ? 10 : 25
     }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        return collectionView == featureCollectionView ? 30 : 10
-//    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == featureCollectionView{
@@ -489,6 +488,8 @@ class DataTableCell: UITableViewCell {
         label.textColor = wallpaperManager.currentWallpaper.textColor
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
