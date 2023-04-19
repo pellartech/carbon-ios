@@ -826,7 +826,7 @@ open class BrowserProfile: Profile {
                        level: .info,
                        category: .sync)
 
-            syncDisplayState = SyncStatusResolver(engineResults: result.engineResults).resolveResults()
+            syncDisplayState = SyncStatusResolver().resolveResults()
 
             #if MOZ_TARGET_CLIENT
                 if canSendUsageData() {
