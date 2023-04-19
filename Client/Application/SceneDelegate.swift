@@ -6,7 +6,6 @@ import UIKit
 import CoreSpotlight
 import Storage
 import Shared
-import Sync
 import UserNotifications
 import Account
 import MozillaAppServices
