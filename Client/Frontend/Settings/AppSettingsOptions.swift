@@ -293,8 +293,6 @@ class SyncNowSetting: WithAccountSetting {
         }
 
         NotificationCenter.default.post(name: .UserInitiatedSyncManually, object: nil)
-        profile.syncManager.syncEverything(why: .syncNow)
-        profile.pollCommands(forcePoll: true)
     }
 }
 

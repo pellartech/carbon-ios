@@ -3,8 +3,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0
 
 import Shared
-import Sync
-
 // This is a cut down version of the Profile.
 // This will only ever be used in the NotificationService extension.
 // It allows us to customize the SyncDelegate, and later the SyncManager.
@@ -33,12 +31,9 @@ class ExtensionSyncManager: BrowserProfile.BrowserSyncManager {
     }
 
     // We should probably only want to sync client commands while we're in the extension.
-    override func syncNamedCollections(why: OldSyncReason, names: [String]) -> Success {
+     func syncNamedCollections(names: [String]) -> Success {
         let names = names.filter { extensionSafeNames.contains($0) }
-        return super.syncNamedCollections(why: why, names: names)
+        return syncNamedCollections( names: names)
     }
 
-    override func takeActionsOnEngineStateChanges<T: EngineStateChanges>(_ changes: T) -> Deferred<Maybe<T>> {
-        return deferMaybe(changes)
-    }
 }

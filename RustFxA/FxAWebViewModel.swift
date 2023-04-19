@@ -246,7 +246,6 @@ extension FxAWebViewModel {
 
         let auth = FxaAuthData(code: code, state: state, actionQueryParam: "signin")
         profile.rustFxA.accountManager.peek()?.finishAuthentication(authData: auth) { _ in
-            self.profile.syncManager.onAddedAccount()
 
             // ask for push notification
             MZKeychainWrapper.sharedClientAppContainerKeychain.removeObject(forKey: KeychainKey.apnsToken, withAccessibility: MZKeychainItemAccessibility.afterFirstUnlock)

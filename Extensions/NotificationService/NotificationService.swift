@@ -50,8 +50,7 @@ class NotificationService: UNNotificationServiceExtension {
                     let urlString = tab["url"],
                     let url = URL(string: urlString),
                     url.isWebPage(),
-                    let title = tab["title"] {
-                    self.profile?.syncDelegate?.displaySentTab(for: url, title: title, from: tab["deviceName"])
+                    let _ = tab["title"] {
                 }
             }
             self.didFinish(firstEvent)
