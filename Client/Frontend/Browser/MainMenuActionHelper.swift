@@ -273,9 +273,6 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
             let whatsNewAction = getWhatsNewAction()
             append(to: &section, action: whatsNewAction)
 
-            let helpAction = getHelpAction()
-            section.append(helpAction)
-
             let customizeHomePageAction = getCustomizeHomePageAction()
             append(to: &section, action: customizeHomePageAction)
         }

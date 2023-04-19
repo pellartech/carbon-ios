@@ -1051,7 +1051,7 @@ class PrivacyPolicySetting: Setting {
     }
 
     override var url: URL? {
-        return URL(string: "https://www.mozilla.org/privacy/firefox/")
+        return URL(string: "https://carbon.website/privacy-policy/")
     }
 
     override func onClick(_ navigationController: UINavigationController?) {

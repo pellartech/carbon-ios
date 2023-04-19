@@ -195,7 +195,6 @@ class AppSettingsTableViewController: SettingsTableViewController, FeatureFlagga
             SettingSection(title: NSAttributedString(string: .AppSettingsPrivacyTitle), children: privacySettings),
             SettingSection(title: NSAttributedString(string: .AppSettingsAbout), children: [
                 VersionSetting(settings: self),
-                LicenseAndAcknowledgementsSetting(),
                 ExportBrowserDataSetting(settings: self),
                 ExportLogDataSetting(settings: self),
                 DeleteExportedDataSetting(settings: self),
