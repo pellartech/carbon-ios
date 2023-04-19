@@ -13,7 +13,6 @@ import Account
 import Shared
 import Storage
 import Sync
-import SyncTelemetry
 import AuthenticationServices
 import MozillaAppServices
 
@@ -592,7 +591,6 @@ open class BrowserProfile: Profile {
                 why: .schedule
             ) {
                 guard let ping = $0 else { return }
-                SyncTelemetry.send(ping: ping, docType: .sync)
             }
         }
     }
@@ -839,7 +837,6 @@ open class BrowserProfile: Profile {
                         why: .schedule
                     ) {
                         guard let ping = $0 else { return }
-                        SyncTelemetry.send(ping: ping, docType: .sync)
                     }
                 } else {
                     logger.log("Profile isn't sending usage data. Not sending sync status event.",
