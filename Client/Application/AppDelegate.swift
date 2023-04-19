@@ -14,8 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var orientationLock = UIInterfaceOrientationMask.all
 
     lazy var profile: Profile = BrowserProfile(
-        localName: "profile",
-        syncDelegate: UIApplication.shared.syncDelegate
+        localName: "profile"
     )
     lazy var tabManager: TabManager = TabManager(
         profile: profile,

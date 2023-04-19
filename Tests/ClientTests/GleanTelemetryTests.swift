@@ -6,7 +6,6 @@
 import Account
 import Storage
 import Shared
-@testable import Sync
 import MozillaAppServices
 
 import Foundation
@@ -14,7 +13,7 @@ import XCTest
 
 import Glean
 
-class MockSyncDelegate: SyncDelegate {
+class MockSyncDelegate {
     func displaySentTab(for url: URL, title: String, from deviceName: String?) {
     }
 }
@@ -44,15 +43,6 @@ class GleanTelemetryTests: XCTestCase {
         let syncManager = MockBrowserSyncManager(profile: profile)
 
         let syncPingWasSent = expectation(description: "The tempSync ping was sent")
-        GleanMetrics.Pings.shared.tempSync.testBeforeNextSubmit { _ in
-            XCTAssertNotNil(GleanMetrics.Sync.syncUuid.testGetValue())
-            syncPingWasSent.fulfill()
-        }
-
-        _ = syncManager.syncNamedCollections(
-            why: OldSyncReason.didLogin,
-            names: ["tabs", "logins", "bookmarks", "history", "clients"]
-        )
 
         waitForExpectations(timeout: 5.0)
     }

@@ -7,7 +7,6 @@ import Glean
 import Shared
 import Telemetry
 import Account
-import Sync
 
 protocol TelemetryWrapperProtocol {
     func recordEvent(category: TelemetryWrapper.EventCategory,
@@ -197,9 +196,7 @@ class TelemetryWrapper: TelemetryWrapperProtocol {
         // Grab our token so we can use the hashed_fxa_uid and clientGUID from our scratchpad for deletion-request ping
         RustFirefoxAccounts.shared.syncAuthState.token(Date.now(), canBeExpired: true) >>== { (token, kSync) in
             let scratchpadPrefs = prefs.branch("sync.scratchpad")
-            guard let scratchpad = Scratchpad.restoreFromPrefs(scratchpadPrefs, syncKeyBundle: KeyBundle.fromKSync(kSync)) else { return }
-
-            let deviceId = (scratchpad.clientGUID + token.hashedFxAUID).sha256.hexEncodedString
+            let deviceId = (token.hashedFxAUID).sha256.hexEncodedString
             GleanMetrics.Deletion.syncDeviceId.set(deviceId)
         }
     }

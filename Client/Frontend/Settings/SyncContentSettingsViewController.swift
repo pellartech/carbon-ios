@@ -5,7 +5,6 @@
 import Common
 import Foundation
 import Shared
-import Sync
 import Account
 
 class ManageFxAccountSetting: Setting {
@@ -135,10 +134,6 @@ class SyncContentSettingsViewController: SettingsTableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        if !enginesToSyncOnExit.isEmpty {
-            _ = self.profile.syncManager.syncNamedCollections(why: OldSyncReason.engineEnabled, names: Array(enginesToSyncOnExit))
-            enginesToSyncOnExit.removeAll()
-        }
         super.viewWillDisappear(animated)
     }
 
