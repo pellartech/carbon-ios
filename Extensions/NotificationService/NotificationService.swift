@@ -6,7 +6,6 @@ import Common
 import Account
 import Shared
 import Storage
-import Sync
 import UserNotifications
 
 class NotificationService: UNNotificationServiceExtension {
@@ -35,7 +34,6 @@ class NotificationService: UNNotificationServiceExtension {
         let queue = profile.queue
         let display = SyncDataDisplay(content: content, contentHandler: contentHandler, tabQueue: queue)
         self.display = display
-        profile.syncDelegate = display
 
         let handler = FxAPushMessageHandler(with: profile)
 
@@ -240,7 +238,7 @@ extension SyncDataDisplay {
     }
 }
 
-extension SyncDataDisplay: SyncDelegate {
+extension SyncDataDisplay {
     func displaySentTab(for url: URL, title: String, from deviceName: String?) {
         if url.isWebPage() {
             let item = ShareItem(url: url.absoluteString, title: title)
