@@ -438,9 +438,9 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == featureCollectionView){
+        if collectionView == featureCollectionView{
             delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: false)
-        }else if collectionView == comingSoonCollectionView){
+        }else if collectionView == comingSoonCollectionView{
             delegate?.cardItemTapped(data: statsModel[indexPath.row],isLongPress: false)
         }
     }
