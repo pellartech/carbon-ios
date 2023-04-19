@@ -181,7 +181,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         return tableView
     }()
     
-    private lazy var collectionView : UICollectionView = {
+    private lazy var comingSoonCollectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -227,8 +227,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     // MARK: - Variables
     private  var dataModel = [DataModel(title: "Data Saved", value: "0B"),DataModel(title: "Tracker & Ads Blocked", value: "0"),DataModel(title: "Searches", value: "0")]
     
-    private var statsModel = [StatsModel(title: "Wallet", icon:"ic_wallet"),StatsModel(title: "Staking", icon: "ic_stacking"),StatsModel(title: "Swap", icon: "ic_swap"),StatsModel(title: "Bridge", icon: "ic_bridge")]
-    
+    private var statsModel = [
+        FeatureModel(title: "Wallet", icon:"ic_wallet",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),
+        FeatureModel(title: "Staking", icon:"ic_stacking",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://stake.carbon.website/"),
+        FeatureModel(title: "Swap", icon:"ic_swap",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),
+        FeatureModel(title: "Bridge", icon:"ic_bridge",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),
+    ]
+
+
     private  var earnedModel = [DataModel(title: "Earned Today", value: "0"),DataModel(title: "Earned Total", value: "0")]
     
     private var featuredModel = [
@@ -283,7 +289,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
 
         dataView.addSubview(tableView)
         comingSoonView.addSubview(cardTitleLabel)
-        comingSoonView.addSubview(collectionView)
+        comingSoonView.addSubview(comingSoonCollectionView)
         featureView.addSubview(featureCardTitleLabel)
         featureView.addSubview(featureCollectionView)
         stackView.addSubview(featureView)
@@ -337,10 +343,10 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
             tableView.widthAnchor.constraint(equalTo: dataView.widthAnchor),
             tableView.heightAnchor.constraint(equalTo: dataView.heightAnchor),
             
-            collectionView.leadingAnchor.constraint(equalTo: comingSoonView.leadingAnchor,constant: UX.CollectionView.leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: comingSoonView.topAnchor,constant: UX.CollectionView.topAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: comingSoonView.trailingAnchor,constant: UX.CollectionView.trailingAnchor),
-            collectionView.heightAnchor.constraint(equalTo: comingSoonView.heightAnchor),
+            comingSoonCollectionView.leadingAnchor.constraint(equalTo: comingSoonView.leadingAnchor,constant: UX.CollectionView.leadingAnchor),
+            comingSoonCollectionView.topAnchor.constraint(equalTo: comingSoonView.topAnchor,constant: UX.CollectionView.topAnchor),
+            comingSoonCollectionView.trailingAnchor.constraint(equalTo: comingSoonView.trailingAnchor,constant: UX.CollectionView.trailingAnchor),
+            comingSoonCollectionView.heightAnchor.constraint(equalTo: comingSoonView.heightAnchor),
             
             statsCollectionView.leadingAnchor.constraint(equalTo: statsView.leadingAnchor,constant: UX.CollectionView.leading),
             statsCollectionView.topAnchor.constraint(equalTo: statsView.topAnchor),
@@ -434,6 +440,8 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == featureCollectionView{
             delegate?.cardItemTapped(data: featuredModel[indexPath.row],isLongPress: false)
+        }else if collectionView == comingSoonCollectionView{
+            delegate?.cardItemTapped(data: statsModel[indexPath.row],isLongPress: false)
         }
     }
 
@@ -534,6 +542,7 @@ class ComingSoonCollectionCell: UICollectionViewCell {
             static let top: CGFloat = 10
             static let height: CGFloat = 56
             static let width: CGFloat = 56
+            static let color: UIColor = UIColor(red: 126.0/255, green: 126.0/255, blue: 126.0/255, alpha: 0.8)
         }
         struct Icon {
             static let width: CGFloat = 56
@@ -565,6 +574,14 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         view.clipsToBounds = true
         return view
     }()
+    private lazy var iconLayerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 15
+        view.backgroundColor = UX.IconView.color
+        view.clipsToBounds = true
+        return view
+    }()
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = UIColor.clear
@@ -590,6 +607,8 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         iconView.addSubview(iconImageView)
         addSubview(iconView)
         addSubview(titleLabel)
+        iconView.addSubview(iconLayerView)
+        iconLayerView.bringSubviewToFront(iconImageView)
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         
@@ -600,6 +619,10 @@ class ComingSoonCollectionCell: UICollectionViewCell {
             iconView.heightAnchor.constraint(equalToConstant:   UX.IconView.height),
             iconImageView.centerXAnchor.constraint(equalTo:  iconView.centerXAnchor),
             iconImageView.centerYAnchor.constraint(equalTo:  iconView.centerYAnchor),
+            iconLayerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            iconLayerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            iconLayerView.widthAnchor.constraint(equalToConstant:  UX.IconView.width),
+            iconLayerView.heightAnchor.constraint(equalToConstant:   UX.IconView.height),
             titleLabel.topAnchor.constraint(equalTo: iconView.bottomAnchor,constant: UX.Value.top),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleLabel.widthAnchor.constraint(equalToConstant: UX.Value.width),
@@ -611,6 +634,7 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         iconView.setGradientBackground()
     }
     func setUIFeature(data : FeatureModel,index : Int){
+        iconLayerView.isHidden = true
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title
         iconImageView.widthAnchor.constraint(equalToConstant: UX.Icon.width).isActive = true
@@ -619,9 +643,10 @@ class ComingSoonCollectionCell: UICollectionViewCell {
         iconView.backgroundColor = data.color!
     }
   
-    func setUI(data : StatsModel,index : Int){
+    func setUI(data : FeatureModel,index : Int){
         iconImageView.image = UIImage(named: data.icon!)
         titleLabel.text = data.title
+        iconLayerView.isHidden = data.url != "" ? true : false
         switch index {
         case 0:
             setUIForImage(width: UX.Icon.width1, height: UX.Icon.height1)
@@ -721,16 +746,6 @@ class DataModel {
         self.value = value
     }
 }
-
-class StatsModel {
-    var title: String?
-    var icon: String?
-    init(title: String?,icon: String?){
-        self.title = title
-        self.icon = icon
-    }
-}
-
 class FeatureModel {
     var title: String?
     var icon: String?
