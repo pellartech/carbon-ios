@@ -165,20 +165,6 @@ class AppSettingsTableViewController: SettingsTableViewController, FeatureFlagga
                                children: [DefaultBrowserSetting(theme: themeManager.currentTheme)])
             ]
         }
-
-        let accountSectionTitle = NSAttributedString(string: .FxAFirefoxAccount)
-
-        let footerText = !profile.hasAccount() ? NSAttributedString(string: .Settings.Sync.ButtonDescription) : nil
-        settings += [
-            SettingSection(title: accountSectionTitle, footerTitle: footerText, children: [
-                // Without a Firefox Account:
-                ConnectSetting(settings: self),
-                AdvancedAccountSetting(settings: self),
-                // With a Firefox Account:
-                AccountStatusSetting(settings: self),
-                SyncNowSetting(settings: self)
-            ] + accountChinaSyncSetting )]
-
         settings += [ SettingSection(title: NSAttributedString(string: .SettingsGeneralSectionTitle), children: generalSettings)]
 
         var privacySettings = [Setting]()
@@ -207,17 +193,9 @@ class AppSettingsTableViewController: SettingsTableViewController, FeatureFlagga
 
         settings += [
             SettingSection(title: NSAttributedString(string: .AppSettingsPrivacyTitle), children: privacySettings),
-            SettingSection(title: NSAttributedString(string: .AppSettingsSupport), children: [
-                SendFeedbackSetting(),
-                SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate, theme: themeManager.currentTheme),
-                StudiesToggleSetting(prefs: prefs, delegate: settingsDelegate, theme: themeManager.currentTheme),
-                OpenSupportPageSetting(delegate: settingsDelegate, theme: themeManager.currentTheme),
-            ]),
             SettingSection(title: NSAttributedString(string: .AppSettingsAbout), children: [
-                AppStoreReviewSetting(),
                 VersionSetting(settings: self),
                 LicenseAndAcknowledgementsSetting(),
-                YourRightsSetting(),
                 ExportBrowserDataSetting(settings: self),
                 ExportLogDataSetting(settings: self),
                 DeleteExportedDataSetting(settings: self),

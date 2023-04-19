@@ -206,9 +206,6 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
             append(to: &section, action: readingListSection)
         }
 
-        let syncAction = syncMenuButton(showFxA: showFXASyncAction)
-        append(to: &section, action: syncAction)
-
         return section
     }
 

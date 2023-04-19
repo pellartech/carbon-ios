@@ -146,18 +146,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
         return cancelButton
     }()
 
-    fileprivate lazy var showQRScannerButton: InsetButton = {
-        let button = InsetButton()
-        button.setImage(UIImage.templateImageNamed(ImageIdentifiers.menuScanQRCode), for: .normal)
-        button.accessibilityIdentifier = AccessibilityIdentifiers.Browser.UrlBar.scanQRCodeButton
-        button.accessibilityLabel = .ScanQRCodeViewTitle
-        button.clipsToBounds = false
-        button.addTarget(self, action: #selector(showQRScanner), for: .touchUpInside)
-        button.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
-        button.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
-        return button
-    }()
-
     fileprivate lazy var scrollToTopButton: UIButton = {
         let button = UIButton()
         // This button interferes with accessibility of the URL bar as it partially overlays it, and keeps getting the VoiceOver focus instead of the URL bar.
@@ -240,8 +228,7 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
     fileprivate func commonInit() {
         locationContainer.addSubview(locationView)
 
-        [scrollToTopButton, line, tabsButton, progressBar, cancelButton, showQRScannerButton,
-         homeButton, bookmarksButton, appMenuButton, addNewTabButton, forwardButton, backButton,
+        [scrollToTopButton, line, tabsButton, progressBar, cancelButton, homeButton, bookmarksButton, appMenuButton, addNewTabButton, forwardButton, backButton,
          multiStateButton, locationContainer, searchIconImageView].forEach {
             addSubview($0)
         }
@@ -331,12 +318,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
             make.size.equalTo(URLBarViewUX.ButtonHeight)
         }
 
-        showQRScannerButton.snp.makeConstraints { make in
-            make.trailing.equalTo(self.safeArea.trailing)
-            make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(URLBarViewUX.ButtonHeight)
-        }
-
         privateModeBadge.layout(onButton: tabsButton)
         appMenuBadge.layout(onButton: appMenuButton)
         warningMenuBadge.layout(onButton: appMenuButton)
@@ -374,7 +355,7 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
             self.locationContainer.snp.remakeConstraints { make in
                 let heightMin = URLBarViewUX.LocationHeight + (URLBarViewUX.TextFieldBorderWidthSelected * 2)
                 make.height.greaterThanOrEqualTo(heightMin)
-                make.trailing.equalTo(self.showQRScannerButton.snp.leading)
+                make.trailing.equalTo(self).inset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20))
                 make.leading.equalTo(self.cancelButton.snp.trailing)
                 make.centerY.equalTo(self)
             }
@@ -408,10 +389,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
                 make.edges.equalTo(self.locationContainer).inset(UIEdgeInsets(equalInset: URLBarViewUX.TextFieldBorderWidth))
             }
         }
-    }
-
-    @objc func showQRScanner() {
-        self.delegate?.urlBarDidPressQRButton(self)
     }
 
     func createLocationTextField() {
@@ -564,7 +541,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
         bringSubviewToFront(self.locationContainer)
         bringSubviewToFront(self.searchIconImageView)
         cancelButton.isHidden = false
-        showQRScannerButton.isHidden = false
         progressBar.isHidden = false
         addNewTabButton.isHidden = !toolbarIsShowing || topTabsIsShowing
         appMenuButton.isHidden = !toolbarIsShowing
@@ -579,7 +555,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
     func transitionToOverlay(_ didCancel: Bool = false) {
         locationView.contentView.alpha = inOverlayMode ? 0 : 1
         cancelButton.alpha = inOverlayMode ? 1 : 0
-        showQRScannerButton.alpha = inOverlayMode ? 1 : 0
         progressBar.alpha = inOverlayMode || didCancel ? 0 : 1
         tabsButton.alpha = inOverlayMode ? 0 : 1
         appMenuButton.alpha = inOverlayMode ? 0 : 1
@@ -612,7 +587,6 @@ class URLBarView: UIView, URLBarViewProtocol, AlphaDimmable, TopBottomInterchang
         locationView.overrideAccessibility(enabled: !inOverlayMode)
 
         cancelButton.isHidden = !inOverlayMode
-        showQRScannerButton.isHidden = !inOverlayMode
         progressBar.isHidden = inOverlayMode
         addNewTabButton.isHidden = !toolbarIsShowing || topTabsIsShowing || inOverlayMode
         appMenuButton.isHidden = !toolbarIsShowing || inOverlayMode
@@ -831,11 +805,6 @@ extension URLBarView {
         get { return cancelButton.tintColor }
         set { return cancelButton.tintColor = newValue }
     }
-
-    @objc dynamic var showQRButtonTintColor: UIColor? {
-        get { return showQRScannerButton.tintColor }
-        set { return showQRScannerButton.tintColor = newValue }
-    }
 }
 
 // MARK: - NotificationThemeable
@@ -849,7 +818,6 @@ extension URLBarView: NotificationThemeable {
         addNewTabButton.applyTheme()
 
         cancelTintColor = UIColor.legacyTheme.browser.tint
-        showQRButtonTintColor = UIColor.legacyTheme.browser.tint
         backgroundColor = UIColor.legacyTheme.browser.background
         line.backgroundColor = UIColor.legacyTheme.browser.urlBarDivider
 
