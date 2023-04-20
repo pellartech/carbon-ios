@@ -5,7 +5,6 @@
 import Shared
 import Storage
 import UserNotifications
-import Account
 import Common
 
 extension UIApplication {

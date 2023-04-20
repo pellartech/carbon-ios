@@ -9,7 +9,6 @@ import WebKit
 import Shared
 import Storage
 import SnapKit
-import Account
 import MobileCoreServices
 import Telemetry
 import Common
@@ -265,11 +264,6 @@ class BrowserViewController: UIViewController {
     }
 
     @objc fileprivate func appMenuBadgeUpdate() {
-        let actionNeeded = RustFirefoxAccounts.shared.isActionNeeded
-        let showWarningBadge = actionNeeded
-
-        urlBar.warningMenuBadge(setVisible: showWarningBadge)
-        toolbar.warningMenuBadge(setVisible: showWarningBadge)
     }
 
     func updateToolbarStateForTraitCollection(_ newCollection: UITraitCollection) {
@@ -853,8 +847,6 @@ class BrowserViewController: UIViewController {
                 // Because the notification service runs as a seperate process
                 // we need to make sure that our account manager picks up any persisted state
                 // the notification services persisted.
-                self.profile.rustFxA.accountManager.peek()?.resetPersistedAccount()
-                self.profile.rustFxA.accountManager.peek()?.deviceConstellation()?.refreshState()
             }
         }
     }

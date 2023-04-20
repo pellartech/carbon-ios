@@ -4,7 +4,6 @@
 
 @testable import Client
 import Foundation
-import Account
 import Shared
 import Storage
 import XCTest

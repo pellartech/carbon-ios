@@ -7,7 +7,6 @@ import CoreSpotlight
 import Storage
 import Shared
 import UserNotifications
-import Account
 import MozillaAppServices
 import Common
 

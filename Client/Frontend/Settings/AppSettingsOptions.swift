@@ -5,7 +5,6 @@
 import Common
 import Foundation
 import Shared
-import Account
 import LocalAuthentication
 import Glean
 
@@ -240,46 +239,16 @@ class AccountStatusSetting: WithAccountSetting {
     }
 
     override var title: NSAttributedString? {
-        if let displayName = RustFirefoxAccounts.shared.userProfile?.displayName {
-            return NSAttributedString(
-                string: displayName,
-                attributes: [
-                    NSAttributedString.Key.font: DynamicFontHelper.defaultHelper.DefaultStandardFontBold,
-                    NSAttributedString.Key.foregroundColor: theme.colors.textPrimary])
-        }
-
-        if let email = RustFirefoxAccounts.shared.userProfile?.email {
-            return NSAttributedString(
-                string: email,
-                attributes: [
-                    NSAttributedString.Key.font: DynamicFontHelper.defaultHelper.DefaultStandardFontBold,
-                    NSAttributedString.Key.foregroundColor: theme.colors.textPrimary])
-        }
-
+        let displayName = ""
+        let email = ""
         return nil
     }
 
     override var status: NSAttributedString? {
-        if RustFirefoxAccounts.shared.isActionNeeded {
-            let string: String = .FxAAccountVerifyPassword
-            let color = theme.colors.textWarning
-            let range = NSRange(location: 0, length: string.count)
-            let attrs = [NSAttributedString.Key.foregroundColor: color]
-            let res = NSMutableAttributedString(string: string)
-            res.setAttributes(attrs, range: range)
-            return res
-        }
         return nil
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        guard !profile.rustFxA.accountNeedsReauth() else {
-            let fxaParams = FxALaunchParams(entrypoint: .accountStatusSettingReauth, query: [:])
-            let controller = FirefoxAccountSignInViewController(profile: profile, parentType: .settings, deepLinkParams: fxaParams)
-            TelemetryWrapper.recordEvent(category: .firefoxAccount, method: .view, object: .settings)
-            navigationController?.pushViewController(controller, animated: true)
-            return
-        }
 
         let viewController = SyncContentSettingsViewController()
         viewController.profile = profile
@@ -296,11 +265,7 @@ class AccountStatusSetting: WithAccountSetting {
 
             imageView.image = UIImage(named: ImageIdentifiers.placeholderAvatar)?
                 .createScaled(CGSize(width: 30, height: 30))
-
-            guard let str = RustFirefoxAccounts.shared.userProfile?.avatarUrl,
-                  let actionIconUrl = URL(string: str)
-            else { return }
-
+            let actionIconUrl = URL(string: "str")!
             GeneralizedImageFetcher().getImageFor(url: actionIconUrl) { image in
                 guard let avatar = image else { return }
 
@@ -449,7 +414,6 @@ class ForgetSyncAuthStateDebugSetting: HiddenSetting {
     }
 
     override func onClick(_ navigationController: UINavigationController?) {
-        settings.profile.rustFxA.syncAuthState.invalidate()
         settings.tableView.reloadData()
     }
 }
@@ -1018,11 +982,6 @@ class ChinaSyncServiceSetting: Setting {
 
     @objc func switchValueChanged(_ toggle: UISwitch) {
         TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .chinaServerSwitch)
-        guard profile.rustFxA.hasAccount() else {
-            prefs.setObject(toggle.isOn, forKey: prefKey)
-            RustFirefoxAccounts.reconfig(prefs: profile.prefs)
-            return
-        }
 
         // Show confirmation dialog for the user to sign out of FxA
 
@@ -1031,7 +990,6 @@ class ChinaSyncServiceSetting: Setting {
         let okString = UIAlertAction(title: .OKString, style: .default) { _ in
             self.prefs.setObject(toggle.isOn, forKey: self.prefKey)
             self.profile.removeAccount()
-            RustFirefoxAccounts.reconfig(prefs: self.profile.prefs)
         }
         let cancel = UIAlertAction(title: .CancelString, style: .default) { _ in
             toggle.setOn(!toggle.isOn, animated: true)

@@ -6,7 +6,6 @@ import UIKit
 import Shared
 import Storage
 import UserNotifications
-import Account
 import MozillaAppServices
 
 /**
@@ -118,7 +117,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        RustFirefoxAccounts.shared.pushNotifications.didRegister(withDeviceToken: deviceToken)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

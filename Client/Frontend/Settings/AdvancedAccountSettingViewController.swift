@@ -5,9 +5,6 @@
 import UIKit
 import Shared
 import SnapKit
-
-import Account
-
 private class CustomFxAContentServerEnableSetting: BoolSetting {
       init(prefs: Prefs, settingDidChange: ((Bool?) -> Void)? = nil) {
           super.init(
@@ -65,7 +62,6 @@ class AdvancedAccountSettingViewController: SettingsTableViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        RustFirefoxAccounts.reconfig(prefs: profile.prefs)
     }
 
     override func generateSettings() -> [SettingSection] {

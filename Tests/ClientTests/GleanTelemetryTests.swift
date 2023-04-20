@@ -3,7 +3,6 @@
 //// file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 @testable import Client
-import Account
 import Storage
 import Shared
 import MozillaAppServices
@@ -35,7 +34,6 @@ class GleanTelemetryTests: XCTestCase {
         Glean.shared.resetGlean(clearStores: false)
         Glean.shared.enableTestingMode()
 
-        RustFirefoxAccounts.startup(prefs: MockProfilePrefs()).uponQueue(.main) { _ in }
     }
 
     func testSyncPingIsSentOnSyncOperation() throws {

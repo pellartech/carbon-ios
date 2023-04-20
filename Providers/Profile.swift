@@ -9,7 +9,6 @@
 // increased startup times which may lead to termination by the OS.
 
 import Common
-import Account
 import Shared
 import Storage
 import AuthenticationServices
@@ -100,8 +99,6 @@ protocol Profile: AnyObject {
 
     // Do we have an account that (as far as we know) is in a syncable state?
     func hasSyncableAccount() -> Bool
-
-    var rustFxA: RustFirefoxAccounts { get }
 
     func removeAccount()
 
@@ -563,22 +560,6 @@ open class BrowserProfile: Profile {
 
     public func sendItem(_ item: ShareItem, toDevices devices: [RemoteDevice]) -> Success {
         let deferred = Success()
-        RustFirefoxAccounts.shared.accountManager.uponQueue(.main) { accountManager in
-            guard let constellation = accountManager.deviceConstellation() else {
-                deferred.fill(Maybe(failure: NoAccountError()))
-                return
-            }
-            devices.forEach {
-                if let id = $0.id {
-                    constellation.sendEventToDevice(targetDeviceId: id, e: .sendTab(title: item.title ?? "", url: item.url))
-                }
-            }
-            if let _ = try? accountManager.gatherTelemetry() {
-               
-            }
-            self.sendQueuedSyncEvents()
-            deferred.fill(Maybe(success: ()))
-        }
         return deferred
     }
 
@@ -594,26 +575,6 @@ open class BrowserProfile: Profile {
             return
         }
         self.prefs.setTimestamp(now, forKey: PrefsKeys.PollCommandsTimestamp)
-        let accountManager = self.rustFxA.accountManager.peek()
-        accountManager?.deviceConstellation()?.pollForCommands { commands in
-            if let commands = try? commands.get() {
-                for command in commands {
-                    switch command {
-                    case .tabReceived( _, let tabData):
-                        // The tabData.entries is the tabs history
-                        // we only want the last item, which is the tab
-                        // to display
-                        let title = tabData.entries.last?.title ?? ""
-                        let url = tabData.entries.last?.url ?? ""
-                        if let _ = try? accountManager?.gatherTelemetry() {
-                          
-                        }
-                        if let _ = URL(string: url) {
-                        }
-                    }
-                }
-            }
-        }
     }
 
     lazy var logins: RustLogins = {
@@ -624,25 +585,18 @@ open class BrowserProfile: Profile {
     }()
 
     func hasSyncAccount(completion: @escaping (Bool) -> Void) {
-        rustFxA.hasAccount { hasAccount in
-            completion(hasAccount)
-        }
+        
     }
 
     func hasAccount() -> Bool {
-        return rustFxA.hasAccount()
+        return false
     }
 
     func hasSyncableAccount() -> Bool {
-        return hasAccount() && !rustFxA.accountNeedsReauth()
-    }
-
-    var rustFxA: RustFirefoxAccounts {
-        return RustFirefoxAccounts.shared
+        return false
     }
 
     func removeAccount() {
-        RustFirefoxAccounts.shared.disconnect()
 
         // Not available in extensions
         #if !MOZ_TARGET_NOTIFICATIONSERVICE && !MOZ_TARGET_SHARETO && !MOZ_TARGET_CREDENTIAL_PROVIDER
@@ -973,55 +927,9 @@ open class BrowserProfile: Profile {
 
         fileprivate func syncUnlockInfo() -> Deferred<Maybe<SyncUnlockInfo>> {
             let syncUnlockInfo = Deferred<Maybe<SyncUnlockInfo>>()
-            profile.rustFxA.accountManager.uponQueue(.main) { accountManager in
-                guard let deviceId = accountManager.deviceConstellation()?.state()?.localDevice?.id else {
-                    self.logger.log("Device Id could not be retrieved",
-                                    level: .warning,
-                                    category: .sync)
-                    syncUnlockInfo.fill(Maybe(failure: DeviceIdError()))
-                    return
-                }
-
-                accountManager.getAccessToken(scope: OAuthScope.oldSync) { result in
-                    guard let accessTokenInfo = try? result.get(), let key = accessTokenInfo.key else {
-                        syncUnlockInfo.fill(Maybe(failure: ScopedKeyError()))
-                        return
-                    }
-
-                    accountManager.getTokenServerEndpointURL { result in
-                        guard case .success(let tokenServerEndpointURL) = result else {
-                            syncUnlockInfo.fill(Maybe(failure: SyncUnlockGetURLError()))
-                            return
-                        }
-
-                        guard let encryptionKey = try? self.profile.logins.getStoredKey() else {
-                            self.logger.log("Stored logins encryption could not be retrieved",
-                                            level: .warning,
-                                            category: .sync)
-                            syncUnlockInfo.fill(Maybe(failure: EncryptionKeyError()))
-                            return
-                        }
-
-                        syncUnlockInfo.fill( Maybe(success: SyncUnlockInfo(
-                            kid: key.kid,
-                            fxaAccessToken: accessTokenInfo.token,
-                            syncKey: key.k,
-                            tokenserverURL: tokenServerEndpointURL.absoluteString,
-                            loginEncryptionKey: encryptionKey,
-                            tabsLocalId: deviceId)))
-                    }
-                }
-            }
             return syncUnlockInfo
         }
-        func getProfileAndDeviceId() -> (MozillaAppServices.Profile, String)? {
-            guard let fxa = RustFirefoxAccounts.shared.accountManager.peek(),
-                  let profile = fxa.accountProfile(),
-                  let deviceID = fxa.deviceConstellation()?.state()?.localDevice?.id
-            else { return nil }
 
-            return (profile, deviceID)
-        }
 
         /**
          * Runs each of the provided synchronization functions with the same inputs.

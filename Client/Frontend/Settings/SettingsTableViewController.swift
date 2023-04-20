@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0
 
-import Account
 import Shared
 import UIKit
 
@@ -799,9 +798,6 @@ class AccountSetting: Setting {
     
     override func onConfigureCell(_ cell: UITableViewCell, theme: Theme) {
         super.onConfigureCell(cell, theme: theme)
-        if settings.profile.rustFxA.userProfile != nil {
-            cell.selectionStyle = .none
-        }
     }
     
     override var accessoryType: UITableViewCell.AccessoryType { return .none }
