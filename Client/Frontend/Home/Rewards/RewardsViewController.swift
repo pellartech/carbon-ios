@@ -10,36 +10,32 @@ import Shared
 class RewardsViewController: UIViewController , UITableViewDelegate, UITableViewDataSource{
     lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.textColor = wallpaperManager.currentWallpaper.textColor
         label.text = "Your Reward Balance"
         label.font = .boldSystemFont(ofSize: 18)
         return label
     }()
     
-    lazy var descrpLabel: UILabel = {
+     var descrpLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12)
-        label.text = "Daily $CSIX rewards while you browse coming soon"
-        label.halfTextColorChange(fullText: label.text!, changeText: "coming soon")
-        label.textColor = .darkGray
-        label.numberOfLines = 0
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
         return label
     }()
     
     var descrp1Label: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12)
         label.text = ""
-        label.textColor = .darkGray
-        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 12)
         return label
     }()
     
-    lazy var valueLabel: UILabel = {
-        let label = UILabel()
+    private lazy var valueLabel: GradientLabel = {
+        let label = GradientLabel()
+        label.font = .boldSystemFont(ofSize: 25)
+        label.textAlignment = .center
         label.text = "$100 CSIX"
-        label.font = .systemFont(ofSize: 25)
-        label.textColor = .darkGray
-        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -114,6 +110,9 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         dimmedView.addSubview(blurEffectView)
+        
+        descrpLabel.text = "Daily $CSIX rewards while you browse coming soon"
+        descrpLabel.halfTextColorChange(fullText: descrpLabel.text!, changeText: "coming soon")
     }
     
     func applyTheme() {
@@ -308,7 +307,7 @@ class RewardsTableCell: UITableViewCell {
     }()
     private lazy var titleLabel : UILabel = {
         let label = UILabel()
-        label.textColor = .darkGray
+        label.textColor = wallpaperManager.currentWallpaper.textColor
         label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -327,7 +326,7 @@ class RewardsTableCell: UITableViewCell {
     
     private lazy var valueAtLabel : UILabel = {
         let label = UILabel()
-        label.textColor = wallpaperManager.currentWallpaper.textColor
+        label.textColor = Utilities().hexStringToUIColor(hex: "#818181")
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.fontAt)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
