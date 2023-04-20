@@ -3,7 +3,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0
 
 import Shared
-import SyncTelemetry
 import Account
 import MozillaAppServices
 import Common
@@ -103,9 +102,8 @@ extension FxAPushMessageHandler {
                                 let title = tabData.entries.last?.title ?? ""
                                 let url = tabData.entries.last?.url ?? ""
                                 messages.append(PushMessage.commandReceived(tab: ["title": title, "url": url]))
-                                if let json = try? accountManager.gatherTelemetry() {
-                                    let events = FxATelemetry.parseTelemetry(fromJSONString: json)
-                                    events.forEach { $0.record(intoPrefs: self.profile.prefs) }
+                                if let _ = try? accountManager.gatherTelemetry() {
+                                  
                                 }
                             }
                         case .deviceConnected(let deviceName):

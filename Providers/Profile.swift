@@ -573,9 +573,8 @@ open class BrowserProfile: Profile {
                     constellation.sendEventToDevice(targetDeviceId: id, e: .sendTab(title: item.title ?? "", url: item.url))
                 }
             }
-            if let json = try? accountManager.gatherTelemetry() {
-                let events = FxATelemetry.parseTelemetry(fromJSONString: json)
-                events.forEach { $0.record(intoPrefs: self.prefs) }
+            if let _ = try? accountManager.gatherTelemetry() {
+               
             }
             self.sendQueuedSyncEvents()
             deferred.fill(Maybe(success: ()))
@@ -606,9 +605,8 @@ open class BrowserProfile: Profile {
                         // to display
                         let title = tabData.entries.last?.title ?? ""
                         let url = tabData.entries.last?.url ?? ""
-                        if let json = try? accountManager?.gatherTelemetry() {
-                            let events = FxATelemetry.parseTelemetry(fromJSONString: json)
-                            events.forEach { $0.record(intoPrefs: self.prefs) }
+                        if let _ = try? accountManager?.gatherTelemetry() {
+                          
                         }
                         if let _ = URL(string: url) {
                         }
