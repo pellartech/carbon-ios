@@ -39,6 +39,16 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
         return label
     }()
     
+    lazy var topBarView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#6C6C6C")
+        view.layer.cornerRadius = 2
+        view.clipsToBounds = true
+        view.frame = CGRect(width: 76, height: 4)
+        return view
+    }()
+    
     lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -138,6 +148,7 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
         view.addSubview(dimmedView)
         view.addSubview(containerView)
         
+        containerView.addSubview(topBarView)
         containerView.addSubview(contentStackView)
         containerView.addSubview(tableView)
         
@@ -147,16 +158,21 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
             dimmedView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dimmedView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 10),
+            topBarView.topAnchor.constraint(equalTo: containerView.topAnchor,constant: 15),
+            topBarView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            topBarView.heightAnchor.constraint(equalToConstant: 4),
+            topBarView.widthAnchor.constraint(equalToConstant: 76),
+            
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 30),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -10),
             
-            tableView.topAnchor.constraint(equalTo: containerView.topAnchor,constant: 175),
+            tableView.topAnchor.constraint(equalTo: containerView.topAnchor,constant: 155),
             tableView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor,constant: -10),
             tableView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             tableView.widthAnchor.constraint(equalTo: containerView.widthAnchor),
             
-            contentStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 32),
+            contentStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 36),
             contentStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20),
             contentStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             contentStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
