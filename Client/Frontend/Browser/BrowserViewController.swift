@@ -43,7 +43,6 @@ class BrowserViewController: UIViewController {
         .URL,
         .title,
     ]
-
     var homepageViewController: HomepageViewController?
     var libraryViewController: LibraryViewController?
     var webViewContainer: UIView!

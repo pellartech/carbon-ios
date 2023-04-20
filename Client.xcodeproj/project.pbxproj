@@ -1272,6 +1272,7 @@
 		F886218C270CD3B8007F4562 /* DevicePasscodeRequiredViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F886218B270CD3B8007F4562 /* DevicePasscodeRequiredViewController.swift */; };
 		F8AAC1B429663619000BCDEC /* RustAutofill.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B329663618000BCDEC /* RustAutofill.swift */; };
 		F8AAC1B7296637CE000BCDEC /* RustAutofillTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B5296637B7000BCDEC /* RustAutofillTests.swift */; };
+		F91ABA9829F11A0B0060105E /* RewardsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91ABA9729F11A0B0060105E /* RewardsViewController.swift */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5310,6 +5311,7 @@
 		F8CA43008FC72296965ED032 /* ne-NP */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ne-NP"; path = "ne-NP.lproj/ClearPrivateDataConfirm.strings"; sourceTree = "<group>"; };
 		F8DB4306B31FC3DC90685A8C /* af */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = af; path = af.lproj/AuthenticationManager.strings; sourceTree = "<group>"; };
 		F8EF4290ACE53B2692EA362F /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/LoginManager.strings; sourceTree = "<group>"; };
+		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
@@ -8533,6 +8535,7 @@
 		F84B22211A09122500AAB793 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				F91ABA9629F119EB0060105E /* Rewards */,
 				C834ACD028D3ACA900203AD1 /* Blurrable.swift */,
 				8AB5958628412B620090F4AE /* CustomizeHome */,
 				DF036E41274FD3FC002E834E /* HistoryHighlights */,
@@ -8591,6 +8594,14 @@
 				F8708D291A0970990051AB07 /* ShareViewController.swift */,
 			);
 			path = ShareTo;
+			sourceTree = "<group>";
+		};
+		F91ABA9629F119EB0060105E /* Rewards */ = {
+			isa = PBXGroup;
+			children = (
+				F91ABA9729F11A0B0060105E /* RewardsViewController.swift */,
+			);
+			path = Rewards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -10587,6 +10598,7 @@
 				E1442FD4294782D9003680B0 /* URL+Mail.swift in Sources */,
 				9636D92827F5D72D00771F5E /* GleanPlumbMessageManager.swift in Sources */,
 				C80685D126A0C93900DCD895 /* UserResearch.swift in Sources */,
+				F91ABA9829F11A0B0060105E /* RewardsViewController.swift in Sources */,
 				E195440428A5AFDE00304CF0 /* BottomSheetViewModel.swift in Sources */,
 				8AED23C527AC1F9500DE7E97 /* BaseContentStackView.swift in Sources */,
 				C8699131289176A5007ACC5C /* WallpaperNetworking.swift in Sources */,

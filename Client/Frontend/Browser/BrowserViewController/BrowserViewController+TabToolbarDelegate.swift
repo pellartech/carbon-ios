@@ -183,11 +183,11 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
     }
 
     func tabToolbarDidPressCarbon(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
-//        focusLocationTextField(forTab: tabManager.selectedTab)
-        
+        let vc = RewardsViewController()
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: false)
     }
 }
-
 // MARK: - ToolbarActionMenuDelegate
 extension BrowserViewController: ToolBarActionMenuDelegate {
     func updateToolbarState() {
