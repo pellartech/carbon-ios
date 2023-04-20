@@ -109,48 +109,11 @@ class SyncNowSetting: WithAccountSetting {
 
     override var image: UIImage? {
         let syncIcon = UIImage(named: "FxA-Sync")?.tinted(withColor: theme.colors.iconPrimary)
-
-        guard let syncStatus = profile.syncManager.syncDisplayState else {
-            return syncIcon
-        }
-
-        switch syncStatus {
-        case .inProgress:
-            return syncBlueIcon
-        default:
-            return syncIcon
-        }
+       return syncIcon
     }
 
     override var title: NSAttributedString? {
-        guard let syncStatus = profile.syncManager.syncDisplayState else {
             return syncNowTitle
-        }
-
-        switch syncStatus {
-        case .bad(let message):
-            guard let message = message else { return syncNowTitle }
-            return NSAttributedString(
-                string: message,
-                attributes: [
-                    NSAttributedString.Key.foregroundColor: theme.colors.textWarning,
-                    NSAttributedString.Key.font: DynamicFontHelper.defaultHelper.DefaultStandardFont])
-        case .warning(let message):
-            return  NSAttributedString(
-                string: message,
-                attributes: [
-                    NSAttributedString.Key.foregroundColor: theme.colors.textWarning,
-                    NSAttributedString.Key.font: DynamicFontHelper.defaultHelper.DefaultStandardFont])
-        case .inProgress:
-            return NSAttributedString(
-                string: .SyncingMessageWithEllipsis,
-                attributes: [NSAttributedString.Key.foregroundColor: theme.colors.textPrimary,
-                             NSAttributedString.Key.font: UIFont.systemFont(
-                                ofSize: DynamicFontHelper.defaultHelper.DefaultStandardFontSize,
-                                weight: UIFont.Weight.regular)])
-        default:
-            return syncNowTitle
-        }
     }
 
     override var status: NSAttributedString? {
@@ -214,36 +177,7 @@ class SyncNowSetting: WithAccountSetting {
         cell.textLabel?.attributedText = title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.lineBreakMode = .byWordWrapping
-        if let syncStatus = profile.syncManager.syncDisplayState {
-            switch syncStatus {
-            case .bad(let message):
-                if message != nil {
-                    // add the red warning symbol
-                    // add a link to the MANA page
-                    cell.detailTextLabel?.attributedText = nil
-                    cell.accessoryView = troubleshootButton
-                    addIcon(errorIcon, toCell: cell)
-                } else {
-                    cell.detailTextLabel?.attributedText = status
-                    cell.accessoryView = nil
-                }
-            case .warning:
-                // add the amber warning symbol
-                // add a link to the MANA page
-                cell.detailTextLabel?.attributedText = nil
-                cell.accessoryView = troubleshootButton
-                addIcon(warningIcon, toCell: cell)
-            case .good:
-                cell.detailTextLabel?.attributedText = status
-                fallthrough
-            default:
-                cell.accessoryView = nil
-            }
-        } else {
-            cell.accessoryView = nil
-        }
         cell.accessoryType = accessoryType
-        cell.isUserInteractionEnabled = !profile.syncManager.isSyncing && DeviceInfo.hasConnectivity()
 
         // Animation that loops continuously until stopped
         continuousRotateAnimation.fromValue = 0.0
@@ -261,15 +195,6 @@ class SyncNowSetting: WithAccountSetting {
         cell.imageView?.subviews.forEach({ $0.removeFromSuperview() })
         cell.imageView?.image = syncIconWrapper
         cell.imageView?.addSubview(imageView)
-
-        if let syncStatus = profile.syncManager.syncDisplayState {
-            switch syncStatus {
-            case .inProgress:
-                self.startRotateSyncIcon()
-            default:
-                self.stopRotateSyncIcon()
-            }
-        }
     }
 
     fileprivate func addIcon(_ image: UIImageView, toCell cell: UITableViewCell) {

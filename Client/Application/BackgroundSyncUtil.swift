@@ -36,19 +36,6 @@ class BackgroundSyncUtil {
     }
 
     func scheduleSyncOnAppBackground() {
-        if profile.syncManager.isSyncing {
-            // If syncing, create a bg task because _shutdown() is blocking and might take a few seconds to complete
-            var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
-            taskId = application.beginBackgroundTask(expirationHandler: {
-                self.shutdownProfileWhenNotActive()
-                self.application.endBackgroundTask(taskId)
-            })
-
-            DispatchQueue.main.async {
-                self.shutdownProfileWhenNotActive()
-                self.application.endBackgroundTask(taskId)
-            }
-        } else {
             // Blocking call, however without sync running it should be instantaneous
             profile.shutdown()
 
@@ -62,7 +49,6 @@ class BackgroundSyncUtil {
                            level: .warning,
                            category: .sync)
             }
-        }
     }
 
     private func shutdownProfileWhenNotActive() {
