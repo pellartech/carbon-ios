@@ -279,7 +279,7 @@ class RewardsTableCell: UITableViewCell {
             static let font: CGFloat = 14
             static let top: CGFloat = 20
             static let leading: CGFloat = 80
-            static let height: CGFloat = 10
+            static let height: CGFloat = 30
         }
         struct Value {
             static let font: CGFloat = 15
