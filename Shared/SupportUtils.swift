@@ -9,17 +9,7 @@ import UIKit
 /// Utility functions related to SUMO and Webcompat
 public struct SupportUtils {
     public static func URLForTopic(_ topic: String) -> URL? {
-        // Construct a NSURL pointing to a specific topic on SUMO. The topic should be a non-escaped string. It will
-        // be properly escaped by this function.
-        //
-        // The resulting NSURL will include the app version, operating system and locale code. For example, a topic
-        // "cheese" will be turned into a link that looks like https://support.mozilla.org/1/mobile/2.0/iOS/en-US/cheese
-        guard let escapedTopic = topic.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-              let languageIdentifier = Locale.preferredLanguages.first
-        else {
-            return nil
-        }
-        return URL(string: "https://support.mozilla.org/1/mobile/\(AppInfo.appVersion)/iOS/\(languageIdentifier)/\(escapedTopic)")
+        return URL(string: "https://carbon.website/changelog/")
     }
 
     public static func URLForReportSiteIssue(_ siteUrl: String?) -> URL? {
