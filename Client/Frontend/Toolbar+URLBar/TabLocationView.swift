@@ -106,7 +106,14 @@ class TabLocationView: UIView, FeatureFlaggable {
         shareButton.contentHorizontalAlignment = .center
         shareButton.accessibilityIdentifier = AccessibilityIdentifiers.Toolbar.shareButton
     }
-
+    lazy var searchButton: ShareButton = .build { searchButton in
+        searchButton.addTarget(self, action: #selector(self.didPressSearchButton(_:)), for: .touchUpInside)
+        searchButton.clipsToBounds = false
+        searchButton.tintColor = UIColor.Photon.Grey50
+        searchButton.contentHorizontalAlignment = .center
+        searchButton.setImage(UIImage(named: "search"), for: .normal)
+        searchButton.accessibilityIdentifier = AccessibilityIdentifiers.Toolbar.shareButton
+    }
     private lazy var readerModeButton: ReaderModeButton = .build { readerModeButton in
         readerModeButton.addTarget(self, action: #selector(self.tapReaderModeButton), for: .touchUpInside)
         readerModeButton.addGestureRecognizer(
@@ -155,7 +162,7 @@ class TabLocationView: UIView, FeatureFlaggable {
         let space1px = UIView.build()
         space1px.widthAnchor.constraint(equalToConstant: 1).isActive = true
 
-        let subviews = [trackingProtectionButton, space1px, urlTextField, readerModeButton, shareButton, reloadButton]
+        let subviews = [trackingProtectionButton, space1px, searchButton, urlTextField, readerModeButton, shareButton, reloadButton]
         contentView = UIStackView(arrangedSubviews: subviews)
         contentView.distribution = .fill
         contentView.alignment = .center
@@ -171,6 +178,8 @@ class TabLocationView: UIView, FeatureFlaggable {
             readerModeButton.heightAnchor.constraint(equalToConstant: UX.buttonSize),
             shareButton.heightAnchor.constraint(equalToConstant: UX.buttonSize),
             shareButton.widthAnchor.constraint(equalToConstant: UX.buttonSize),
+            searchButton.heightAnchor.constraint(equalToConstant: UX.buttonSize),
+            searchButton.widthAnchor.constraint(equalToConstant: UX.buttonSize),
             reloadButton.widthAnchor.constraint(equalToConstant: UX.buttonSize),
             reloadButton.heightAnchor.constraint(equalToConstant: UX.buttonSize),
         ])
@@ -246,6 +255,9 @@ class TabLocationView: UIView, FeatureFlaggable {
 
     @objc func didPressShareButton(_ button: UIButton) {
         delegate?.tabLocationViewDidTapShare(self, button: shareButton)
+    }
+    @objc func didPressSearchButton(_ button: UIButton) {
+        delegate?.tabLocationViewDidTapLocation(self)
     }
 
     @objc func readerModeCustomAction() -> Bool {

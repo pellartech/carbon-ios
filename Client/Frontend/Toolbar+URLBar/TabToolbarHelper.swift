@@ -40,14 +40,14 @@ protocol TabToolbarDelegate: AnyObject {
     func tabToolbarDidPressBookmarks(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidLongPressTabs(_ tabToolbar: TabToolbarProtocol, button: UIButton)
-    func tabToolbarDidPressSearch(_ tabToolbar: TabToolbarProtocol, button: UIButton)
+    func tabToolbarDidPressCarbon(_ tabToolbar: TabToolbarProtocol, button: UIButton)
     func tabToolbarDidPressAddNewTab(_ tabToolbar: TabToolbarProtocol, button: UIButton)
 }
 
 enum MiddleButtonState {
     case reload
     case stop
-    case search
+    case carbon
     case home
 }
 
@@ -56,16 +56,16 @@ open class TabToolbarHelper: NSObject {
     let toolbar: TabToolbarProtocol
     let ImageReload = UIImage.templateImageNamed("nav-refresh")
     let ImageStop = UIImage.templateImageNamed("nav-stop")
-    let ImageSearch = UIImage.templateImageNamed("search")
+    let ImageCarbon = UIImage(named:"ic_carbon_tab")
     let ImageNewTab = UIImage.templateImageNamed("nav-add")
     let ImageHome = UIImage.templateImageNamed("menu-Home")
 
     func setMiddleButtonState(_ state: MiddleButtonState) {
         let device = UIDevice.current.userInterfaceIdiom
         switch (state, device) {
-        case (.search, _):
-            middleButtonState = .search
-            toolbar.multiStateButton.setImage(ImageSearch, for: .normal)
+        case (.carbon, _):
+            middleButtonState = .carbon
+            toolbar.multiStateButton.setImage(ImageCarbon, for: .normal)
             toolbar.multiStateButton.accessibilityLabel = .TabToolbarSearchAccessibilityLabel
         case (.reload, .pad):
             middleButtonState = .reload
@@ -201,9 +201,9 @@ open class TabToolbarHelper: NSObject {
         switch middleButtonState {
         case .home:
             toolbar.tabToolbarDelegate?.tabToolbarDidPressHome(toolbar, button: toolbar.multiStateButton)
-        case .search:
+        case .carbon:
             TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .startSearchButton)
-            toolbar.tabToolbarDelegate?.tabToolbarDidPressSearch(toolbar, button: toolbar.multiStateButton)
+            toolbar.tabToolbarDelegate?.tabToolbarDidPressCarbon(toolbar, button: toolbar.multiStateButton)
         case .stop:
             toolbar.tabToolbarDelegate?.tabToolbarDidPressStop(toolbar, button: toolbar.multiStateButton)
         case .reload:
@@ -213,7 +213,7 @@ open class TabToolbarHelper: NSObject {
 
     func didLongPressMultiStateButton(_ recognizer: UILongPressGestureRecognizer) {
         switch middleButtonState {
-        case .search, .home:
+        case .carbon, .home:
             return
         default:
             if recognizer.state == .began {
