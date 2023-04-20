@@ -287,7 +287,7 @@ class BrowserViewController: UIViewController {
             toolbar.tabToolbarDelegate = self
             toolbar.applyUIMode(isPrivate: tabManager.selectedTab?.isPrivate ?? false)
             toolbar.applyTheme()
-            toolbar.updateMiddleButtonState(currentMiddleButtonState ?? .search)
+            toolbar.updateMiddleButtonState(currentMiddleButtonState ?? .carbon)
             updateTabCountUsingTabManager(self.tabManager)
         } else {
             toolbar.tabToolbarDelegate = nil
@@ -1230,7 +1230,7 @@ class BrowserViewController: UIViewController {
     func setupMiddleButtonStatus(isLoading: Bool) {
         // Setting the default state to search to account for no tab or starting page tab
         // `state` will be modified later if needed
-        var state: MiddleButtonState = .search
+        var state: MiddleButtonState = .carbon
 
         // No tab
         guard let tab = tabManager.selectedTab else {

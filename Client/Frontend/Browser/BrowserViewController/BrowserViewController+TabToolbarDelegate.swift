@@ -182,8 +182,9 @@ extension BrowserViewController: TabToolbarDelegate, PhotonActionSheetProtocol {
         }
     }
 
-    func tabToolbarDidPressSearch(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
-        focusLocationTextField(forTab: tabManager.selectedTab)
+    func tabToolbarDidPressCarbon(_ tabToolbar: TabToolbarProtocol, button: UIButton) {
+//        focusLocationTextField(forTab: tabManager.selectedTab)
+        
     }
 }
 
