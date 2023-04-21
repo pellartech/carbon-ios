@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         profile.reopen()
 
-        if profile.prefs.boolForKey(PendingAccountDisconnectedKey) ?? false {
+        if profile.prefs.boolForKey("PendingAccountDisconnectedKey") ?? false {
             profile.removeAccount()
         }
 
