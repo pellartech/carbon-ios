@@ -3,7 +3,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0
 
 import Shared
-import Account
 import MozillaAppServices
 import Common
 
@@ -30,125 +29,23 @@ extension FxAPushMessageHandler {
     /// and then effects changes on the logged in account.
     @discardableResult func handle(userInfo: [AnyHashable: Any]) -> PushMessageResults {
         let keychain = MZKeychainWrapper.sharedClientAppContainerKeychain
-        guard let pushReg = keychain.object(forKey: KeychainKey.fxaPushRegistration, ofClass: PushRegistration.self) else {
-            // We've somehow lost our push registration, lets also reset our apnsToken so we trigger push registration
-            keychain.removeObject(forKey: KeychainKey.apnsToken, withAccessibility: MZKeychainItemAccessibility.afterFirstUnlock)
-            return deferMaybe(PushMessageError.accountError)
-        }
 
-        let subscription = pushReg.defaultSubscription
 
-        guard let encoding = userInfo["con"] as? String, // content-encoding
-              let payload = userInfo["body"] as? String
+        guard let _ = userInfo["con"] as? String, // content-encoding
+              let _ = userInfo["body"] as? String
         else { return deferMaybe(PushMessageError.messageIncomplete("missing con or body")) }
         // ver == endpointURL path, chid == channel id, aps == alert text and content_available.
 
-        let plaintext: String?
-        if let cryptoKeyHeader = userInfo["cryptokey"] as? String,  // crypto-key
-            let encryptionHeader = userInfo["enc"] as? String, // encryption
-            encoding == "aesgcm" {
-            plaintext = subscription.aesgcm(payload: payload, encryptionHeader: encryptionHeader, cryptoHeader: cryptoKeyHeader)
-        } else if encoding == "aes128gcm" {
-            plaintext = subscription.aes128gcm(payload: payload)
-        } else {
-            plaintext = nil
-        }
+   
 
-        guard let string = plaintext else {
-            // The app will detect this missing, and re-register. see AppDelegate+PushNotifications.swift.
-            keychain.removeObject(forKey: KeychainKey.apnsToken, withAccessibility: MZKeychainItemAccessibility.afterFirstUnlock)
-            return deferMaybe(PushMessageError.notDecrypted)
-        }
+         let string = "plaintext"
 
         // return handle(plaintext: string)
         let deferred = PushMessageResults()
         // Reconfig has to happen on the main thread, since it calls `startup`
         // and `startup` asserts that we are on the main thread. Otherwise the notification
         // service will crash.
-        DispatchQueue.main.async {
-            RustFirefoxAccounts.reconfig(prefs: self.profile.prefs).uponQueue(.main) { accountManager in
-                accountManager.deviceConstellation()?.processRawIncomingAccountEvent(pushPayload: string) {
-                    result in
-                    guard case .success(let events) = result, !events.isEmpty else {
-                        let err: PushMessageError
-                        if case .failure(let error) = result {
-                            self.logger.log("Failed to get any events from FxA",
-                                            level: .warning,
-                                            category: .sync,
-                                            description: error.localizedDescription)
-                            err = PushMessageError.messageIncomplete(error.localizedDescription)
-                        } else {
-                            self.logger.log("Got zero events from FxA",
-                                            level: .warning,
-                                            category: .sync,
-                                            description: "No events retrieved from fxa")
-                            err = PushMessageError.messageIncomplete("empty message")
-                        }
-                        deferred.fill(Maybe(failure: err))
-                        return
-                    }
-                    var messages: [PushMessage] = []
 
-                    // It's possible one of the messages is a device disconnection
-                    // in that case, we have an async call to get the name of the device
-                    // we should make sure not to resolve our own value before that name retrieval
-                    // is done
-                    var waitForClient: Deferred<Maybe<String>>?
-                    for event in events {
-                        switch event {
-                        case .commandReceived(let deviceCommand):
-                            switch deviceCommand {
-                            case .tabReceived(_, let tabData):
-                                let title = tabData.entries.last?.title ?? ""
-                                let url = tabData.entries.last?.url ?? ""
-                                messages.append(PushMessage.commandReceived(tab: ["title": title, "url": url]))
-                                if let _ = try? accountManager.gatherTelemetry() {
-                                  
-                                }
-                            }
-                        case .deviceConnected(let deviceName):
-                            messages.append(PushMessage.deviceConnected(deviceName))
-                        case let .deviceDisconnected(deviceId, isLocalDevice):
-                            if isLocalDevice {
-                                // We can't disconnect the device from the account until we have access to the application, so we'll handle this properly in the AppDelegate (as this code in an extension),
-                                // by calling the FxALoginHelper.applicationDidDisonnect(application).
-                                self.profile.prefs.setBool(true, forKey: PendingAccountDisconnectedKey)
-                                messages.append(PushMessage.thisDeviceDisconnected)
-                            }
-
-                            guard let profile = self.profile as? BrowserProfile else {
-                                // We can't look up a name in testing, so this is the same as not knowing about it.
-                                messages.append(PushMessage.deviceDisconnected(nil))
-                                break
-                            }
-
-                            waitForClient = Deferred<Maybe<String>>()
-                            profile.remoteClientsAndTabs.getClient(fxaDeviceId: deviceId).uponQueue(.main) { result in
-                                guard let device = result.successValue else {
-                                    waitForClient?.fill(Maybe(failure: result.failureValue ?? "Unknown Error"))
-                                    return
-                                }
-                                messages.append(PushMessage.deviceDisconnected(device?.name))
-                                waitForClient?.fill(Maybe(success: device?.name ?? "Unknown Device"))
-                                if let id = device?.guid {
-                                    profile.remoteClientsAndTabs.deleteClient(guid: id).uponQueue(.main) { _ in }
-                                }
-                            }
-                        default:
-                            // There are other events, but we ignore them at this level.
-                            break
-                        }
-                    }
-                    if let waitForClient = waitForClient {
-                        waitForClient.upon { _ in
-                            deferred.fill(Maybe(success: messages))
-                        }
-                    } else {
-                        deferred.fill(Maybe(success: messages))
-                    }
-                }
-            }
-        }
         return deferred
     }
 }
