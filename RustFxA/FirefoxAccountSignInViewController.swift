@@ -4,7 +4,6 @@
 
 import Foundation
 import Shared
-import Account
 import Common
 
 /// Reflects parent page that launched FirefoxAccountSignInViewController
@@ -78,17 +77,6 @@ class FirefoxAccountSignInViewController: UIViewController {
         label.adjustsFontForContentSizeCategory = true
 
         let placeholder = "firefox.com/pair"
-        RustFirefoxAccounts.shared.accountManager.uponQueue(.main) { manager in
-            manager.getPairingAuthorityURL { result in
-                guard let url = try? result.get(), let host = url.host else { return }
-
-                let font = DynamicFontHelper.defaultHelper.preferredFont(withTextStyle: .headline,
-                                                                         size: UX.signInLabelFontSize)
-                let shortUrl = host + url.path // "firefox.com" + "/pair"
-                let msg: String = .FxASignin_QRInstructions.replaceFirstOccurrence(of: placeholder, with: shortUrl)
-                label.attributedText = msg.attributedText(boldString: shortUrl, font: font)
-            }
-        }
     }
 
     lazy var scanButton: ResizableButton = .build { button in
