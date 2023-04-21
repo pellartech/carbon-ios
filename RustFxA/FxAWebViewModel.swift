@@ -4,7 +4,6 @@
 
 import WebKit
 import Foundation
-import Account
 import MozillaAppServices
 import Shared
 import Common
@@ -222,13 +221,7 @@ extension FxAWebViewModel {
     func shouldAllowRedirectAfterLogIn(basedOn navigationURL: URL?) -> WKNavigationActionPolicy {
         // Cancel navigation that happens after login to an account, which is when a redirect to `redirectURL` happens.
         // The app handles this event fully in native UI.
-        let redirectUrl = RustFirefoxAccounts.redirectURL
-        if let navigationURL = navigationURL {
-            let expectedRedirectURL = URL(string: redirectUrl)!
-            if navigationURL.scheme == expectedRedirectURL.scheme && navigationURL.host == expectedRedirectURL.host && navigationURL.path == expectedRedirectURL.path {
-                return .cancel
-            }
-        }
+      
         return .allow
     }
 }
