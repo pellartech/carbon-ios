@@ -109,18 +109,19 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.dark))
+        blurEffectView.frame = self.view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0.85
+        view.addSubview(blurEffectView)
+        
         applyTheme()
         setupConstraints()
         setupPanGesture()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleCloseAction))
         dimmedView.addGestureRecognizer(tapGesture)
-        
-        let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.dark))
-        blurEffectView.frame = self.view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        dimmedView.addSubview(blurEffectView)
-        
+
         descrpLabel.text = "Daily $CSIX rewards while you browse coming soon"
         descrpLabel.halfTextColorChange(fullText: descrpLabel.text!, changeText: "coming soon")
     }
@@ -145,7 +146,6 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
     }
     
     func setupConstraints() {
-        view.addSubview(dimmedView)
         view.addSubview(containerView)
         
         containerView.addSubview(topBarView)
@@ -153,17 +153,12 @@ class RewardsViewController: UIViewController , UITableViewDelegate, UITableView
         containerView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            dimmedView.topAnchor.constraint(equalTo: view.topAnchor),
-            dimmedView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            dimmedView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            dimmedView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
             topBarView.topAnchor.constraint(equalTo: containerView.topAnchor,constant: 15),
             topBarView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             topBarView.heightAnchor.constraint(equalToConstant: 4),
             topBarView.widthAnchor.constraint(equalToConstant: 76),
             
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 30),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 10),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -10),
             
             tableView.topAnchor.constraint(equalTo: containerView.topAnchor,constant: 155),

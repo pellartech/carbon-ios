@@ -434,7 +434,14 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return collectionView == statsCollectionView ? 10 : 25
+        if collectionView == statsCollectionView{
+              return 10
+            }else if collectionView == comingSoonCollectionView{
+              return 18
+            }else{
+              return 25
+            }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
