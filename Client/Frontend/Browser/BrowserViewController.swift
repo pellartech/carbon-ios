@@ -2113,7 +2113,7 @@ extension BrowserViewController: TabManagerDelegate {
             topTabsDidChangeTab()
         }
 
-        updateInContentHomePanel(selected?.url as URL?, focusUrlBar: true)
+        updateInContentHomePanel(selected?.url as URL?, focusUrlBar: false)
 
         if let tab = selected, NewTabAccessors.getNewTabPage(self.profile.prefs) == .blankPage {
             if tab.url == nil, !tab.isRestoring {
