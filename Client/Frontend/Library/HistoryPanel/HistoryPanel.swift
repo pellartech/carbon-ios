@@ -699,13 +699,6 @@ extension HistoryPanel {
     }
 
     private func resyncHistory() {
-        profile.syncManager.syncHistory().uponQueue(.main) { syncResult in
-            self.endRefreshing()
-
-            if syncResult.isSuccess {
-                self.fetchDataAndUpdateLayout(animating: true)
-            }
-        }
     }
 }
 

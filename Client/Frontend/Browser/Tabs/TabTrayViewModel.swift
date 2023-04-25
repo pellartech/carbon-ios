@@ -9,7 +9,6 @@ class TabTrayViewModel {
     enum Segment: Int, CaseIterable {
         case tabs
         case privateTabs
-        case syncedTabs
 
         var navTitle: String {
             switch self {
@@ -17,8 +16,7 @@ class TabTrayViewModel {
                 return .TabTrayV2Title
             case .privateTabs:
                 return .TabTrayPrivateBrowsingTitle
-            case .syncedTabs:
-                return .AppMenu.AppMenuSyncedTabsTitleString
+        
             }
         }
 
@@ -28,8 +26,7 @@ class TabTrayViewModel {
                 return String.TabTraySegmentedControlTitlesTabs
             case .privateTabs:
                 return String.TabTraySegmentedControlTitlesPrivateTabs
-            case .syncedTabs:
-                return String.TabTraySegmentedControlTitlesSyncedTabs
+            
             }
         }
 
@@ -39,8 +36,7 @@ class TabTrayViewModel {
                 return UIImage(named: ImageIdentifiers.navTabCounter)
             case .privateTabs:
                 return UIImage(named: ImageIdentifiers.privateMaskSmall)
-            case .syncedTabs:
-                return UIImage(named: ImageIdentifiers.syncedDevicesIcon)
+           
             }
         }
     }

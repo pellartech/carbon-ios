@@ -5,7 +5,6 @@
 @testable import Client
 import Shared
 @testable import Storage
-import Sync
 import UIKit
 
 import XCTest
@@ -110,13 +109,7 @@ extension ResetTests {
     func assertActionsOnEngine(profile: MockBrowserProfile, engine: MockEngineStateChanges) {
         let engineActionExpectation = expectation(description: "Action on engine fulfilled")
 
-        profile.peekSyncManager.takeActionsOnEngineStateChanges(engine).uponQueue(.main) { result in
-            XCTAssertTrue(result.isSuccess)
-
-            // We threw away the command.
-            XCTAssertEqual(engine.clearLocalCommandsCount, 1, "Clear local commands was called once")
-            engineActionExpectation.fulfill()
-        }
+     
 
         wait(for: [engineActionExpectation], timeout: 5.0)
     }
@@ -149,7 +142,7 @@ class MockBrowserProfile: BrowserProfile {
 }
 
 // MARK: - MockEngineStateChanges
-class MockEngineStateChanges: EngineStateChanges {
+class MockEngineStateChanges {
     var collections: [String] = []
     var enabled: [String] = []
     var disabled: [String] = []

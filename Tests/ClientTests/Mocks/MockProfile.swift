@@ -4,10 +4,8 @@
 
 @testable import Client
 import Foundation
-import Account
 import Shared
 import Storage
-import Sync
 import XCTest
 
 public typealias ClientSyncManager = Client.SyncManager
@@ -17,22 +15,7 @@ open class MockSyncManager: ClientSyncManager {
     open var lastSyncFinishTime: Timestamp?
     open var syncDisplayState: SyncDisplayState?
 
-    private func completedWithStats(collection: String) -> Deferred<Maybe<SyncStatus>> {
-        return deferMaybe(SyncStatus.completed(SyncEngineStatsSession(collection: collection)))
-    }
-
-    open func syncClients() -> OldSyncResult { return completedWithStats(collection: "mock_clients") }
-    open func syncClientsThenTabs() -> OldSyncResult { return completedWithStats(collection: "mock_clientsandtabs") }
-    open func syncHistory() -> OldSyncResult { return completedWithStats(collection: "mock_history") }
-    open func syncEverything(why: OldSyncReason) -> Success {
-        return succeed()
-    }
-
     var syncNamedCollectionsCalled = 0
-    open func syncNamedCollections(why: OldSyncReason, names: [String]) -> Success {
-        syncNamedCollectionsCalled += 1
-        return succeed()
-    }
     open func beginTimedSyncs() {}
     open func endTimedSyncs() {}
     open func applicationDidBecomeActive() {
@@ -201,7 +184,6 @@ open class MockProfile: Client.Profile {
     public func flushAccount() {}
 
     public func removeAccount() {
-        self.syncManager.onRemovedAccount()
     }
 
     public func getClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>> {

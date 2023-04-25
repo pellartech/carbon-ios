@@ -5,8 +5,6 @@
 import Common
 import Foundation
 import Shared
-import Sync
-import Account
 
 class ManageFxAccountSetting: Setting {
     let profile: Profile
@@ -73,22 +71,10 @@ class DisconnectSetting: Setting {
 
 class DeviceNamePersister: SettingValuePersister {
     func readPersistedValue() -> String? {
-        guard let val = RustFirefoxAccounts.shared.accountManager.peek()?.deviceConstellation()?
-            .state()?.localDevice?.displayName else {
-                return UserDefaults.standard.string(forKey: RustFirefoxAccounts.prefKeyLastDeviceName)
-        }
-        UserDefaults.standard.set(val, forKey: RustFirefoxAccounts.prefKeyLastDeviceName)
-        return val
+        return ""
     }
 
     func writePersistedValue(value: String?) {
-        guard let newName = value,
-            let deviceConstellation = RustFirefoxAccounts.shared.accountManager.peek()?.deviceConstellation() else {
-            return
-        }
-        UserDefaults.standard.set(newName, forKey: RustFirefoxAccounts.prefKeyLastDeviceName)
-
-        deviceConstellation.setLocalDeviceName(name: newName)
     }
 }
 
@@ -126,8 +112,6 @@ class SyncContentSettingsViewController: SettingsTableViewController {
         super.init(style: .grouped)
 
         self.title = .FxASettingsTitle
-
-        RustFirefoxAccounts.shared.accountManager.peek()?.deviceConstellation()?.refreshState()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -135,10 +119,6 @@ class SyncContentSettingsViewController: SettingsTableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        if !enginesToSyncOnExit.isEmpty {
-            _ = self.profile.syncManager.syncNamedCollections(why: OldSyncReason.engineEnabled, names: Array(enginesToSyncOnExit))
-            enginesToSyncOnExit.removeAll()
-        }
         super.viewWillDisappear(animated)
     }
 

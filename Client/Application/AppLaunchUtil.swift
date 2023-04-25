@@ -6,7 +6,6 @@ import Common
 import Foundation
 import Shared
 import Storage
-import Account
 import Glean
 
 class AppLaunchUtil {
@@ -64,18 +63,7 @@ class AppLaunchUtil {
             self.runAppServicesHistoryMigration()
         }
 
-        NotificationCenter.default.addObserver(forName: .FSReadingListAddReadingListItem, object: nil, queue: nil) { (notification) -> Void in
-            if let userInfo = notification.userInfo, let url = userInfo["URL"] as? URL {
-                let title = (userInfo["Title"] as? String) ?? ""
-                self.profile.readingList.createRecordWithURL(url.absoluteString, title: title, addedBy: UIDevice.current.name)
-            }
-        }
-
         SystemUtils.onFirstRun()
-
-        RustFirefoxAccounts.startup(prefs: profile.prefs).uponQueue(.main) { _ in
-            self.logger.log("RustFirefoxAccounts started", level: .info, category: .sync)
-        }
 
         // Add swizzle on UIViewControllers to automatically log when there's a new view showing
         UIViewController.loggerSwizzle()

@@ -261,32 +261,6 @@ class RemoteTabsTableViewController: UITableViewController, Themeable {
         }
 
         // Get cached tabs.
-        profile.getCachedClientsAndTabs().uponQueue(.main) { [weak self] result in
-            guard let clientAndTabs = result.successValue else {
-                self?.endRefreshing()
-                self?.showFailedToSync()
-                return
-            }
-
-            // Update UI with cached data.
-            self?.updateDelegateClientAndTabData(clientAndTabs)
-
-            if updateCache {
-                // Fetch updated tabs.
-                self?.profile.getClientsAndTabs().uponQueue(.main) { result in
-                    if let clientAndTabs = result.successValue {
-                        // Update UI with updated tabs.
-                        self?.updateDelegateClientAndTabData(clientAndTabs)
-                    }
-
-                    self?.endRefreshing()
-                    completion?()
-                }
-            } else {
-                self?.endRefreshing()
-                completion?()
-            }
-        }
     }
 
     private func showFailedToSync() {

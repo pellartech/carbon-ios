@@ -5,9 +5,7 @@
 import UIKit
 import Shared
 import Storage
-import Sync
 import UserNotifications
-import Account
 import MozillaAppServices
 
 /**
@@ -102,7 +100,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        if profile.prefs.boolForKey(PendingAccountDisconnectedKey) ?? false {
+        if profile.prefs.boolForKey("PendingAccountDisconnectedKey") ?? false {
             profile.removeAccount()
 
             // show the notification
@@ -119,7 +117,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        RustFirefoxAccounts.shared.pushNotifications.didRegister(withDeviceToken: deviceToken)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

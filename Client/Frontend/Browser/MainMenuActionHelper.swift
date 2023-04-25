@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-import Account
 import Foundation
 import Shared
 import Storage
@@ -481,35 +480,15 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
             showFxA(params)
             TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .signIntoSync)
         }
-
-        let rustAccount = RustFirefoxAccounts.shared
-        let needsReAuth = rustAccount.accountNeedsReauth()
-
-        guard let userProfile = rustAccount.userProfile else {
-            return SingleActionViewModel(title: .AppMenu.SyncAndSaveData,
-                                         iconString: ImageIdentifiers.sync,
-                                         tapHandler: action).items
-        }
-
-        let title: String = {
-            if rustAccount.accountNeedsReauth() {
-                return .FxAAccountVerifyPassword
-            }
-            return userProfile.displayName ?? userProfile.email
-        }()
-
-        let iconString = needsReAuth ? ImageIdentifiers.warning : ImageIdentifiers.placeholderAvatar
-
+    
         var iconURL: URL?
-        if let str = rustAccount.userProfile?.avatarUrl, let url = URL(string: str) {
-            iconURL = url
-        }
-        let iconType: PhotonActionSheetIconType = needsReAuth ? .Image : .URL
-        let syncOption = SingleActionViewModel(title: title,
-                                               iconString: iconString,
+        let str = ""
+        let iconType: PhotonActionSheetIconType =  .Image
+        let syncOption = SingleActionViewModel(title: "title",
+                                               iconString: "iconString",
                                                iconURL: iconURL,
                                                iconType: iconType,
-                                               needsIconActionableTint: needsReAuth,
+                                               needsIconActionableTint: false,
                                                tapHandler: action).items
         return syncOption
     }

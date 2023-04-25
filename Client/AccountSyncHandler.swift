@@ -43,9 +43,5 @@ class AccountSyncHandler: TabEventHandler {
     /// Make sure there's at least a 5 second difference between Syncs.
     private func performClientsAndTabsSync() {
         guard profile.hasSyncableAccount() else { return }
-
-        throttler.throttle { [weak self] in
-            _ = self?.profile.syncManager.syncNamedCollections(why: .user, names: ["tabs"])
-        }
     }
 }

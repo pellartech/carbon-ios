@@ -4,13 +4,11 @@
 
 import Shared
 import Storage
-import Sync
 import UserNotifications
-import Account
 import Common
 
 extension UIApplication {
-    var syncDelegate: SyncDelegate {
+    var syncDelegate: AppSyncDelegate {
         return AppSyncDelegate(app: self)
     }
 }
@@ -21,7 +19,7 @@ extension UIApplication {
  Thus, push notifications are not needed to receive sent tabs, they can be handled
  when the app performs a sync.
  */
-class AppSyncDelegate: SyncDelegate {
+class AppSyncDelegate {
     private let app: UIApplication
     private let logger: Logger
 

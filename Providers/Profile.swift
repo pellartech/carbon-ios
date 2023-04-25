@@ -9,34 +9,18 @@
 // increased startup times which may lead to termination by the OS.
 
 import Common
-import Account
 import Shared
 import Storage
-import Sync
-import SyncTelemetry
 import AuthenticationServices
 import MozillaAppServices
 
 public protocol SyncManager {
-    var isSyncing: Bool { get }
     var lastSyncFinishTime: Timestamp? { get set }
-    var syncDisplayState: SyncDisplayState? { get }
-
-    func syncClients() -> OldSyncResult
-    func syncClientsThenTabs() -> OldSyncResult
-    func syncHistory() -> OldSyncResult
-    @discardableResult func syncEverything(why: OldSyncReason) -> Success
-    func syncNamedCollections(why: OldSyncReason, names: [String]) -> Success
-
     func endTimedSyncs()
     func applicationDidBecomeActive()
     func applicationDidEnterBackground()
-
-    @discardableResult func onRemovedAccount() -> Success
-    @discardableResult func onAddedAccount() -> Success
 }
 
-typealias SyncFunction = (SyncDelegate, Prefs, Ready, OldSyncReason) -> OldSyncResult
 
 class ProfileFileAccessor: FileAccessor {
     convenience init(profile: Profile) {
@@ -62,7 +46,7 @@ class ProfileFileAccessor: FileAccessor {
     }
 }
 
-class CommandStoringSyncDelegate: SyncDelegate {
+class CommandStoringSyncDelegate {
     let profile: Profile
 
     init(profile: Profile) {
@@ -116,11 +100,8 @@ protocol Profile: AnyObject {
     // Do we have an account that (as far as we know) is in a syncable state?
     func hasSyncableAccount() -> Bool
 
-    var rustFxA: RustFirefoxAccounts { get }
-
     func removeAccount()
 
-    func getClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>>
     func getCachedClientsAndTabs(completion: @escaping ([ClientAndTabs]) -> Void)
     func getCachedClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>>
 
@@ -212,7 +193,6 @@ open class BrowserProfile: Profile {
     let readingListDB: BrowserDB
     var syncManager: SyncManager!
 
-    var syncDelegate: SyncDelegate?
 
     /**
      * N.B., BrowserProfile is used from our extensions, often via a pattern like
@@ -227,7 +207,6 @@ open class BrowserProfile: Profile {
      * However, if we provide it here, it's assumed that we're initializing it from the application.
      */
     init(localName: String,
-         syncDelegate: SyncDelegate? = nil,
          clear: Bool = false,
          logger: Logger = DefaultLogger.shared) {
         logger.log("Initing profile \(localName) on thread \(Thread.current).",
@@ -236,7 +215,6 @@ open class BrowserProfile: Profile {
         self.name = localName
         self.files = ProfileFileAccessor(localName: localName)
         self.keychain = MZKeychainWrapper.sharedClientAppContainerKeychain
-        self.syncDelegate = syncDelegate
         self.logger = logger
 
         if clear {
@@ -505,9 +483,7 @@ open class BrowserProfile: Profile {
         return ClosedTabsStore(prefs: self.prefs)
     }()
 
-    open func getSyncDelegate() -> SyncDelegate {
-        return syncDelegate ?? CommandStoringSyncDelegate(profile: self)
-    }
+
 
     func getTabsWithNativeClients() -> Deferred<Maybe<[ClientAndTabs]>> {
         // Because we are now using the application services tabs component with
@@ -550,11 +526,7 @@ open class BrowserProfile: Profile {
         }
     }
 
-    public func getClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>> {
-        return self.syncManager.syncClientsThenTabs()
-        >>> { self.getTabsWithNativeClients() }
-    }
-
+ 
     public func getCachedClientsAndTabs(completion: @escaping ([ClientAndTabs]) -> Void) {
         let defferedResponse = self.getTabsWithNativeClients()
         defferedResponse.upon { result in
@@ -579,22 +551,7 @@ open class BrowserProfile: Profile {
             // We shouldn't be called at all if the user isn't signed in.
             return
         }
-        if syncManager.isSyncing {
-            // If Sync is already running, `BrowserSyncManager#endSyncing` will
-            // send a ping with the queued events when it's done, so don't send
-            // an events-only ping now.
-            return
-        }
-        let sendUsageData = prefs.boolForKey(AppConstants.prefSendUsageData) ?? true
-        if sendUsageData {
-            SyncPing.fromQueuedEvents(
-                prefs: self.prefs,
-                why: .schedule
-            ) {
-                guard let ping = $0 else { return }
-                SyncTelemetry.send(ping: ping, docType: .sync)
-            }
-        }
+      
     }
 
     func storeTabs(_ tabs: [RemoteTab]) -> Deferred<Maybe<Int>> {
@@ -603,23 +560,6 @@ open class BrowserProfile: Profile {
 
     public func sendItem(_ item: ShareItem, toDevices devices: [RemoteDevice]) -> Success {
         let deferred = Success()
-        RustFirefoxAccounts.shared.accountManager.uponQueue(.main) { accountManager in
-            guard let constellation = accountManager.deviceConstellation() else {
-                deferred.fill(Maybe(failure: NoAccountError()))
-                return
-            }
-            devices.forEach {
-                if let id = $0.id {
-                    constellation.sendEventToDevice(targetDeviceId: id, e: .sendTab(title: item.title ?? "", url: item.url))
-                }
-            }
-            if let json = try? accountManager.gatherTelemetry() {
-                let events = FxATelemetry.parseTelemetry(fromJSONString: json)
-                events.forEach { $0.record(intoPrefs: self.prefs) }
-            }
-            self.sendQueuedSyncEvents()
-            deferred.fill(Maybe(success: ()))
-        }
         return deferred
     }
 
@@ -635,28 +575,6 @@ open class BrowserProfile: Profile {
             return
         }
         self.prefs.setTimestamp(now, forKey: PrefsKeys.PollCommandsTimestamp)
-        let accountManager = self.rustFxA.accountManager.peek()
-        accountManager?.deviceConstellation()?.pollForCommands { commands in
-            if let commands = try? commands.get() {
-                for command in commands {
-                    switch command {
-                    case .tabReceived(let sender, let tabData):
-                        // The tabData.entries is the tabs history
-                        // we only want the last item, which is the tab
-                        // to display
-                        let title = tabData.entries.last?.title ?? ""
-                        let url = tabData.entries.last?.url ?? ""
-                        if let json = try? accountManager?.gatherTelemetry() {
-                            let events = FxATelemetry.parseTelemetry(fromJSONString: json)
-                            events.forEach { $0.record(intoPrefs: self.prefs) }
-                        }
-                        if let url = URL(string: url) {
-                            self.syncDelegate?.displaySentTab(for: url, title: title, from: sender?.displayName)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     lazy var logins: RustLogins = {
@@ -667,25 +585,18 @@ open class BrowserProfile: Profile {
     }()
 
     func hasSyncAccount(completion: @escaping (Bool) -> Void) {
-        rustFxA.hasAccount { hasAccount in
-            completion(hasAccount)
-        }
+        
     }
 
     func hasAccount() -> Bool {
-        return rustFxA.hasAccount()
+        return false
     }
 
     func hasSyncableAccount() -> Bool {
-        return hasAccount() && !rustFxA.accountNeedsReauth()
-    }
-
-    var rustFxA: RustFirefoxAccounts {
-        return RustFirefoxAccounts.shared
+        return false
     }
 
     func removeAccount() {
-        RustFirefoxAccounts.shared.disconnect()
 
         // Not available in extensions
         #if !MOZ_TARGET_NOTIFICATIONSERVICE && !MOZ_TARGET_SHARETO && !MOZ_TARGET_CREDENTIAL_PROVIDER
@@ -728,7 +639,6 @@ open class BrowserProfile: Profile {
 
         // Trigger cleanup. Pass in the account in case we want to try to remove
         // client-specific data from the server.
-        self.syncManager.onRemovedAccount()
     }
 
     public func hasSyncedLogins() -> Deferred<Maybe<Bool>> {
@@ -748,7 +658,7 @@ open class BrowserProfile: Profile {
     }
 
     // Extends NSObject so we can use timers.
-    public class BrowserSyncManager: NSObject, SyncManager {
+    public class BrowserSyncManager: NSObject, SyncManager {        
         // We shouldn't live beyond our containing BrowserProfile, either in the main app or in
         // an extension.
         // But it's possible that we'll finish a side-effect sync after we've ditched the profile
@@ -786,7 +696,6 @@ open class BrowserProfile: Profile {
                 logger.log("Time was modified since last sync.",
                            level: .debug,
                            category: .sync)
-                self.syncEverythingSoon()
                 return
             }
             let since = now - then
@@ -794,65 +703,18 @@ open class BrowserProfile: Profile {
             logger.log("\(since)msec since last sync.",
                        level: .debug,
                        category: .sync)
-            if since > SyncConstants.SyncOnForegroundMinimumDelayMillis {
-                self.syncEverythingSoon()
-            }
+          
         }
 
         public func applicationDidEnterBackground() {
             backgrounded = true
         }
 
-        public var isSyncing: Bool {
-            return syncDisplayState != nil && syncDisplayState! == .inProgress
-        }
-
-        public var syncDisplayState: SyncDisplayState?
-
         // The dispatch queue for coordinating syncing and resetting the database.
         fileprivate let syncQueue = DispatchQueue(label: "com.mozilla.firefox.sync")
 
-        fileprivate typealias EngineResults = [(EngineIdentifier, SyncStatus)]
-        fileprivate typealias EngineTasks = [(EngineIdentifier, SyncFunction)]
-
-        // Used as a task queue for syncing.
-        fileprivate var syncReducer: AsyncReducer<EngineResults, EngineTasks>?
-
         fileprivate func beginSyncing() {
             notifySyncing(notification: .ProfileDidStartSyncing)
-        }
-
-        fileprivate func endSyncing(_ result: SyncOperationResult) {
-            // loop through statuses and fill sync state
-            logger.log("Ending all queued syncs.",
-                       level: .info,
-                       category: .sync)
-
-            syncDisplayState = SyncStatusResolver(engineResults: result.engineResults).resolveResults()
-
-            #if MOZ_TARGET_CLIENT
-                if canSendUsageData() {
-                    SyncPing.from(
-                        result: result,
-                        remoteClientsAndTabs: profile.remoteClientsAndTabs,
-                        prefs: prefs,
-                        why: .schedule
-                    ) {
-                        guard let ping = $0 else { return }
-                        SyncTelemetry.send(ping: ping, docType: .sync)
-                    }
-                } else {
-                    logger.log("Profile isn't sending usage data. Not sending sync status event.",
-                               level: .debug,
-                               category: .sync)
-                }
-            #endif
-
-            // Don't notify if we are performing a sync in the background. This prevents more db access from happening
-            if !self.backgrounded {
-                notifySyncing(notification: .ProfileDidFinishSyncing)
-            }
-            syncReducer = nil
         }
 
         func canSendUsageData() -> Bool {
@@ -860,7 +722,6 @@ open class BrowserProfile: Profile {
         }
 
         private func notifySyncing(notification: Notification.Name) {
-            NotificationCenter.default.post(name: notification, object: syncDisplayState?.asObject())
         }
 
         init(profile: BrowserProfile,
@@ -917,20 +778,6 @@ open class BrowserProfile: Profile {
                                     category: .storage)
                 }
             }
-
-            self.doInBackgroundAfter(300) {
-                // If we're syncing already, then wait for sync to end,
-                // then reset the database on the same serial queue.
-                if let reducer = self.syncReducer, !reducer.isFilled {
-                    reducer.terminal.upon { _ in
-                        self.syncQueue.async(execute: resetDatabase)
-                    }
-                } else {
-                    // Otherwise, reset the database on the sync queue now
-                    // Sync can't start while this is still going on.
-                    self.syncQueue.async(execute: resetDatabase)
-                }
-            }
         }
 
         public var lastSyncFinishTime: Timestamp? {
@@ -948,25 +795,14 @@ open class BrowserProfile: Profile {
         }
 
         @objc func onStartSyncing(_ notification: NSNotification) {
-            syncDisplayState = .inProgress
         }
 
         @objc func onFinishSyncing(_ notification: NSNotification) {
-            if let syncState = syncDisplayState, syncState == .good {
-                self.lastSyncFinishTime = Date.now()
-            }
+          
         }
 
         var prefsForSync: Prefs {
             return self.prefs.branch("sync")
-        }
-
-        public func onAddedAccount() -> Success {
-            // Only sync if we're green lit. This makes sure that we don't sync unverified accounts.
-            guard self.profile.hasSyncableAccount() else { return succeed() }
-
-            self.beginTimedSyncs()
-            return self.syncEverything(why: .didLogin)
         }
 
         func locallyResetCollections(_ collections: [String]) -> Success {
@@ -983,7 +819,7 @@ open class BrowserProfile: Profile {
                 // When tabs and clients were managed in the same database, we reset them together so we're
                 // continuting to do that here although it may no longer be necessary
 
-                return self.profile.tabs.resetSync() >>> { ClientsSynchronizer.resetClientsWithStorage(self.profile.remoteClientsAndTabs, basePrefs: self.prefsForSync) }
+                return self.profile.tabs.resetSync()
 
             case "history":
                 return self.profile.places.resetHistoryMetadata()
@@ -1031,7 +867,6 @@ open class BrowserProfile: Profile {
 
                     // This will remove keys from the Keychain if they exist, as well
                     // as wiping the Sync prefs.
-                    SyncStateMachine.clearStateFromPrefs(self.prefsForSync)
                 }
                 return succeed()
             }
@@ -1073,51 +908,6 @@ open class BrowserProfile: Profile {
             }
         }
 
-        fileprivate func syncClientsWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: OldSyncReason) -> OldSyncResult {
-            logger.log("Syncing clients to storage.",
-                       level: .info,
-                       category: .sync)
-
-            if constellationStateUpdate == nil {
-                constellationStateUpdate = NotificationCenter.default.addObserver(forName: .constellationStateUpdate,
-                                                                                  object: nil,
-                                                                                  queue: .main) { [weak self] notification in
-                    guard let accountManager = self?.profile.rustFxA.accountManager.peek(),
-                          let state = accountManager.deviceConstellation()?.state(),
-                          let self = self else { return }
-
-                    let devices = state.remoteDevices.compactMap { device -> RemoteDevice? in
-                        guard device.capabilities.contains(.sendTab) else { return nil }
-
-                        let type = "\(device.deviceType)"
-                        let lastAccessTime = device.lastAccessTime == nil ? nil : UInt64(clamping: device.lastAccessTime!)
-                        return RemoteDevice(id: device.id,
-                                            name: device.displayName,
-                                            type: type,
-                                            isCurrentDevice: device.isCurrentDevice,
-                                            lastAccessTime: lastAccessTime,
-                                            availableCommands: nil)
-                    }
-                    _ = self.profile.remoteClientsAndTabs.replaceRemoteDevices(devices)
-                }
-            }
-
-            let clientSynchronizer = ready.synchronizer(ClientsSynchronizer.self, delegate: delegate, prefs: prefs, why: why)
-            return clientSynchronizer.synchronizeLocalClients(
-                self.profile.remoteClientsAndTabs,
-                withServer: ready.client,
-                info: ready.info
-            ) >>== { result in
-                guard case .completed = result, let accountManager = self.profile.rustFxA.accountManager.peek() else {
-                    return deferMaybe(result)
-                }
-                self.logger.log("Updating FxA devices list.",
-                                level: .debug,
-                                category: .sync)
-                accountManager.deviceConstellation()?.refreshState()
-                return deferMaybe(result)
-            }
-        }
 
         public class ScopedKeyError: MaybeErrorType {
             public var description = "No key data found for scope."
@@ -1137,189 +927,9 @@ open class BrowserProfile: Profile {
 
         fileprivate func syncUnlockInfo() -> Deferred<Maybe<SyncUnlockInfo>> {
             let syncUnlockInfo = Deferred<Maybe<SyncUnlockInfo>>()
-            profile.rustFxA.accountManager.uponQueue(.main) { accountManager in
-                guard let deviceId = accountManager.deviceConstellation()?.state()?.localDevice?.id else {
-                    self.logger.log("Device Id could not be retrieved",
-                                    level: .warning,
-                                    category: .sync)
-                    syncUnlockInfo.fill(Maybe(failure: DeviceIdError()))
-                    return
-                }
-
-                accountManager.getAccessToken(scope: OAuthScope.oldSync) { result in
-                    guard let accessTokenInfo = try? result.get(), let key = accessTokenInfo.key else {
-                        syncUnlockInfo.fill(Maybe(failure: ScopedKeyError()))
-                        return
-                    }
-
-                    accountManager.getTokenServerEndpointURL { result in
-                        guard case .success(let tokenServerEndpointURL) = result else {
-                            syncUnlockInfo.fill(Maybe(failure: SyncUnlockGetURLError()))
-                            return
-                        }
-
-                        guard let encryptionKey = try? self.profile.logins.getStoredKey() else {
-                            self.logger.log("Stored logins encryption could not be retrieved",
-                                            level: .warning,
-                                            category: .sync)
-                            syncUnlockInfo.fill(Maybe(failure: EncryptionKeyError()))
-                            return
-                        }
-
-                        syncUnlockInfo.fill( Maybe(success: SyncUnlockInfo(
-                            kid: key.kid,
-                            fxaAccessToken: accessTokenInfo.token,
-                            syncKey: key.k,
-                            tokenserverURL: tokenServerEndpointURL.absoluteString,
-                            loginEncryptionKey: encryptionKey,
-                            tabsLocalId: deviceId)))
-                    }
-                }
-            }
             return syncUnlockInfo
         }
 
-        fileprivate func syncLoginsWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: OldSyncReason) -> OldSyncResult {
-            self.logger.log("Syncing logins to storage.",
-                            level: .debug,
-                            category: .sync)
-            return syncUnlockInfo().bind({ result in
-                guard let syncUnlockInfo = result.successValue else {
-                    return deferMaybe(SyncStatus.notStarted(.unknown))
-                }
-
-                return self.profile.logins.syncLogins(unlockInfo: syncUnlockInfo).bind({ [weak self] result in
-                    guard result.isSuccess else {
-                        return deferMaybe(SyncStatus.notStarted(.unknown))
-                    }
-
-                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "logins")
-                    self?.profile.syncCredentialIdentities().upon { result in
-                        self?.logger.log("Sync credentials result: \(result)",
-                                         level: .debug,
-                                         category: .sync)
-                    }
-                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
-                })
-            })
-        }
-
-        fileprivate func syncBookmarksWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: OldSyncReason) -> OldSyncResult {
-            logger.log("Syncing bookmarks to storage.",
-                       level: .debug,
-                       category: .storage)
-            return syncUnlockInfo().bind({ result in
-                guard let syncUnlockInfo = result.successValue else {
-                    return deferMaybe(SyncStatus.notStarted(.unknown))
-                }
-
-                return self.profile.places.syncBookmarks(unlockInfo: syncUnlockInfo).bind({ result in
-                    guard result.isSuccess else {
-                        return deferMaybe(SyncStatus.notStarted(.unknown))
-                    }
-
-                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "bookmarks")
-                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
-                })
-            })
-        }
-
-        fileprivate func syncHistoryWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: OldSyncReason) -> OldSyncResult {
-            logger.log("Syncing History to storage.",
-                       level: .debug,
-                       category: .storage)
-            return syncUnlockInfo().bind({ result in
-                guard let syncUnlockInfo = result.successValue else {
-                    return deferMaybe(SyncStatus.notStarted(.unknown))
-                }
-
-                return self.profile.places.syncHistory(unlockInfo: syncUnlockInfo).bind({ result in
-                    guard result.isSuccess else {
-                        return deferMaybe(SyncStatus.notStarted(.unknown))
-                    }
-
-                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "history")
-                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
-                })
-            })
-        }
-
-        fileprivate func syncTabsWithDelegate(_ delegate: SyncDelegate, prefs: Prefs, ready: Ready, why: OldSyncReason) -> OldSyncResult {
-            logger.log("Syncing tabs to storage.",
-                       level: .debug,
-                       category: .storage)
-            return syncUnlockInfo().bind({ result in
-                guard let syncUnlockInfo = result.successValue else {
-                    return deferMaybe(SyncStatus.notStarted(.unknown))
-                }
-
-                return self.profile.tabs.sync(unlockInfo: syncUnlockInfo).bind({ result in
-                    guard result.isSuccess else {
-                        return deferMaybe(SyncStatus.notStarted(.unknown))
-                    }
-
-                    let syncEngineStatsSession = SyncEngineStatsSession(collection: "tabs")
-                    return deferMaybe(SyncStatus.completed(syncEngineStatsSession))
-                })
-            })
-        }
-
-        func takeActionsOnEngineStateChanges<T: EngineStateChanges>(_ changes: T) -> Deferred<Maybe<T>> {
-            var needReset = Set<String>(changes.collectionsThatNeedLocalReset())
-            needReset.formUnion(changes.enginesDisabled())
-            needReset.formUnion(changes.enginesEnabled())
-            if needReset.isEmpty {
-                logger.log("No collections need reset. Moving on.",
-                           level: .debug,
-                           category: .sync)
-                return deferMaybe(changes)
-            }
-
-            // needReset needs at most one of clients and tabs, because we reset them
-            // both if either needs reset. This is strictly an optimization to avoid
-            // doing duplicate work.
-            if needReset.contains("clients") {
-                if needReset.remove("tabs") != nil {
-                    logger.log("Already resetting clients (and tabs); not bothering to also reset tabs again.",
-                               level: .debug,
-                               category: .sync)
-                }
-            }
-
-            return walk(Array(needReset), f: self.locallyResetCollection)
-               >>> effect(changes.clearLocalCommands)
-               >>> always(changes)
-        }
-
-        /**
-         * Runs the single provided synchronization function and returns its status.
-         */
-        fileprivate func sync(_ label: EngineIdentifier, function: @escaping SyncFunction) -> OldSyncResult {
-            let syncSeveralItems: OldSyncResult = syncSeveral(why: .user, synchronizers: [(label, function)]) >>== { statuses in
-                if let status = statuses.find({ label == $0.0 }) {
-                    return deferMaybe(status.1)
-                }
-                return deferMaybe(.notStarted(.unknown))
-            }
-
-            return syncSeveralItems
-        }
-
-        /**
-         * Convenience method for syncSeveral([(EngineIdentifier, SyncFunction)])
-         */
-        private func syncSeveral(why: OldSyncReason, synchronizers: (EngineIdentifier, SyncFunction)...) -> Deferred<Maybe<[(EngineIdentifier, SyncStatus)]>> {
-            return syncSeveral(why: why, synchronizers: synchronizers)
-        }
-
-        func getProfileAndDeviceId() -> (MozillaAppServices.Profile, String)? {
-            guard let fxa = RustFirefoxAccounts.shared.accountManager.peek(),
-                  let profile = fxa.accountProfile(),
-                  let deviceID = fxa.deviceConstellation()?.state()?.localDevice?.id
-            else { return nil }
-
-            return (profile, deviceID)
-        }
 
         /**
          * Runs each of the provided synchronization functions with the same inputs.
@@ -1327,73 +937,6 @@ open class BrowserProfile: Profile {
          * The statuses returned will be a superset of the ones that are requested here.
          * While a sync is ongoing, each engine from successive calls to this method will only be called once.
          */
-        fileprivate func syncSeveral(why: OldSyncReason, synchronizers: [(EngineIdentifier, SyncFunction)]) -> Deferred<Maybe<[(EngineIdentifier, SyncStatus)]>> {
-            guard let (profile, deviceID) = self.getProfileAndDeviceId() else {
-                return deferMaybe(NoAccountError())
-            }
-
-            // TODO: we should check if we can sync!
-
-            // TODO: Invoke `account.commandsClient.fetchMissedRemoteCommands()` to
-            // catch any missed FxA commands at time of Sync?
-
-            if !isSyncing {
-                // TODO: needs lots of clean-up
-                let uid = profile.uid
-                // A sync isn't already going on, so start another one.
-                let statsSession = SyncOperationStatsSession(why: why, uid: uid, deviceID: deviceID)
-                let reducer = AsyncReducer<EngineResults, EngineTasks>(initialValue: [], queue: syncQueue) { (statuses, synchronizers)  in
-                    let done = Set(statuses.map { $0.0 })
-                    let remaining = synchronizers.filter { !done.contains($0.0) }
-                    if remaining.isEmpty {
-                        self.logger.log("Nothing left to sync",
-                                        level: .info,
-                                        category: .sync)
-                        return deferMaybe(statuses)
-                    }
-
-                    return self.syncWith(synchronizers: remaining, statsSession: statsSession, why: why) >>== { deferMaybe(statuses + $0) }
-                }
-
-                let gleanHelper = GleanSyncOperationHelper()
-
-                reducer.terminal.upon { results in
-                    let result = SyncOperationResult(
-                        engineResults: results,
-                        stats: statsSession.hasStarted() ? statsSession.end() : nil
-                    )
-                    self.endSyncing(result)
-                    gleanHelper.end(result)
-                }
-
-                // The actual work of synchronizing doesn't start until we append
-                // the synchronizers to the reducer below.
-                self.syncReducer = reducer
-                self.beginSyncing()
-                gleanHelper.start()
-            }
-
-            let deferStatuses = { () -> Deferred<Maybe<[(EngineIdentifier, SyncStatus)]>> in
-                let statuses = synchronizers.map {
-                    ($0.0, SyncStatus.notStarted(.unknown))
-                }
-                return deferMaybe(statuses)
-            }
-
-            guard let syncReducer = syncReducer else {
-                return deferStatuses()
-            }
-
-            do {
-                return try syncReducer.append(synchronizers)
-            } catch let error {
-                logger.log("Synchronizers appended after sync was finished. This is a bug",
-                           level: .warning,
-                           category: .sync,
-                           description: error.localizedDescription)
-                return deferStatuses()
-            }
-        }
 
         func engineEnablementChangesForAccount() -> [String: Bool]? {
             var enginesEnablements: [String: Bool] = [:]
@@ -1402,93 +945,8 @@ open class BrowserProfile: Profile {
                 declined.forEach { enginesEnablements[$0] = false }
                 UserDefaults.standard.removeObject(forKey: "fxa.cwts.declinedSyncEngines")
             } else {
-                // Bundle in authState the engines the user activated/disabled since the last sync.
-                TogglableEngines.forEach { engine in
-                    let stateChangedPref = "engine.\(engine).enabledStateChanged"
-                    if self.prefsForSync.boolForKey(stateChangedPref) != nil,
-                       let enabled = self.prefsForSync.boolForKey("engine.\(engine).enabled") {
-                        enginesEnablements[engine] = enabled
-                        self.prefsForSync.setObject(nil, forKey: stateChangedPref)
-                    }
-                }
             }
             return enginesEnablements
-        }
-
-        // This SHOULD NOT be called directly: use syncSeveral instead.
-        fileprivate func syncWith(synchronizers: [(EngineIdentifier, SyncFunction)],
-                                  statsSession: SyncOperationStatsSession, why: OldSyncReason) -> Deferred<Maybe<[(EngineIdentifier, SyncStatus)]>> {
-            logger.log("Syncing \(synchronizers.map { $0.0 })",
-                       level: .info,
-                       category: .sync)
-            var authState = RustFirefoxAccounts.shared.syncAuthState
-            let delegate = self.profile.getSyncDelegate()
-            if let enginesEnablements = self.engineEnablementChangesForAccount(),
-               !enginesEnablements.isEmpty {
-                authState.enginesEnablements = enginesEnablements
-                logger.log("engines to enable: \(enginesEnablements.compactMap { $0.value ? $0.key : nil })",
-                           level: .debug,
-                           category: .sync)
-                logger.log("engines to disable: \(enginesEnablements.compactMap { !$0.value ? $0.key : nil })",
-                           level: .debug,
-                           category: .sync)
-            }
-
-            let readyDeferred = SyncStateMachine(prefs: self.prefsForSync).toReady(authState)
-
-            let function: (SyncDelegate, Prefs, Ready) -> Deferred<Maybe<[EngineStatus]>> = { delegate, syncPrefs, ready in
-                let thunks = synchronizers.map { (i, f) in
-                    return { () -> Deferred<Maybe<EngineStatus>> in
-                        self.logger.log("Syncing \(i)…",
-                                        level: .debug,
-                                        category: .sync)
-                        return f(delegate, syncPrefs, ready, why) >>== { deferMaybe((i, $0)) }
-                    }
-                }
-                return accumulate(thunks)
-            }
-
-            return readyDeferred.bind { readyResult in
-                guard let success = readyResult.successValue else {
-                    return deferMaybe(readyResult.failureValue!)
-                }
-                return self.takeActionsOnEngineStateChanges(success) >>== { ready in
-                    let updateEnginePref: (String, Bool) -> Void = { engine, enabled in
-                        self.prefsForSync.setBool(enabled, forKey: "engine.\(engine).enabled")
-                    }
-                    ready.engineConfiguration?.enabled.forEach { updateEnginePref($0, true) }
-                    ready.engineConfiguration?.declined.forEach { updateEnginePref($0, false) }
-
-                    statsSession.start()
-                    return function(delegate, self.prefsForSync, ready)
-                }
-            }
-        }
-
-        @discardableResult public func syncEverything(why: OldSyncReason) -> Success {
-            if let accountManager = RustFirefoxAccounts.shared.accountManager.peek(), accountManager.accountMigrationInFlight() {
-                accountManager.retryMigration { _ in }
-                return Success()
-            }
-
-            let synchronizers = [
-                ("clients", self.syncClientsWithDelegate),
-                ("tabs", self.syncTabsWithDelegate),
-                ("bookmarks", self.syncBookmarksWithDelegate),
-                ("history", self.syncHistoryWithDelegate),
-                ("logins", self.syncLoginsWithDelegate)
-            ]
-
-            return self.syncSeveral(why: why, synchronizers: synchronizers) >>> succeed
-        }
-
-        func syncEverythingSoon() {
-            self.doInBackgroundAfter(SyncConstants.SyncOnForegroundAfterMillis) {
-                self.logger.log("Running delayed startup sync.",
-                                level: .debug,
-                                category: .sync)
-                self.syncEverything(why: .startup)
-            }
         }
 
         /**
@@ -1496,66 +954,9 @@ open class BrowserProfile: Profile {
          * Some help is given to callers who use different namespaces (specifically: `passwords` is mapped to `logins`)
          * and to preserve some ordering rules.
          */
-        public func syncNamedCollections(why: OldSyncReason, names: [String]) -> Success {
-            // Massage the list of names into engine identifiers.
-            let engineIdentifiers = names.map { name -> [EngineIdentifier] in
-                switch name {
-                case "passwords":
-                    return ["logins"]
-                case "tabs":
-                    return ["clients", "tabs"]
-                default:
-                    return [name]
-                }
-            }.flatMap { $0 }
-
-            // By this time, `engineIdentifiers` may have duplicates in. We won't try and dedupe here
-            // because `syncSeveral` will do that for us.
-
-            let synchronizers: [(EngineIdentifier, SyncFunction)] = engineIdentifiers.compactMap {
-                switch $0 {
-                case "clients": return ("clients", self.syncClientsWithDelegate)
-                case "tabs": return ("tabs", self.syncTabsWithDelegate)
-                case "logins": return ("logins", self.syncLoginsWithDelegate)
-                case "bookmarks": return ("bookmarks", self.syncBookmarksWithDelegate)
-                case "history": return ("history", self.syncHistoryWithDelegate)
-                default: return nil
-                }
-            }
-            return self.syncSeveral(why: why, synchronizers: synchronizers) >>> succeed
-        }
 
         @objc func syncOnTimer() {
-            self.syncEverything(why: .scheduled)
             self.profile.pollCommands()
-        }
-
-        public func syncClients() -> OldSyncResult {
-            // TODO: recognize .NotStarted.
-            return self.sync("clients", function: syncClientsWithDelegate)
-        }
-
-        public func syncClientsThenTabs() -> OldSyncResult {
-            // Previously we were making two separate `self.sync` calls, each of which
-            // made a `self.syncSeveral` call. Because `self.syncSeveral` is meant to batch
-            // engine syncs, this caused the second `self.sync` call (for the tabs engine)
-            // to be cancelled as the first call for the clients engine was still running.
-            // Here we are calling `self.syncSeveral` once for both engines to prevent
-            // that from happening so the tabs engine syncing actually occurs.
-
-            return self.syncSeveral(
-                why: .user,
-                synchronizers:
-                ("clients", self.syncClientsWithDelegate),
-                ("tabs", self.syncTabsWithDelegate)
-            ) >>== { statuses in
-                let status = statuses.find { "tabs" == $0.0 }
-                return deferMaybe(status!.1)
-            }
-        }
-
-        public func syncHistory() -> OldSyncResult {
-            return self.sync("history", function: syncHistoryWithDelegate)
         }
     }
 }
