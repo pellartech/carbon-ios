@@ -536,17 +536,6 @@ private extension HomepageViewController {
         }
 
         viewModel.jumpBackInViewModel.syncedTabsShowAllAction = { [weak self] in
-            self?.homePanelDelegate?.homePanelDidRequestToOpenTabTray(focusedSegment: .syncedTabs)
-
-            var extras: [String: String]?
-            if let isZeroSearch = self?.viewModel.isZeroSearch {
-                extras = TelemetryWrapper.getOriginExtras(isZeroSearch: isZeroSearch)
-            }
-            TelemetryWrapper.recordEvent(category: .action,
-                                         method: .tap,
-                                         object: .firefoxHomepage,
-                                         value: .jumpBackInSectionSyncedTabShowAll,
-                                         extras: extras)
         }
 
         viewModel.jumpBackInViewModel.openSyncedTabAction = { [weak self] tabURL in

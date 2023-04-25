@@ -154,8 +154,7 @@ class TabTrayViewController: UIViewController, Themeable {
     private lazy var segmentedControlIphone: UISegmentedControl = {
         let items = [
             TabTrayViewModel.Segment.tabs.image!.overlayWith(image: countLabel),
-            TabTrayViewModel.Segment.privateTabs.image!,
-            TabTrayViewModel.Segment.syncedTabs.image!]
+            TabTrayViewModel.Segment.privateTabs.image!]
         return createSegmentedControl(items: items,
                                       action: #selector(segmentIphoneChanged),
                                       a11yId: AccessibilityIdentifiers.TabTray.navBarSegmentedControl)
@@ -303,17 +302,6 @@ class TabTrayViewController: UIViewController, Themeable {
             switchBetweenLocalPanels(withPrivateMode: false)
         case .privateTabs:
             switchBetweenLocalPanels(withPrivateMode: true)
-        case .syncedTabs:
-            TelemetryWrapper.recordEvent(category: .action,
-                                         method: .tap,
-                                         object: .libraryPanel,
-                                         value: .syncPanel,
-                                         extras: nil)
-            if children.first == viewModel.tabTrayView {
-                hideCurrentPanel()
-                updateToolbarItems(forSyncTabs: viewModel.profile.hasSyncableAccount())
-                showPanel(viewModel.syncedTabsController)
-            }
         default:
             return
         }
@@ -363,11 +351,7 @@ class TabTrayViewController: UIViewController, Themeable {
 
     private func updateToolbarItems(forSyncTabs showSyncItems: Bool = false) {
         // The "Synced" panel has different toolbar items so we handle them separately.
-        guard segmentedControlIphone.selectedSegmentIndex != TabTrayViewModel.Segment.syncedTabs.rawValue else {
-            updateSyncedToolbarItems(forSyncTabs: showSyncItems)
-            return
-        }
-
+      
         switch viewModel.layout {
         case .compact:
             setToolbarItems(bottomToolbarItems, animated: true)
@@ -378,8 +362,7 @@ class TabTrayViewController: UIViewController, Themeable {
     }
 
     private func updateSyncedToolbarItems(forSyncTabs showSyncItems: Bool = false) {
-        guard segmentedControlIphone.selectedSegmentIndex == TabTrayViewModel.Segment.syncedTabs.rawValue
-        else { return }
+    
 
         switch viewModel.layout {
         case .compact:
