@@ -34,6 +34,7 @@ public struct ImageIdentifiers {
     public static let deviceTypeDesktop = "deviceTypeDesktop"
     public static let deviceTypeMobile = "deviceTypeMobile"
     public static let downloads = "menu-panel-Downloads"
+    public static let wallet = "menu-panel-Wallet"
     public static let edit = "edit"
     public static let emptySyncImageName = "emptySync"
     public static let findInPage = "menu-FindInPage"

@@ -203,6 +203,9 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
 
             let readingListSection = getReadingListSection()
             append(to: &section, action: readingListSection)
+            
+            let walletSection = getWalletLibraryAction()
+            append(to: &section, action: walletSection)
         }
 
         return section
@@ -309,6 +312,13 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         }.items
     }
 
+    private func getWalletLibraryAction() -> PhotonRowActions {
+        return SingleActionViewModel(title: .AppMenu.AppMenuWallet,
+                                     iconString: ImageIdentifiers.wallet) { _ in
+            self.delegate?.showLibrary(panel: .wallet)
+        }.items
+    }
+    
     private func getFindInPageAction() -> PhotonRowActions {
         return SingleActionViewModel(title: .AppMenu.AppMenuFindInPageTitleString,
                                      iconString: ImageIdentifiers.findInPage) { _ in

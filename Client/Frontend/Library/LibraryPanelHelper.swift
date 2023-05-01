@@ -51,6 +51,7 @@ enum LibraryPanelType: Int, CaseIterable {
     case history = 1
     case downloads = 2
     case readingList = 3
+    case wallet = 4
 
     var title: String {
         switch self {
@@ -62,6 +63,8 @@ enum LibraryPanelType: Int, CaseIterable {
             return .AppMenu.AppMenuDownloadsTitleString
         case .readingList:
             return .AppMenu.AppMenuReadingListTitleString
+        case .wallet:
+            return .AppMenu.AppMenuWalletTitleString
         }
     }
 }

@@ -2806,6 +2806,11 @@ extension String {
             tableName: "Menu",
             value: "Downloads",
             comment: "Accessibility label for the button, displayed in the menu, used to open the Downloads home panel. Please keep as short as possible, <15 chars of space available.")
+        public static let AppMenuWalletTitleString = MZLocalizedString(
+            "Menu.OpenWalletAction.AccessibilityLabel.v2",
+            tableName: "Menu",
+            value: "Wallet",
+            comment: "Accessibility label for the button, displayed in the menu, used to open the Wallet home panel. Please keep as short as possible, <15 chars of space available.")
         public static let AppMenuSyncedTabsTitleString = MZLocalizedString(
             "Menu.OpenSyncedTabsAction.AccessibilityLabel.v2",
             tableName: "Menu",
@@ -2831,6 +2836,11 @@ extension String {
             tableName: nil,
             value: "Downloads",
             comment: "Label for the button, displayed in the menu, takes you to to Downloads screen when pressed.")
+        public static let AppMenuWallet = MZLocalizedString(
+            "Menu.Wallet.Label",
+            tableName: nil,
+            value: "Wallet",
+            comment: "Label for the button, displayed in the menu, takes you to to wallet screen when pressed.")
         public static let AppMenuPasswords = MZLocalizedString(
             "Menu.Passwords.Label",
             tableName: nil,
