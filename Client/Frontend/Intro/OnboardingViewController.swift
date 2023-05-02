@@ -556,8 +556,8 @@ class GradientLabel: UILabel {
         updateTextColor()
     }
     private func updateTextColor() {
-        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0)
-        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0)
+        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 50.0/255.0, blue: 10.0/255.0, alpha: 1.0)
+        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 145.0/255.0, blue: 51.0/255.0, alpha: 1.0)
         let image = UIGraphicsImageRenderer(bounds: bounds).image { context in
             let colors = [topColor.cgColor, bottomColor.cgColor]
             guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
