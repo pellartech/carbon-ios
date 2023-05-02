@@ -4488,6 +4488,11 @@ extension String {
         tableName: nil,
         value: nil,
         comment: "Title in the settings view controller title bar")
+    public static let walletTitle = MZLocalizedString(
+        "Wallet",
+        tableName: nil,
+        value: nil,
+        comment: "Title in the wallet view controller title bar")
     public static let AppSettingsDone = MZLocalizedString(
         "Done",
         tableName: nil,

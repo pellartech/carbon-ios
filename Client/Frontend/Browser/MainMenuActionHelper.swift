@@ -450,8 +450,11 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         let icon = ImageIdentifiers.wallet
 
         let openWattet = SingleActionViewModel(title: title,
-                                                 iconString: icon) { _ in
-          print("Wallet tapped")
+                  
+                                               iconString: icon) { _ in
+            let walletViewController = WalletViewController()
+            let controller = ThemedNavigationController(rootViewController: walletViewController)
+            self.delegate?.showViewController(viewController: controller)
         }.items
         return openWattet
     }
