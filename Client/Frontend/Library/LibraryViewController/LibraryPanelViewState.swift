@@ -7,6 +7,7 @@
 enum LibraryPanelMainState: Equatable {
     case bookmarks(state: LibraryPanelSubState)
     case history(state: LibraryPanelSubState)
+    case wallet(state: LibraryPanelSubState)
     case downloads
     case readingList
 
@@ -15,7 +16,7 @@ enum LibraryPanelMainState: Equatable {
     static func == (lhs: LibraryPanelMainState, rhs: LibraryPanelMainState) -> Bool {
         switch (lhs, rhs) {
         case (let .bookmarks(subState1), let .bookmarks(subState2)),
-             (let .history(subState1), let .history(subState2)):
+             (let .history(subState1), let .history(subState2)),(let .wallet(subState1), let .wallet(subState2)):
             return subState1 == subState2
         case (.downloads, .downloads),
              (.readingList, .readingList):
@@ -30,6 +31,7 @@ enum LibraryPanelMainState: Equatable {
         switch (self, newState) {
         case (.bookmarks, .bookmarks),
              (.history, .history),
+              (.wallet, .wallet),
              (.downloads, .downloads),
              (.readingList, .readingList):
             return false
@@ -99,6 +101,7 @@ class LibraryPanelViewState {
     // that panel, we retain the correct state.
     private var bookmarksState: LibraryPanelMainState = .bookmarks(state: .mainView)
     private var historyState: LibraryPanelMainState = .history(state: .mainView)
+    private var walletState: LibraryPanelMainState = .wallet(state: .mainView)
 
     private func updateState(to newState: LibraryPanelMainState) {
         let changingPanels = state.panelIsDifferentFrom(newState)
@@ -113,7 +116,13 @@ class LibraryPanelViewState {
                                  with: newSubviewState,
                                  and: oldSubviewState,
                                  isChangingPanels: changingPanels)
-
+        case .wallet(let newSubviewState):
+            guard case .wallet(let oldSubviewState) = walletState else { return }
+            updateStateVariables(for: newState,
+                                 andCategory: walletState,
+                                 with: newSubviewState,
+                                 and: oldSubviewState,
+                                 isChangingPanels: changingPanels)
         case .history(let newSubviewState):
             guard case .history(let oldSubviewState) = historyState else { return }
             updateStateVariables(for: newState,
@@ -128,6 +137,7 @@ class LibraryPanelViewState {
              .readingList:
             self.state = newState
         }
+        
     }
 
     private func storeCurrentState() {
@@ -136,6 +146,8 @@ class LibraryPanelViewState {
             bookmarksState = state
         case .history:
             historyState = state
+        case .wallet:
+            walletState = state
         case .downloads, .readingList:
             return
         }

@@ -107,6 +107,14 @@ class LibraryPanelHelper {
                 panelType: .downloads),
 
             LibraryPanelDescriptor(
+                viewController: DownloadsPanel(),
+                profile: profile,
+                tabManager: tabManager,
+                accessibilityLabel: .LibraryPanelWalletAccessibilityLabel,
+                accessibilityIdentifier: AccessibilityIdentifiers.LibraryPanels.walletView,
+                panelType: .wallet),
+
+            LibraryPanelDescriptor(
                 viewController: ReadingListPanel(profile: profile),
                 profile: profile,
                 tabManager: tabManager,

@@ -4203,6 +4203,11 @@ extension String {
         tableName: nil,
         value: nil,
         comment: "Panel accessibility label")
+    public static let LibraryPanelWalletAccessibilityLabel = MZLocalizedString(
+        "Wallet",
+        tableName: nil,
+        value: nil,
+        comment: "Panel accessibility label")
 }
 
 // MARK: - ReaderPanel

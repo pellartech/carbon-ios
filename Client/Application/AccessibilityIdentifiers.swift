@@ -128,6 +128,7 @@ public struct AccessibilityIdentifiers {
         static let bookmarksView = "LibraryPanels.Bookmarks"
         static let historyView = "LibraryPanels.History"
         static let downloadsView = "LibraryPanels.Downloads"
+        static let walletView = "LibraryPanels.Wallet"
         static let readingListView = "LibraryPanels.ReadingList"
         static let segmentedControl = "librarySegmentControl"
         static let topLeftButton = "libraryPanelTopLeftButton"

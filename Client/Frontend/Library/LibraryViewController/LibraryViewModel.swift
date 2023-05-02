@@ -28,7 +28,8 @@ class LibraryViewModel {
         [UIImage(named: ImageIdentifiers.libraryBookmarks) ?? UIImage(),
          UIImage(named: ImageIdentifiers.libraryHistory) ?? UIImage(),
          UIImage(named: ImageIdentifiers.libraryDownloads) ?? UIImage(),
-         UIImage(named: ImageIdentifiers.libraryReadingList) ?? UIImage()]
+         UIImage(named: ImageIdentifiers.libraryReadingList) ?? UIImage(),
+         UIImage(named: ImageIdentifiers.libraryWallet) ?? UIImage()]
     }
 
     init(withProfile profile: Profile, tabManager: TabManager) {
