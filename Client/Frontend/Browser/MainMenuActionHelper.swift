@@ -97,9 +97,10 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
 
         if isHomePage {
             actions.append(contentsOf: [
-                getLibrarySection(),
+                self.getLibrarySection(),
+                self.getWalletSection(),
                 firstMiscSection,
-                getLastSection()
+                self.getLastSection()
             ])
 
             completion(actions)
@@ -109,6 +110,7 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
                 actions.append(contentsOf: [
                     self.getNewTabSection(),
                     self.getLibrarySection(),
+                    self.getWalletSection(),
                     firstMiscSection,
                     self.getSecondMiscSection(),
                     self.getLastSection()
@@ -265,6 +267,13 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         return section
     }
 
+    private func getWalletSection() -> [PhotonRowActions] {
+        var section = [PhotonRowActions]()
+        let walletAction = getWalletAction()
+        section.append(walletAction)
+        return section
+    }
+    
     private func getLastSection() -> [PhotonRowActions] {
         var section = [PhotonRowActions]()
 
@@ -436,7 +445,16 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         }.items
         return openSettings
     }
+    private func getWalletAction() -> PhotonRowActions {
+        let title = String.AppMenu.AppMenuWalletTitleString
+        let icon = ImageIdentifiers.wallet
 
+        let openWattet = SingleActionViewModel(title: title,
+                                                 iconString: icon) { _ in
+          print("Wallet tapped")
+        }.items
+        return openWattet
+    }
     private func getNightModeAction() -> [PhotonRowActions] {
         var items: [PhotonRowActions] = []
         let nightModeEnabled = NightModeHelper.isActivated()

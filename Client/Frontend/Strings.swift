@@ -2776,6 +2776,11 @@ extension String {
             tableName: "Menu",
             value: "Settings",
             comment: "Label for the button, displayed in the menu, used to open the Settings menu.")
+        public static let AppMenuWalletTitleString = MZLocalizedString(
+            "Menu.OpenWalletAction.Title",
+            tableName: "Menu",
+            value: "Wallet",
+            comment: "Label for the button, displayed in the menu, used to open the Wallet menu.")
         public static let AppMenuCloseAllTabsTitleString = MZLocalizedString(
             "Menu.CloseAllTabsAction.Title",
             tableName: "Menu",

@@ -91,6 +91,7 @@ public struct ImageIdentifiers {
     public static let requestMobileSite = "menu-ViewMobile"
     public static let sendToDevice = "menu-Send-to-Device"
     public static let settings = "menu-Settings"
+    public static let wallet = "menu-Wallet"
     public static let share = "action_share"
     public static let signinSync = "signin-sync"
     public static let signinSyncQRButton = "qr-code-icon-white"
