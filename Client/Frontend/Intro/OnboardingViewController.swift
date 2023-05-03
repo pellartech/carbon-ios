@@ -235,6 +235,9 @@ class OnboardingWelcomeCollectionCell: UICollectionViewCell {
         label.textAlignment = .center
         label.text = "Privacy Policy, Terms of Usage"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(privacyLabelTapped))
+        label.addGestureRecognizer(tap)
         return label
     }()
     
@@ -314,6 +317,10 @@ class OnboardingWelcomeCollectionCell: UICollectionViewCell {
             privacyLabel.heightAnchor.constraint(equalToConstant: UX.PrivacyLabel.height),
         ])
     }
+    @objc func privacyLabelTapped(sender:UILabel) {
+        guard let url = URL(string: "https://carbon.website/privacy-policy/") else { return }
+        UIApplication.shared.open(url)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -324,7 +331,7 @@ class OnboardingWelcomeCollectionCell: UICollectionViewCell {
 
 class OnboardingCollectionCell: UICollectionViewCell {
     
-
+    
     private struct UX {
         struct HeaderView {
             static let top: CGFloat = 45
@@ -425,12 +432,12 @@ class OnboardingCollectionCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor =  Utilities().hexStringToUIColor(hex: "#1E1E1E")
         contentView.backgroundColor =  Utilities().hexStringToUIColor(hex: "#1E1E1E")
-
+        
         headerView.addSubview(logoImageView)
         headerView.addSubview(carbonImageView)
         contentView.addSubview(headerView)
         
- 
+        
         contentView.addSubview(centerImageView)
         contentView.addSubview(descrpLabel)
         contentView.addSubview(titleLabel)
@@ -556,8 +563,8 @@ class GradientLabel: UILabel {
         updateTextColor()
     }
     private func updateTextColor() {
-        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 43.0/255.0, blue: 6.0/255.0, alpha: 1.0)
-        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 141.0/255.0, blue: 49.0/255.0, alpha: 1.0)
+        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 50.0/255.0, blue: 10.0/255.0, alpha: 1.0)
+        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 145.0/255.0, blue: 51.0/255.0, alpha: 1.0)
         let image = UIGraphicsImageRenderer(bounds: bounds).image { context in
             let colors = [topColor.cgColor, bottomColor.cgColor]
             guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
