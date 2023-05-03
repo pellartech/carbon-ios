@@ -243,7 +243,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
         FeatureModel(title: "Biswap", icon: "ic_biswap",color: UIColor(red: 0, green: 0, blue: 0, alpha: 0),url: "https://biswap.org/swap?outputCurrency=0x04756126F044634C9a0f0E985e60c88a51ACC206&utm_source=BD_carb&utm_medium=BD_btnswap&utm_campaign=BD_csixswap"),
         FeatureModel(title: "Beefy", icon: "ic_beefy",color: UIColor(red: 255, green: 255, blue: 255, alpha: 1),url: "https://app.beefy.com/vault/cakev2-csix-cake"),
         FeatureModel(title: "Binance", icon: "ic_binance",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://www.binance.com"),
-        FeatureModel(title: "Kukoin", icon: "ic_kukoin",color: UIColor(red: 89, green: 206, blue: 161, alpha: 1),url: "https://www.kucoin.com"),
+        FeatureModel(title: "Kucoin", icon: "ic_kucoin",color: UIColor(red: 89, green: 206, blue: 161, alpha: 1),url: "https://www.kucoin.com"),
         FeatureModel(title: "Floki", icon: "ic_floki",color: UIColor(red: 0, green: 0, blue: 0, alpha: 0),url: "https://floki.com"),
         FeatureModel(title: "Curate", icon: "ic_curate",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://curate.style"),
     ]
