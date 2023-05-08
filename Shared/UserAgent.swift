@@ -9,8 +9,8 @@ import UIKit
 open class UserAgent {
     public static let uaBitSafari = "Safari/605.1.15"
     public static let uaBitMobile = "Mobile/15E148"
-    public static let uaBitFx = "FxiOS/\(AppInfo.appVersion)"
-    public static let product = "Mozilla/5.0"
+    public static let uaBitFx = "CarboniOS/\(AppInfo.appVersion)"
+    public static let product = "Carbon/1.0"
     public static let platform = "AppleWebKit/605.1.15"
     public static let platformDetails = "(KHTML, like Gecko)"
 
@@ -142,7 +142,7 @@ public struct UserAgentBuilder {
             systemInfo: "(\(UIDevice.current.model); CPU iPhone OS \(UIDevice.current.systemVersion.replacingOccurrences(of: ".", with: "_")) like Mac OS X)",
             platform: UserAgent.platform,
             platformDetails: UserAgent.platformDetails,
-            extensions: "FxiOS/\(AppInfo.appVersion)  \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
+            extensions: "CarboniOS/\(AppInfo.appVersion)  \(UserAgent.uaBitMobile) \(UserAgent.uaBitSafari)")
     }
 
     public static func defaultDesktopUserAgent() -> UserAgentBuilder {
@@ -151,6 +151,6 @@ public struct UserAgentBuilder {
             systemInfo: "(Macintosh; Intel Mac OS X 10.15)",
             platform: UserAgent.platform,
             platformDetails: UserAgent.platformDetails,
-            extensions: "FxiOS/\(AppInfo.appVersion) \(UserAgent.uaBitSafari)")
+            extensions: "CarboniOS/\(AppInfo.appVersion) \(UserAgent.uaBitSafari)")
     }
 }
