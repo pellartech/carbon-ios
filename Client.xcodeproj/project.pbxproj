@@ -1204,7 +1204,6 @@
 		F99BEA952A135C24003F49B2 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA942A135C24003F49B2 /* SendViewController.swift */; };
 		F99BEA972A135CDD003F49B2 /* ReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */; };
 		F99BEA992A135EAB003F49B2 /* DrawerMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */; };
-		F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */; };
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F99BEA9F2A13601C003F49B2 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */; };
 		F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */; };
@@ -5069,7 +5068,6 @@
 		F99BEA942A135C24003F49B2 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveViewController.swift; sourceTree = "<group>"; };
 		F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerMenuViewController.swift; sourceTree = "<group>"; };
-		F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchNetworkViewController.swift; sourceTree = "<group>"; };
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticleNetwork-Info.plist"; sourceTree = "<group>"; };
@@ -8118,7 +8116,6 @@
 				F99BEA942A135C24003F49B2 /* SendViewController.swift */,
 				F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */,
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
-				F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */,
 				F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */,
 			);
 			path = Wallet;
@@ -10444,7 +10441,6 @@
 				E58368AA287D632F0087A449 /* StoryProvider.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				F85C7EDD27109241004BDBA4 /* LoginOnboardingViewController.swift in Sources */,
-				F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
 				966206CD2698DE1E005C0A55 /* RecentlySavedViewModel.swift in Sources */,

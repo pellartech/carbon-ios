@@ -27,7 +27,7 @@ class DrawerMenuViewController: UIViewController{
             static let top: CGFloat = 50
         }
         struct TableView {
-            static let top: CGFloat = 75
+            static let top: CGFloat = 100
         }
     }
 
@@ -41,9 +41,6 @@ class DrawerMenuViewController: UIViewController{
         label.font = UIFont.systemFont(ofSize: UX.NetworkLabel.font)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.networkLabelTapped))
-        label.addGestureRecognizer(tapGesture)
-        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -75,7 +72,6 @@ class DrawerMenuViewController: UIViewController{
         applyTheme()
         setUpView()
         setUpViewConstraint()
-        updateUI()
     }
     
     init() {
@@ -129,21 +125,6 @@ class DrawerMenuViewController: UIViewController{
             return !adapters.isEmpty
         }
         tableView.reloadData()
-    }
-    
-    // MARK: - Objc Methods
-    @objc func networkLabelTapped (){
-        let vc = SwitchNetworkViewController()
-        vc.selectHandler = { [weak self] in
-            self?.updateUI()
-        }
-        present(vc, animated: true)
-    }
-    
-    func updateUI(){
-//        let name = ParticleNetwork.getChainInfo().name
-//        let network = ParticleNetwork.getChainInfo().network
-//        networkLabel.text = "Network : \(name) \n \(network.lowercased())"
     }
 }
 // MARK: - Extension - UITableViewDataSource

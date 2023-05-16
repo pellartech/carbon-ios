@@ -18,6 +18,11 @@ import SVProgressHUD
 import SDWebImage
 import Common
 import Shared
+import iOSDropDown
+
+typealias Chain = ParticleNetwork.ChainInfo
+typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
+typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 
 var accountModel = [
     AccountModel(title: "Particle", image: "particle", isConnected: false,walletType: WalletType.particle),
@@ -33,7 +38,7 @@ class WalletViewController: UIViewController {
         }
         struct BalanceLabel{
             static let topValueCarbon: CGFloat = 10
-            static let topValue: CGFloat = 50
+            static let topValue: CGFloat = 100
             static let font: CGFloat = 45
             static let carbonFont: CGFloat = 12
             static let titleFont: CGFloat = 16
@@ -102,7 +107,7 @@ class WalletViewController: UIViewController {
             static let corner: CGFloat = 25
         }
         struct ButtonView {
-            static let top: CGFloat = -20
+            static let top: CGFloat = 30
             static let centerX: CGFloat = 90
             static let height: CGFloat = 50
             static let width: CGFloat = 163
@@ -123,7 +128,14 @@ class WalletViewController: UIViewController {
         }
         struct WalletLabel {
             static let font: CGFloat = 18
-
+        }
+        
+        struct DropDown {
+            static let width: CGFloat = 200
+            static let height: CGFloat = 400
+            static let top: CGFloat = 20
+            static let widthC: CGFloat = 200
+            static let heightC: CGFloat = 40
         }
     
     }
@@ -362,6 +374,30 @@ class WalletViewController: UIViewController {
         return tableView
     }()
     
+    ///DropDown
+    var dropDown: DropDown = {
+        let dropDown = DropDown()
+        dropDown.backgroundColor = UIColor.clear
+        dropDown.rowBackgroundColor = UIColor.black
+        
+        dropDown.textColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.itemsColor = Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.tintColor = UIColor.white
+        dropDown.itemsTintColor = UIColor.black
+        dropDown.selectedRowColor = UIColor.white
+        dropDown.borderColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+
+        dropDown.arrowColor = UIColor.clear
+        dropDown.isSearchEnable = false
+        dropDown.translatesAutoresizingMaskIntoConstraints = false
+        dropDown.font = .boldSystemFont(ofSize:  UX.TokenLabel.font)
+        dropDown.frame = CGRect(x: 0, y: 0, width: UX.DropDown.width, height: UX.DropDown.height)
+        dropDown.textAlignment = .center
+        dropDown.borderWidth = 1
+        dropDown.layer.cornerRadius = 15
+        return dropDown
+    }()
+    
 // MARK: - UI Properties
     var shownFromAppMenu: Bool = false
     private var data: [ConnectWalletModel] = []
@@ -369,7 +405,8 @@ class WalletViewController: UIViewController {
     private var publicAddress = String()
     private var tokensModel = [TokenModel]()
     let viewModel = WalletViewModel()
-    
+    var networkData = [String]()
+
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -377,6 +414,7 @@ class WalletViewController: UIViewController {
         setUpView()
         setUpViewContraint()
         getLocalUserData()
+        getNetworkList()
     }
     
 // MARK: - UI Methods
@@ -409,6 +447,7 @@ class WalletViewController: UIViewController {
         welcomeView.addSubview(getStartedLabel)
         
         contentView.addSubview(actionsView)
+        contentView.addSubview(dropDown)
         contentView.addSubview(totalBalanceLabel)
         contentView.addSubview(carbonBalanceLabel)
         contentView.addSubview(sendBtnView)
@@ -507,6 +546,11 @@ class WalletViewController: UIViewController {
             walletLabel.widthAnchor.constraint(equalToConstant: UX.Wallet.width),
             walletLabel.heightAnchor.constraint(equalToConstant: UX.Wallet.height),
             
+            dropDown.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
+            dropDown.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.DropDown.top),
+            dropDown.widthAnchor.constraint(equalToConstant: UX.DropDown.widthC),
+            dropDown.heightAnchor.constraint(equalToConstant: UX.DropDown.heightC),
+            
             totalBalanceTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
             totalBalanceTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
@@ -569,6 +613,44 @@ class WalletViewController: UIViewController {
             userTokensView.isHidden = true
         }
     }
+    func getNetworkList(){
+        ///solana
+        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.mainnet.rawValue)
+        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.testnet.rawValue)
+        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.devnet.rawValue)
+    
+        ///ethereum
+        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.mainnet.rawValue)
+        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.goerli.rawValue)
+        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.sepolia.rawValue)
+        
+        setUpDropDownValue()
+    }
+    
+    func setUpDropDownValue(){
+        let name = ParticleNetwork.getChainInfo().name
+        let network = ParticleNetwork.getChainInfo().network
+        dropDown.optionArray = networkData
+        let selectedIndex = networkData.firstIndex(where: {$0 == name + "-" + network})
+        dropDown.selectedIndex = selectedIndex ?? 0
+        dropDown.text = networkData[selectedIndex ?? 0]
+        dropDown.didSelect{(selectedText , index ,id) in
+            let selectedValue = selectedText.components(separatedBy: "-")
+            let name = selectedValue[0]
+            let network = selectedValue[1]
+            var chainInfo: Chain?
+            switch name {
+            case Chain.solana(.mainnet).uiName:
+                chainInfo = .solana(SolanaNetwork(rawValue: network)!)
+            case Chain.ethereum(.mainnet).uiName:
+                chainInfo = .ethereum(EthereumNetwork(rawValue: network)!)
+            default:
+                chainInfo = .ethereum(.mainnet)
+            }
+            ParticleNetwork.setChainInfo(chainInfo!)
+        }
+    }
+    
     
 // MARK: - View Model Methods - Network actions
     func setUIAndFetchData(address: String){
