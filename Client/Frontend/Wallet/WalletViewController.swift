@@ -61,7 +61,7 @@ class WalletViewController: UIViewController {
         struct UserTokenView {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 20
-            static let top: CGFloat = 50
+            static let top: CGFloat = 100
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -131,11 +131,11 @@ class WalletViewController: UIViewController {
         }
         
         struct DropDown {
-            static let width: CGFloat = 200
+            static let width: CGFloat = 180
             static let height: CGFloat = 400
             static let top: CGFloat = 20
-            static let widthC: CGFloat = 200
-            static let heightC: CGFloat = 40
+            static let widthC: CGFloat = 180
+            static let heightC: CGFloat = 30
         }
     
     }
@@ -378,15 +378,13 @@ class WalletViewController: UIViewController {
     var dropDown: DropDown = {
         let dropDown = DropDown()
         dropDown.backgroundColor = UIColor.clear
-        dropDown.rowBackgroundColor = UIColor.black
-        
+        dropDown.rowBackgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         dropDown.textColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
-        dropDown.itemsColor = Utilities().hexStringToUIColor(hex: "#FF581A")
-        dropDown.tintColor = UIColor.white
-        dropDown.itemsTintColor = UIColor.black
-        dropDown.selectedRowColor = UIColor.white
+        dropDown.itemsColor = UIColor.white
+        dropDown.tintColor = Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.itemsTintColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.selectedRowColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         dropDown.borderColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
-
         dropDown.arrowColor = UIColor.clear
         dropDown.isSearchEnable = false
         dropDown.translatesAutoresizingMaskIntoConstraints = false
@@ -648,6 +646,7 @@ class WalletViewController: UIViewController {
                 chainInfo = .ethereum(.mainnet)
             }
             ParticleNetwork.setChainInfo(chainInfo!)
+            self.setUIAndFetchData(address: self.publicAddress)
         }
     }
     
