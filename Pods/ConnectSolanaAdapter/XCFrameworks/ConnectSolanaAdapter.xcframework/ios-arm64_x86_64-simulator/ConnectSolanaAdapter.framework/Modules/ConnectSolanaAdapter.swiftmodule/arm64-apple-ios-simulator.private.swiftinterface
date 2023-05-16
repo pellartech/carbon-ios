@@ -1,0 +1,1547 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name ConnectSolanaAdapter
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Accelerate
+import CommonCrypto
+import ConnectCommon
+@_exported import ConnectSolanaAdapter
+import CryptoSwift
+import Foundation
+import ParticleNetworkBase
+import RxAlamofire
+import RxSwift
+import Swift
+import SwiftyJSON
+import SwiftyUserDefaults
+import TweetNacl
+import _Concurrency
+import _StringProcessing
+import secp256k1
+import Accelerate.vecLib
+public enum AssociatedTokenProgram : SolanaBasicProgram {
+  public static var id: PublicKey {
+    get
+  }
+  public static func createAssociatedTokenAccountInstruction(mint: PublicKey, owner: PublicKey, payer: PublicKey) throws -> TransactionInstruction
+}
+public class SolanaConnectAdapter : ConnectCommon.ConnectAdapter, ConnectCommon.LocalAdapter {
+  public init(rpcUrl: Swift.String = RpcUrl.solana)
+  public var walletType: ConnectCommon.WalletType {
+    get
+  }
+  public func handleUrl(_ url: Foundation.URL) -> Swift.Bool
+  public var readyState: ConnectCommon.WalletReadyState {
+    get
+  }
+  public func getAccounts() -> [ConnectCommon.Account]
+  public func connect<T>(_ config: T? = nil) -> RxSwift.Single<ConnectCommon.Account?> where T : ConnectCommon.ConnectConfig
+  public func isConnected(publicAddress: Swift.String) -> Swift.Bool
+  public func disconnect(publicAddress: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signAndSendTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signAndSendTransaction(publicAddress: Swift.String, transaction: SolanaTransaction) -> RxSwift.Single<Swift.String>
+  public func signAllTransactions(publicAddress: Swift.String, transactions: [Swift.String]) -> RxSwift.Single<[Swift.String]>
+  public func signTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signAllTransactions(publicAddress: Swift.String, transactions: [SolanaTransaction]) -> RxSwift.Single<[Swift.String]>
+  public func signTransaction(publicAddress: Swift.String, transaction: SolanaTransaction) -> RxSwift.Single<Swift.String>
+  public func signMessage(publicAddress: Swift.String, message: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signTypeData(publicAddress: Swift.String, data: Swift.String) -> RxSwift.Single<Swift.String>
+  public func importWalletFromPrivateKey(_ privateKey: Swift.String) -> RxSwift.Single<ConnectCommon.Account?>
+  public func importWalletFromMnemonic(_ mnemonic: Swift.String) -> RxSwift.Single<ConnectCommon.Account?>
+  public func exportWalletPrivateKey(publicAddress: Swift.String) -> RxSwift.Single<Swift.String?>
+  public func request(publicAddress: Swift.String, method: Swift.String, parameters: [Swift.Encodable]) -> RxSwift.Single<SwiftyJSON.JSON?>
+  public func switchEthereumChain(publicAddress: Swift.String, chainId: Swift.Int) -> RxSwift.Single<Swift.String>
+  public func addEthereumChain(publicAddress: Swift.String, chainId: Swift.Int, chainName: Swift.String?, nativeCurrency: ConnectCommon.NativeCurrency?, rpcUrl: Swift.String?, blockExplorerUrl: Swift.String?) -> RxSwift.Single<Swift.String>
+  @objc deinit
+}
+public typealias TransactionID = Swift.String
+public typealias Lamports = Swift.UInt64
+public typealias Decimals = Swift.UInt8
+public struct SocketParams<T> : Swift.Decodable where T : Swift.Decodable {
+  public let result: Rpc<T>?
+  public let subscription: Swift.UInt64?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ResponseError : Swift.Decodable, Swift.Equatable {
+  public init(code: Swift.Int?, message: Swift.String?, data: ResponseErrorData?)
+  public let code: Swift.Int?
+  public let message: Swift.String?
+  public let data: ResponseErrorData?
+  public static func == (a: ResponseError, b: ResponseError) -> Swift.Bool
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ResponseErrorData : Swift.Decodable, Swift.Equatable {
+  public let logs: [Swift.String]?
+  public let numSlotsBehind: Swift.Int?
+  public static func == (a: ResponseErrorData, b: ResponseErrorData) -> Swift.Bool
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Rpc<T> : Swift.Decodable where T : Swift.Decodable {
+  public let context: Context
+  public let value: T
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Context : Swift.Decodable {
+  public let slot: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct BlockCommitment : Swift.Decodable {
+  public let commitment: [Swift.UInt64]?
+  public let totalStake: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ClusterNodes : Swift.Decodable {
+  public let pubkey: Swift.String
+  public let gossip: Swift.String
+  public let tpu: Swift.String?
+  public let rpc: Swift.String?
+  public let version: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ConfirmedBlock : Swift.Decodable {
+  public let blockhash: Swift.String
+  public let previousBlockhash: Swift.String
+  public let parentSlot: Swift.UInt64
+  public let transactions: [TransactionInfo]
+  public let rewards: [Reward]
+  public let blockTime: Swift.UInt64?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Reward : Swift.Decodable {
+  public let pubkey: Swift.String
+  public let lamports: Lamports
+  public let postBalance: Lamports
+  public let rewardType: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct EpochInfo : Swift.Decodable {
+  public let absoluteSlot: Swift.UInt64
+  public let blockHeight: Swift.UInt64
+  public let epoch: Swift.UInt64
+  public let slotIndex: Swift.UInt64
+  public let slotsInEpoch: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct EpochSchedule : Swift.Decodable {
+  public let slotsPerEpoch: Swift.UInt64
+  public let leaderScheduleSlotOffset: Swift.UInt64
+  public let warmup: Swift.Bool
+  public let firstNormalEpoch: Swift.UInt64
+  public let firstNormalSlot: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Fee : Swift.Decodable {
+  public let feeCalculator: FeeCalculatorResponse?
+  public let feeRateGovernor: FeeRateGovernor?
+  public let blockhash: Swift.String?
+  public let lastValidSlot: Swift.UInt64?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct FeeCalculatorResponse : Swift.Decodable {
+  public let lamportsPerSignature: Lamports
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct FeeRateGovernor : Swift.Decodable {
+  public let burnPercent: Swift.UInt64
+  public let maxLamportsPerSignature: Lamports
+  public let minLamportsPerSignature: Lamports
+  public let targetLamportsPerSignature: Lamports
+  public let targetSignaturesPerSlot: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Identity : Swift.Decodable {
+  public let identity: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct InflationGovernor : Swift.Decodable {
+  public let foundation: Swift.Float64
+  public let foundationTerm: Swift.Float64
+  public let initial: Swift.Float64
+  public let taper: Swift.Float64
+  public let terminal: Swift.Float64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct InflationRate : Swift.Decodable {
+  public let epoch: Swift.Float64
+  public let foundation: Swift.Float64
+  public let total: Swift.Float64
+  public let validator: Swift.Float64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct LargestAccount : Swift.Decodable {
+  public let lamports: Lamports
+  public let address: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ProgramAccounts<T> : Swift.Decodable where T : BufferLayout {
+  public let accounts: [ProgramAccount<T>]
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ProgramAccount<T> : Swift.Decodable where T : BufferLayout {
+  public let account: BufferInfo<T>
+  public let pubkey: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct BufferInfo<T> : Swift.Decodable where T : BufferLayout {
+  public let lamports: Lamports
+  public let owner: Swift.String
+  public let data: T
+  public let executable: Swift.Bool
+  public let rentEpoch: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct BufferInfoParsed<T> : Swift.Decodable where T : Swift.Decodable {
+  public let lamports: Lamports
+  public let owner: Swift.String
+  public let data: T?
+  public let executable: Swift.Bool
+  public let rentEpoch: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct PerformanceSample : Swift.Decodable {
+  public let numSlots: Swift.UInt64
+  public let numTransactions: Swift.UInt64
+  public let samplePeriodSecs: Swift.UInt
+  public let slot: Swift.UInt64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SignatureInfo : Swift.Decodable {
+  public let signature: Swift.String
+  public let slot: Swift.UInt64?
+  public let err: TransactionError?
+  public let memo: Swift.String?
+  public let blockTime: Swift.UInt64?
+  public init(signature: Swift.String)
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SignatureStatus : Swift.Decodable {
+  public let slot: Swift.UInt64
+  public let confirmations: Swift.UInt64?
+  public let err: TransactionError?
+  public let confirmationStatus: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TransactionInfo : Swift.Decodable {
+  public let blockTime: Swift.UInt64?
+  public let meta: TransactionMeta?
+  public let transaction: ConfirmedTransaction
+  public let slot: Swift.UInt64?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TransactionMeta : Swift.Decodable {
+  public let err: TransactionError?
+  public let fee: Lamports?
+  public let innerInstructions: [InnerInstruction]?
+  public let logMessages: [Swift.String]?
+  public let postBalances: [Lamports]?
+  public let postTokenBalances: [TokenBalance]?
+  public let preBalances: [Lamports]?
+  public let preTokenBalances: [TokenBalance]?
+  public init(from decoder: Swift.Decoder) throws
+}
+public typealias TransactionError = [Swift.String : [ErrorDetail]]
+public struct ErrorDetail : Swift.Codable {
+  public init(wrapped: Any)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct InnerInstruction : Swift.Decodable {
+  public let index: Swift.UInt32
+  public let instructions: [ParsedInstruction]
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TokenBalance : Swift.Decodable {
+  public let accountIndex: Swift.UInt64
+  public let mint: Swift.String
+  public let uiTokenAmount: TokenAccountBalance
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SimulationResult : Swift.Decodable {
+  public let err: ErrorDetail?
+  public let logs: [Swift.String]
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct StakeActivation : Swift.Decodable {
+  public let active: Swift.UInt64
+  public let inactive: Swift.UInt64
+  public let state: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Supply : Swift.Decodable {
+  public let circulating: Lamports
+  public let nonCirculating: Lamports
+  public let nonCirculatingAccounts: [Swift.String]
+  public let total: Lamports
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TokenAccountBalance : Swift.Codable, Swift.Equatable, Swift.Hashable {
+  public init(uiAmount: Swift.Float64?, amount: Swift.String, decimals: Swift.UInt8?, uiAmountString: Swift.String?)
+  public init(amount: Swift.String, decimals: Swift.UInt8?)
+  public let uiAmount: Swift.Float64?
+  public let amount: Swift.String
+  public let decimals: Swift.UInt8?
+  public let uiAmountString: Swift.String?
+  public var amountInUInt64: Swift.UInt64? {
+    get
+  }
+  public static func == (a: TokenAccountBalance, b: TokenAccountBalance) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TokenAccount<T> : Swift.Decodable where T : BufferLayout {
+  public let pubkey: Swift.String
+  public let account: BufferInfo<T>
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct TokenAmount : Swift.Decodable {
+  public let address: Swift.String?
+  public let amount: Swift.String
+  public let decimals: Swift.UInt8
+  public let uiAmount: Swift.Float64
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Version : Swift.Decodable {
+  public let solanaCore: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct VoteAccounts : Swift.Decodable {
+  public let current: [VoteAccount]
+  public let delinquent: [VoteAccount]
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct VoteAccount : Swift.Decodable {
+  public let commission: Swift.Int
+  public let epochVoteAccount: Swift.Bool
+  public let epochCredits: [[Swift.UInt64]]
+  public let nodePubkey: Swift.String
+  public let lastVote: Swift.UInt64
+  public let activatedStake: Swift.UInt64
+  public let votePubkey: Swift.String
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Mint : BufferLayout, Swift.Equatable, Swift.Hashable, Swift.Encodable {
+  public static var BUFFER_LENGTH: Swift.UInt64
+  public let mintAuthorityOption: Swift.UInt32
+  public let mintAuthority: PublicKey?
+  public let supply: Swift.UInt64
+  public let decimals: Swift.UInt8
+  public let isInitialized: Swift.Bool
+  public let freezeAuthorityOption: Swift.UInt32
+  public let freezeAuthority: PublicKey?
+  public static func == (a: Mint, b: Mint) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension Mint : BorshCodable {
+  public init(from reader: inout BinaryReader) throws
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Array {
+  @inlinable internal init(reserveCapacity: Swift.Int) {
+        self = [Element]()
+        self.reserveCapacity(reserveCapacity)
+    }
+  @inlinable internal var slice: Swift.ArraySlice<Element> {
+    get {
+        self[startIndex ..< endIndex]
+    }
+  }
+}
+extension Swift.Array where Element == Swift.UInt8 {
+  public init(hex: Swift.String)
+  public func toHexString() -> Swift.String
+}
+extension Swift.Array where Element == Swift.UInt8 {
+  public func toBase64() -> Swift.String
+  public init(base64: Swift.String)
+}
+extension RIPEMD {
+  public struct Block {
+    public init()
+    public var hash: [Swift.UInt32] {
+      get
+    }
+    public mutating func compress(_ message: [Swift.UInt32])
+    public func f(_ j: Swift.Int) -> ((Swift.UInt32, Swift.UInt32, Swift.UInt32) -> Swift.UInt32)
+    public enum K {
+      case left, right
+      public subscript(j: Swift.Int) -> Swift.UInt32 {
+        get
+      }
+      public static func == (a: RIPEMD.Block.K, b: RIPEMD.Block.K) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+    public enum r {
+      case left, right
+      public subscript(j: Swift.Int) -> Swift.Int {
+        get
+      }
+      public static func == (a: RIPEMD.Block.r, b: RIPEMD.Block.r) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+    public enum s {
+      case left, right
+      public subscript(j: Swift.Int) -> Swift.Int {
+        get
+      }
+      public static func == (a: RIPEMD.Block.s, b: RIPEMD.Block.s) -> Swift.Bool
+      public func hash(into hasher: inout Swift.Hasher)
+      public var hashValue: Swift.Int {
+        get
+      }
+    }
+  }
+}
+public protocol BorshDeserializable {
+  init(from reader: inout BinaryReader) throws
+}
+extension Swift.FixedWidthInteger {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.UInt8 : BorshDeserializable {
+}
+extension Swift.UInt16 : BorshDeserializable {
+}
+extension Swift.UInt32 : BorshDeserializable {
+}
+extension Swift.UInt64 : BorshDeserializable {
+}
+extension UInt2X : BorshDeserializable where Word == Swift.UInt64 {
+}
+extension Swift.Int8 : BorshDeserializable {
+}
+extension Swift.Int16 : BorshDeserializable {
+}
+extension Swift.Int32 : BorshDeserializable {
+}
+extension Swift.Int64 : BorshDeserializable {
+}
+extension Int2X : BorshDeserializable where Word == Swift.UInt64 {
+}
+extension Swift.Float : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.Double : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.Bool : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.String : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.Array : BorshDeserializable where Element : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.Set : BorshDeserializable where Element : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+extension Swift.Dictionary : BorshDeserializable where Key : BorshDeserializable, Value : BorshDeserializable {
+  public init(from reader: inout BinaryReader) throws
+}
+public struct Throwable<T> : Swift.Decodable where T : Swift.Decodable {
+  public let result: Swift.Result<T, Swift.Error>
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SolanaTransaction {
+  public var signatures: [SolanaTransaction.Signature]
+  public var feePayer: PublicKey?
+  public var instructions: [TransactionInstruction]
+  public var recentBlockhash: Swift.String?
+  public init()
+  public init(instructions: [TransactionInstruction], recentBlockhash: Swift.String?, feePayer: PublicKey)
+  public mutating func sign(signers: [SolanaAccount]) throws
+  public func calculateTransactionFee(lamportsPerSignatures: Swift.UInt64) throws -> Swift.UInt64
+  public mutating func serialize(requiredAllSignatures: Swift.Bool = true, verifySignatures: Swift.Bool = false) throws -> Foundation.Data
+  public mutating func addSignature(_ signature: SolanaTransaction.Signature) throws
+  public mutating func verifySignatures() throws -> Swift.Bool
+  public func findSignature(pubkey: PublicKey) -> SolanaTransaction.Signature?
+  public mutating func partialSign(signers: [SolanaAccount]) throws
+  public func compileMessage() throws -> SolanaTransaction.Message
+  public static func from(data: Foundation.Data) throws -> SolanaTransaction
+}
+extension SolanaTransaction {
+  public struct Signature : Swift.Encodable {
+    public var signature: Foundation.Data?
+    public var publicKey: PublicKey
+    public init(signature: Foundation.Data?, publicKey: PublicKey)
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+}
+public struct AccountInfo : BufferLayout {
+  public static let BUFFER_LENGTH: Swift.UInt64
+  public let mint: PublicKey
+  public let owner: PublicKey
+  public let lamports: Swift.UInt64
+  public let delegateOption: Swift.UInt32
+  public var delegate: PublicKey?
+  public let isInitialized: Swift.Bool
+  public let isFrozen: Swift.Bool
+  public let state: Swift.UInt8
+  public let isNativeOption: Swift.UInt32
+  public let rentExemptReserve: Swift.UInt64?
+  public let isNativeRaw: Swift.UInt64
+  public let isNative: Swift.Bool
+  public var delegatedAmount: Swift.UInt64
+  public let closeAuthorityOption: Swift.UInt32
+  public var closeAuthority: PublicKey?
+  public func encode(to encoder: Swift.Encoder) throws
+}
+extension AccountInfo : BorshCodable {
+  public func serialize(to writer: inout Foundation.Data) throws
+  public init(from reader: inout BinaryReader) throws
+}
+extension SolanaTransaction {
+  public struct Message {
+    public var header: SolanaTransaction.Message.Header {
+      get
+    }
+    public var accountKeys: [PublicKey] {
+      get
+    }
+    public var instructions: [SolanaTransaction.Message.CompiledInstruction] {
+      get
+    }
+    public func isAccountWritable(index: Swift.Int) -> Swift.Bool
+    public func isAccountSigner(index: Swift.Int) -> Swift.Bool
+  }
+}
+extension SolanaTransaction.Message {
+  public struct Header : Swift.Decodable, Swift.Equatable {
+    public static func == (a: SolanaTransaction.Message.Header, b: SolanaTransaction.Message.Header) -> Swift.Bool
+    public init(from decoder: Swift.Decoder) throws
+  }
+  public struct CompiledInstruction {
+    public let programIdIndex: Swift.UInt8
+    public let data: [Swift.UInt8]
+    public var accounts: [Swift.Int] {
+      get
+    }
+  }
+}
+public struct TokenSwapInfo : BufferLayout, Swift.Equatable, Swift.Hashable, Swift.Encodable {
+  public static var BUFFER_LENGTH: Swift.UInt64
+  public let version: Swift.UInt8
+  public let isInitialized: Swift.Bool
+  public let nonce: Swift.UInt8
+  public let tokenProgramId: PublicKey
+  public var tokenAccountA: PublicKey
+  public var tokenAccountB: PublicKey
+  public let tokenPool: PublicKey
+  public var mintA: PublicKey
+  public var mintB: PublicKey
+  public let feeAccount: PublicKey
+  public let tradeFeeNumerator: Swift.UInt64
+  public let tradeFeeDenominator: Swift.UInt64
+  public let ownerTradeFeeNumerator: Swift.UInt64
+  public let ownerTradeFeeDenominator: Swift.UInt64
+  public let ownerWithdrawFeeNumerator: Swift.UInt64
+  public let ownerWithdrawFeeDenominator: Swift.UInt64
+  public let hostFeeNumerator: Swift.UInt64
+  public let hostFeeDenominator: Swift.UInt64
+  public let curveType: Swift.UInt8
+  public let payer: PublicKey
+  public static func == (a: TokenSwapInfo, b: TokenSwapInfo) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension TokenSwapInfo : BorshCodable {
+  public func serialize(to writer: inout Foundation.Data) throws
+  public init(from reader: inout BinaryReader) throws
+}
+public protocol BytesEncodable {
+  var bytes: [Swift.UInt8] { get }
+}
+extension Swift.UInt8 : BytesEncodable {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+extension Swift.UInt64 : BytesEncodable {
+}
+extension Swift.UInt32 : BytesEncodable {
+}
+extension Foundation.Data : BytesEncodable {
+}
+extension Swift.Bool : BytesEncodable {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+extension Swift.Array : BytesEncodable where Element == BytesEncodable {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+extension Swift.RawRepresentable where Self.RawValue == Swift.UInt32 {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+extension Swift.RawRepresentable where Self.RawValue == Swift.UInt8 {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+infix operator >>> : BitwiseShiftPrecedence
+public struct BinaryReader {
+  public init(bytes: [Swift.UInt8])
+}
+extension BinaryReader {
+  public mutating func read(count: Swift.UInt32) throws -> [Swift.UInt8]
+}
+infix operator ~<< : BitwiseShiftPrecedence
+public func ~<< (lhs: Swift.UInt32, rhs: Swift.Int) -> Swift.UInt32
+precedencegroup ExponentiationPrecedence {
+  associativity: left
+  higherThan: MultiplicationPrecedence
+  lowerThan: BitwiseShiftPrecedence
+}
+infix operator ** : ExponentiationPrecedence
+public struct BInt : Swift.SignedNumeric, Swift.BinaryInteger, Swift.ExpressibleByFloatLiteral {
+  public typealias Magnitude = Swift.UInt64
+  public var magnitude: Swift.UInt64 {
+    get
+  }
+  public typealias Words = [Swift.UInt]
+  public var words: BInt.Words {
+    get
+  }
+  public init(_ str: Swift.String)
+  public init(floatLiteral value: Swift.Double)
+  public init(integerLiteral value: Swift.Int)
+  public init?<T>(exactly source: T) where T : Swift.BinaryInteger
+  public init<T>(_ source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(_ source: T) where T : Swift.BinaryInteger
+  public init<T>(clamping source: T) where T : Swift.BinaryInteger
+  public init?<T>(exactly source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(truncatingIfNeeded source: T) where T : Swift.BinaryInteger
+  public var description: Swift.String {
+    get
+  }
+  public init(number: Swift.String, withBase base: Swift.Int)
+  public func asString(withBase base: Swift.Int) -> Swift.String
+  public func hash(into hasher: inout Swift.Hasher)
+  public static var isSigned: Swift.Bool {
+    get
+  }
+  public func signum() -> BInt
+  public var bitWidth: Swift.Int {
+    get
+  }
+  public var trailingZeroBitCount: Swift.Int {
+    get
+  }
+  public static func << <T>(lhs: BInt, rhs: T) -> BInt where T : Swift.BinaryInteger
+  public static func <<= <T>(lhs: inout BInt, rhs: T) where T : Swift.BinaryInteger
+  public static func >> <T>(lhs: BInt, rhs: T) -> BInt where T : Swift.BinaryInteger
+  public static func >>= <T>(lhs: inout BInt, rhs: T) where T : Swift.BinaryInteger
+  public static func & (lhs: BInt, rhs: BInt) -> BInt
+  public static func &= (lhs: inout BInt, rhs: BInt)
+  public static func | (lhs: BInt, rhs: BInt) -> BInt
+  public static func |= (lhs: inout BInt, rhs: BInt)
+  public static func ^ (lhs: BInt, rhs: BInt) -> BInt
+  public static func ^= (lhs: inout BInt, rhs: BInt)
+  prefix public static func ~ (x: BInt) -> BInt
+  public static func += (lhs: inout BInt, rhs: BInt)
+  public static func + (lhs: BInt, rhs: BInt) -> BInt
+  public mutating func negate()
+  prefix public static func - (n: BInt) -> BInt
+  public static func - (lhs: BInt, rhs: BInt) -> BInt
+  public static func -= (lhs: inout BInt, rhs: BInt)
+  public static func * (lhs: BInt, rhs: BInt) -> BInt
+  public static func *= (lhs: inout BInt, rhs: BInt)
+  public static func ** (lhs: BInt, rhs: Swift.Int) -> BInt
+  public func quotientAndRemainder(dividingBy rhs: BInt) -> (quotient: BInt, remainder: BInt)
+  public static func / (lhs: BInt, rhs: BInt) -> BInt
+  public static func /= (lhs: inout BInt, rhs: BInt)
+  public static func % (lhs: BInt, rhs: BInt) -> BInt
+  public static func %= (lhs: inout BInt, rhs: BInt)
+  public static func == (lhs: BInt, rhs: BInt) -> Swift.Bool
+  public static func < (lhs: BInt, rhs: BInt) -> Swift.Bool
+  public static func > (lhs: BInt, rhs: BInt) -> Swift.Bool
+  public static func <= (lhs: BInt, rhs: BInt) -> Swift.Bool
+  public static func >= (lhs: BInt, rhs: BInt) -> Swift.Bool
+  public typealias FloatLiteralType = Swift.Double
+  public typealias IntegerLiteralType = Swift.Int
+  public typealias Stride = Swift.Int
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class BIntMath {
+  @objc deinit
+}
+public struct BDouble : Swift.ExpressibleByIntegerLiteral, Swift.ExpressibleByFloatLiteral, Swift.CustomStringConvertible, Swift.SignedNumeric, Swift.Comparable, Swift.Hashable {
+  public static func -= (lhs: inout BDouble, rhs: BDouble)
+  public static func += (lhs: inout BDouble, rhs: BDouble)
+  public init?<T>(exactly _: T) where T : Swift.BinaryInteger
+  public var magnitude: Swift.Double
+  public typealias Magnitude = Swift.Double
+  public static func *= (lhs: inout BDouble, rhs: BDouble)
+  public init(_ z: Swift.Int)
+  public init(_ d: Swift.Double)
+  public init(integerLiteral value: Swift.Int)
+  public init(floatLiteral value: Swift.Double)
+  public var description: Swift.String {
+    get
+  }
+  public func decimalExpansion(precisionAfterComma digits: Swift.Int) -> Swift.String
+  public func hash(into hasher: inout Swift.Hasher)
+  public func rawData() -> (sign: Swift.Bool, numerator: [Swift.UInt64], denominator: [Swift.UInt64])
+  public func isPositive() -> Swift.Bool
+  public func isNegative() -> Swift.Bool
+  public func isZero() -> Swift.Bool
+  public mutating func negate()
+  public mutating func minimize()
+  public typealias FloatLiteralType = Swift.Double
+  public typealias IntegerLiteralType = Swift.Int
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public func == (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func != (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func < (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func > (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func <= (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func >= (lhs: BDouble, rhs: BDouble) -> Swift.Bool
+public func * (lhs: BDouble, rhs: BDouble) -> BDouble
+public func / (lhs: BDouble, rhs: BDouble) -> BDouble
+public func + (lhs: BDouble, rhs: BDouble) -> BDouble
+prefix public func - (n: BDouble) -> BDouble
+public func - (lhs: BDouble, rhs: BDouble) -> BDouble
+public func abs(_ lhs: BDouble) -> BDouble
+public enum RIPEMD {
+  public static func digest(_ input: Foundation.Data, bitlength: Swift.Int = 160) -> Foundation.Data
+  public static func pad(_ data: Foundation.Data) -> Foundation.Data
+  public static func getWordsInSection(_ data: Foundation.Data, _ section: Swift.Int) -> [Swift.UInt32]
+  public static func encodeWords(_ input: [Swift.UInt32]) -> Foundation.Data
+  public static func digest(_ input: Foundation.Data, bitlength: Swift.Int = 160) -> Swift.String
+  public static func hexStringDigest(_ input: Swift.String, bitlength: Swift.Int = 160) -> Foundation.Data
+  public static func hexStringDigest(_ input: Swift.String, bitlength: Swift.Int = 160) -> Swift.String
+  public static func asciiDigest(_ input: Swift.String, bitlength: Swift.Int = 160) -> Foundation.Data
+  public static func asciiDigest(_ input: Swift.String, bitlength: Swift.Int = 160) -> Swift.String
+}
+public enum TokenProgram : SolanaBasicProgram {
+  public enum Index {
+  }
+  public static var id: PublicKey {
+    get
+  }
+  public static func initializeMintInstruction(mint: PublicKey, decimals: Swift.UInt8, authority: PublicKey, freezeAuthority: PublicKey?) -> TransactionInstruction
+  public static func initializeAccountInstruction(account: PublicKey, mint: PublicKey, owner: PublicKey) -> TransactionInstruction
+  public static func transferInstruction(source: PublicKey, destination: PublicKey, owner: PublicKey, amount: Swift.UInt64) -> TransactionInstruction
+  public static func transferCheckedInstruction(source: PublicKey, mint: PublicKey, destination: PublicKey, owner: PublicKey, multiSigners: [PublicKey], amount: Lamports, decimals: Decimals) -> TransactionInstruction
+  public static func burnCheckedInstruction(mint: PublicKey, account: PublicKey, owner: PublicKey, amount: Swift.UInt64, decimals: Swift.UInt8) -> TransactionInstruction
+  public static func approveInstruction(account: PublicKey, delegate: PublicKey, owner: PublicKey, multiSigners: [SolanaAccount], amount: Swift.UInt64) -> TransactionInstruction
+  public static func mintToInstruction(mint: PublicKey, destination: PublicKey, authority: PublicKey, amount: Swift.UInt64) -> TransactionInstruction
+  public static func closeAccountInstruction(account: PublicKey, destination: PublicKey, owner: PublicKey) -> TransactionInstruction
+  public static func closeAccountInstruction(account: PublicKey, destination: PublicKey, owner: PublicKey, signers: [PublicKey]) -> TransactionInstruction
+}
+public typealias Bignum = BInt
+extension BInt {
+  public var data: Foundation.Data {
+    get
+  }
+  public var dec: Swift.String {
+    get
+  }
+  public var hex: Swift.String {
+    get
+  }
+  public init(hex: Swift.String)
+  public init(_ n: Swift.UInt64)
+  public init(data: Foundation.Data)
+}
+extension Foundation.Data {
+  public var hexString: Swift.String {
+    get
+  }
+}
+extension Foundation.Data {
+  public var decodedLength: Swift.Int {
+    get
+  }
+  public mutating func decodeLength() -> Swift.Int
+  public static func encodeLength(_ len: Swift.Int) -> Foundation.Data
+}
+extension Swift.Encodable {
+  public var jsonString: Swift.String? {
+    get
+  }
+}
+public struct PublicKey : Swift.Codable, Swift.Equatable, Swift.CustomStringConvertible, Swift.Hashable {
+  public static let NULL_PUBLICKEY_BYTES: [Swift.UInt8]
+  public static let numberOfBytes: Swift.Int
+  public let bytes: [Swift.UInt8]
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+  public init(string: Swift.String?) throws
+  public init(data: Foundation.Data) throws
+  public init(bytes: [Swift.UInt8]?) throws
+  public var base58EncodedString: Swift.String {
+    get
+  }
+  public var data: Foundation.Data {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public func short(numOfSymbolsRevealed: Swift.Int = 4) -> Swift.String
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (lhs: PublicKey, rhs: PublicKey) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension PublicKey : BytesEncodable {
+}
+extension PublicKey {
+  public static func associatedTokenAddress(walletAddress: PublicKey, tokenMintAddress: PublicKey) throws -> PublicKey
+  public static func findProgramAddress(seeds: [Foundation.Data], programId: PublicKey) throws -> (PublicKey, Swift.UInt8)
+  public static func createProgramAddress(seeds: [Foundation.Data], programId: PublicKey) throws -> PublicKey
+  public static func createWithSeed(fromPublicKey: PublicKey, seed: Swift.String, programId: PublicKey) throws -> PublicKey
+}
+extension PublicKey {
+  @available(*, deprecated, renamed: "TokenProgram.id")
+  public static var tokenProgramId: PublicKey {
+    get
+  }
+  public static var sysvarRent: PublicKey {
+    get
+  }
+  @available(*, deprecated, renamed: "SystemProgram.id")
+  public static var programId: PublicKey {
+    get
+  }
+  public static var wrappedSOLMint: PublicKey {
+    get
+  }
+  public static var solMint: PublicKey {
+    get
+  }
+  public static var swapHostFeeAddress: PublicKey {
+    get
+  }
+  @available(*, deprecated, renamed: "AssociatedTokenProgram.id")
+  public static var splAssociatedTokenAccountProgramId: PublicKey {
+    get
+  }
+  public static var renBTCMint: PublicKey {
+    get
+  }
+  public static var renBTCMintDevnet: PublicKey {
+    get
+  }
+  public static var fake: PublicKey {
+    get
+  }
+  public static func orcaSwapId(version: Swift.Int = 2) -> PublicKey
+  public static var usdcMint: PublicKey {
+    get
+  }
+  public static var usdtMint: PublicKey {
+    get
+  }
+  public static var dexPID: PublicKey {
+    get
+  }
+  public static var serumSwapPID: PublicKey {
+    get
+  }
+  public var isUsdx: Swift.Bool {
+    get
+  }
+}
+extension PublicKey : BorshCodable {
+  public func serialize(to writer: inout Foundation.Data) throws
+  public init(from reader: inout BinaryReader) throws
+}
+public struct TransactionInstruction : Swift.Codable {
+  public let keys: [SolanaAccount.Meta]
+  public let programId: PublicKey
+  public let data: [Swift.UInt8]
+  public init(keys: [SolanaAccount.Meta], programId: PublicKey, data: [BytesEncodable])
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum SystemProgram : SolanaBasicProgram {
+  public enum Index {
+  }
+  public static var id: PublicKey {
+    get
+  }
+  public static func createAccountInstruction(from fromPublicKey: PublicKey, toNewPubkey newPubkey: PublicKey, lamports: Swift.UInt64, space: Swift.UInt64, programId: PublicKey) -> TransactionInstruction
+  public static func transferInstruction(from fromPublicKey: PublicKey, to toPublicKey: PublicKey, lamports: Swift.UInt64) -> TransactionInstruction
+}
+public struct DerivablePath : Swift.Hashable, Swift.Codable {
+  public enum DerivableType : Swift.String, Swift.CaseIterable, Swift.Codable {
+    case bip44Change
+    case bip44
+    case deprecated
+    public init?(rawValue: Swift.String)
+    public typealias AllCases = [DerivablePath.DerivableType]
+    public typealias RawValue = Swift.String
+    public static var allCases: [DerivablePath.DerivableType] {
+      get
+    }
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public let type: DerivablePath.DerivableType
+  public let walletIndex: Swift.Int
+  public let accountIndex: Swift.Int?
+  public init(type: DerivablePath.DerivableType, walletIndex: Swift.Int, accountIndex: Swift.Int? = nil)
+  public static var `default`: DerivablePath {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: DerivablePath, b: DerivablePath) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Swift.String {
+  @inlinable public var bytes: [Swift.UInt8] {
+    get {
+        data(using: String.Encoding.utf8, allowLossyConversion: true)?.bytes ?? Array(utf8)
+    }
+  }
+}
+public typealias BorshCodable = BorshDeserializable & BorshSerializable
+public enum BorshDecodingError : Swift.Error {
+  case unknownData
+  public static func == (a: BorshDecodingError, b: BorshDecodingError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension Swift.UInt32 {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+}
+extension Swift.UInt64 {
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+  public func convertToBalance(decimals: Swift.Int?) -> Swift.Double
+  public func convertToBalance(decimals: Swift.UInt8?) -> Swift.Double
+}
+extension Swift.Double {
+  public func toLamport(decimals: Swift.Int) -> Swift.UInt64
+  public func toLamport(decimals: Swift.UInt8) -> Swift.UInt64
+}
+public protocol BorshSerializable {
+  func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.UInt8 : BorshSerializable {
+}
+extension Swift.UInt16 : BorshSerializable {
+}
+extension Swift.UInt32 : BorshSerializable {
+}
+extension Swift.UInt64 : BorshSerializable {
+}
+extension UInt2X : BorshSerializable where Word == Swift.UInt64 {
+}
+extension Swift.Int8 : BorshSerializable {
+}
+extension Swift.Int16 : BorshSerializable {
+}
+extension Swift.Int32 : BorshSerializable {
+}
+extension Swift.Int64 : BorshSerializable {
+}
+extension Int2X : BorshSerializable where Word == Swift.UInt64 {
+}
+extension Swift.FixedWidthInteger {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Float : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Double : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Bool : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.String : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Array : BorshSerializable where Element : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Set : BorshSerializable where Element : BorshSerializable, Element : Swift.Comparable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+extension Swift.Dictionary : BorshSerializable where Key : BorshSerializable, Key : Swift.Comparable, Value : BorshSerializable {
+  public func serialize(to writer: inout Foundation.Data) throws
+}
+public enum Network : Swift.String, Swift.CaseIterable, Swift.Codable {
+  case mainnetBeta
+  case devnet
+  case testnet
+  public var cluster: Swift.String {
+    get
+  }
+  public var isTestnet: Swift.Bool {
+    get
+  }
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [Network]
+  public typealias RawValue = Swift.String
+  public static var allCases: [Network] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum SolanaError : Swift.Error, Swift.Equatable {
+  public static func == (lhs: SolanaError, rhs: SolanaError) -> Swift.Bool
+  case unauthorized
+  case notFound
+  case assertionFailed
+  case invalidRequest(reason: Swift.String? = nil)
+  case invalidResponse(ResponseError)
+  case transactionError(ErrorDetail, logs: [Swift.String])
+  case socket(Swift.Error)
+  case transactionHasNotBeenConfirmed
+  case other(Swift.String)
+  case unknown
+  public static var couldNotRetrieveAccountInfo: SolanaError {
+    get
+  }
+  public static var couldNotRetrieveBuffer: SolanaError {
+    get
+  }
+}
+public enum BufferLayoutError : Swift.Error {
+  case NotImplemented
+  public static func == (a: BufferLayoutError, b: BufferLayoutError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol BufferLayout : BorshDeserializable, BorshSerializable, Swift.Decodable, Swift.Encodable {
+}
+extension BufferLayout {
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Foundation.Data {
+  public func ask_BTCHash160() -> Foundation.Data
+}
+extension Ed25519HDKey {
+  public struct Keys {
+    public let key: Foundation.Data
+    public let chainCode: Foundation.Data
+  }
+}
+public struct SolanaAccount : Swift.Codable, Swift.Hashable {
+  public let phrase: [Swift.String]
+  public let publicKey: PublicKey
+  public let secretKey: Foundation.Data
+  public init(secretKey: Foundation.Data) throws
+  #if compiler(>=5.3) && $AsyncAwait
+  public init(phrase: [Swift.String] = [], network: Network, derivablePath: DerivablePath? = nil) async throws
+  #endif
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: SolanaAccount, b: SolanaAccount) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+extension SolanaAccount {
+  public struct Meta : Swift.Equatable, Swift.Codable, Swift.CustomDebugStringConvertible {
+    public let publicKey: PublicKey
+    public var isSigner: Swift.Bool
+    public var isWritable: Swift.Bool
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+    public init(publicKey: PublicKey, isSigner: Swift.Bool, isWritable: Swift.Bool)
+    public static func readonly(publicKey: PublicKey, isSigner: Swift.Bool) -> SolanaAccount.Meta
+    public static func writable(publicKey: PublicKey, isSigner: Swift.Bool) -> SolanaAccount.Meta
+    public var debugDescription: Swift.String {
+      get
+    }
+    public static func == (a: SolanaAccount.Meta, b: SolanaAccount.Meta) -> Swift.Bool
+  }
+}
+public struct ConfirmedTransaction : Swift.Decodable {
+  public let message: ConfirmedTransaction.Message
+  public let signatures: [Swift.String]
+  public init(from decoder: Swift.Decoder) throws
+}
+extension ConfirmedTransaction {
+  public struct Message : Swift.Decodable {
+    public let accountKeys: [SolanaAccount.Meta]
+    public let instructions: [ParsedInstruction]
+    public let recentBlockhash: Swift.String
+    public init(from decoder: Swift.Decoder) throws
+  }
+}
+public struct ParsedInstruction : Swift.Decodable {
+  public struct Parsed : Swift.Decodable {
+    public struct Info : Swift.Decodable {
+      public let owner: Swift.String?
+      public let account: Swift.String?
+      public let source: Swift.String?
+      public let destination: Swift.String?
+      public let lamports: Swift.UInt64?
+      public let newAccount: Swift.String?
+      public let space: Swift.UInt64?
+      public let mint: Swift.String?
+      public let rentSysvar: Swift.String?
+      public let amount: Swift.String?
+      public let delegate: Swift.String?
+      public let authority: Swift.String?
+      public let wallet: Swift.String?
+      public let tokenAmount: TokenAccountBalance?
+      public init(from decoder: Swift.Decoder) throws
+    }
+    public let info: ParsedInstruction.Parsed.Info
+    public let type: Swift.String?
+    public init(from decoder: Swift.Decoder) throws
+  }
+  public let program: Swift.String?
+  public let programId: Swift.String
+  public let parsed: ParsedInstruction.Parsed?
+  public let data: Swift.String?
+  public let accounts: [Swift.String]?
+  public init(from decoder: Swift.Decoder) throws
+}
+extension PublicKey : Swift.ExpressibleByStringLiteral, Swift.ExpressibleByUnicodeScalarLiteral, Swift.ExpressibleByExtendedGraphemeClusterLiteral {
+  public init(stringLiteral value: Swift.String)
+  public init(unicodeScalarLiteral value: Swift.String)
+  public init(extendedGraphemeClusterLiteral value: Swift.String)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+}
+public struct EncodableWrapper : Swift.Encodable {
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct RequestAPI : Swift.Encodable {
+  public init(method: Swift.String, params: [Swift.Encodable])
+  public let id: Swift.String
+  public let method: Swift.String
+  public let jsonrpc: Swift.String
+  public let params: [Swift.Encodable]
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public enum Transfer {
+  public static func compile() -> Foundation.Data
+}
+public struct OwnerInfoParams : Swift.Encodable {
+  public let mint: Swift.String?
+  public let programId: Swift.String?
+  public init(mint: Swift.String?, programId: Swift.String?)
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public typealias Commitment = Swift.String
+public struct RequestConfiguration : Swift.Encodable {
+  public let commitment: Commitment?
+  public let encoding: Swift.String?
+  public let dataSlice: DataSlice?
+  public let filters: [[Swift.String : EncodableWrapper]]?
+  public let limit: Swift.Int?
+  public let before: Swift.String?
+  public let until: Swift.String?
+  public init?(commitment: Commitment? = nil, encoding: Swift.String? = nil, dataSlice: DataSlice? = nil, filters: [[Swift.String : EncodableWrapper]]? = nil, limit: Swift.Int? = nil, before: Swift.String? = nil, until: Swift.String? = nil)
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct DataSlice : Swift.Encodable {
+  public let offset: Swift.Int
+  public let length: Swift.Int
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public typealias UInt1X = Swift.FixedWidthInteger & Swift.BinaryInteger & Swift.UnsignedInteger & Swift.Codable
+public struct UInt2X<Word> : Swift.Hashable, Swift.Codable where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger {
+  public typealias IntegerLiteralType = Swift.UInt64
+  public typealias Magnitude = UInt2X<Word>
+  public typealias Words = [Word.Words.Element]
+  public typealias Stride = Swift.Int
+  public var lo: Word
+  public var hi: Word
+  public init(hi: Word, lo: Word)
+  public init(_ source: UInt2X<Word>)
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+extension UInt2X {
+  public static func == (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> Swift.Bool
+}
+extension UInt2X : Swift.ExpressibleByIntegerLiteral {
+  public static var isSigned: Swift.Bool {
+    get
+  }
+  public static var bitWidth: Swift.Int {
+    get
+  }
+  public static var min: UInt2X<Word> {
+    get
+  }
+  public static var max: UInt2X<Word> {
+    get
+  }
+  public init(_ source: Word)
+  public init?<T>(exactly source: T) where T : Swift.BinaryInteger
+  public init<T>(_ source: T) where T : Swift.BinaryInteger
+  public init?<T>(exactly source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(_ source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(truncatingIfNeeded source: T) where T : Swift.BinaryInteger
+  public init<T>(clamping source: T) where T : Swift.BinaryInteger
+  public init(integerLiteral value: UInt2X<Word>.IntegerLiteralType)
+}
+extension UInt2X : Swift.Comparable {
+  public static func < (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> Swift.Bool
+}
+public enum Int2XConfig {
+  public static var useAccelerate: Swift.Bool
+}
+extension UInt2X : Swift.Numeric {
+  public var magnitude: UInt2X<Word> {
+    get
+  }
+  prefix public static func ~ (value: UInt2X<Word>) -> UInt2X<Word>
+  prefix public static func + (value: UInt2X<Word>) -> UInt2X<Word>
+  prefix public static func - (value: UInt2X<Word>) -> UInt2X<Word>
+  public func addingReportingOverflow(_ other: UInt2X<Word>) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public func addingReportingOverflow(_ other: Word) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public static func &+ (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func + (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func + (lhs: UInt2X<Word>, rhs: Word) -> UInt2X<Word>
+  public static func + (lhs: Word, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func += (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func += (lhs: inout UInt2X<Word>, rhs: Word)
+  public func subtractingReportingOverflow(_ other: UInt2X<Word>) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public func subtractingReportingOverflow(_ other: Word) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public static func &- (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func - (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func - (lhs: UInt2X<Word>, rhs: Word) -> UInt2X<Word>
+  public static func - (lhs: Word, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func -= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func -= (lhs: inout UInt2X<Word>, rhs: Word)
+  public func multipliedHalfWidth(by other: Word) -> (high: UInt2X<Word>, low: UInt2X<Word>.Magnitude)
+  public func multipliedFullWidth(by other: UInt2X<Word>) -> (high: UInt2X<Word>, low: UInt2X<Word>.Magnitude)
+  public func multipliedReportingOverflow(by other: UInt2X<Word>) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public static func &* (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func &* (lhs: UInt2X<Word>, rhs: Word) -> UInt2X<Word>
+  public static func &* (lhs: Word, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func * (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func * (lhs: UInt2X<Word>, rhs: Word) -> UInt2X<Word>
+  public static func * (lhs: Word, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func *= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func *= (lhs: inout UInt2X<Word>, rhs: Word)
+}
+extension UInt2X {
+  public func rShifted(_ width: Swift.Int) -> UInt2X<Word>
+  public func lShifted(_ width: Swift.Int) -> UInt2X<Word>
+  public static func &>> (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func &>>= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func &<< (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func &<<= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+}
+extension UInt2X {
+  public func quotientAndRemainder(dividingBy other: Word) -> (quotient: UInt2X<Word>, remainder: UInt2X<Word>)
+  public func quotientAndRemainder(dividingBy other: UInt2X<Word>) -> (quotient: UInt2X<Word>, remainder: UInt2X<Word>)
+  public static func / (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func /= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func % (lhs: UInt2X<Word>, rhs: UInt2X<Word>) -> UInt2X<Word>
+  public static func %= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public func dividedReportingOverflow(by other: UInt2X<Word>) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public func remainderReportingOverflow(dividingBy other: UInt2X<Word>) -> (partialValue: UInt2X<Word>, overflow: Swift.Bool)
+  public func dividingFullWidth(_ dividend: (high: UInt2X<Word>, low: UInt2X<Word>.Magnitude)) -> (quotient: UInt2X<Word>, remainder: UInt2X<Word>)
+}
+extension UInt2X : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public func toString(radix: Swift.Int = 10, uppercase: Swift.Bool = false) -> Swift.String
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension Swift.StringProtocol {
+  public init?<Word>(_ source: UInt2X<Word>, radix: Swift.Int = 10, uppercase: Swift.Bool = false) where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger
+}
+extension UInt2X : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.StringLiteralType)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.StringLiteralType
+  public typealias StringLiteralType = Swift.StringLiteralType
+  public typealias UnicodeScalarLiteralType = Swift.StringLiteralType
+}
+extension Swift.Int {
+  public init<Word>(_ source: UInt2X<Word>) where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger
+}
+extension UInt2X : Swift.Strideable {
+  public func distance(to other: UInt2X<Word>) -> Swift.Int
+  public func advanced(by n: Swift.Int) -> UInt2X<Word>
+}
+extension UInt2X : Swift.BinaryInteger {
+  public var bitWidth: Swift.Int {
+    get
+  }
+  public var words: UInt2X<Word>.Words {
+    get
+  }
+  public var trailingZeroBitCount: Swift.Int {
+    get
+  }
+  public static func &= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func |= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func ^= (lhs: inout UInt2X<Word>, rhs: UInt2X<Word>)
+  public static func <<= <RHS>(lhs: inout UInt2X<Word>, rhs: RHS) where RHS : Swift.BinaryInteger
+  public static func >>= <RHS>(lhs: inout UInt2X<Word>, rhs: RHS) where RHS : Swift.BinaryInteger
+}
+extension UInt2X : Swift.FixedWidthInteger {
+  public init(_truncatingBits _: Swift.UInt)
+  public var nonzeroBitCount: Swift.Int {
+    get
+  }
+  public var leadingZeroBitCount: Swift.Int {
+    get
+  }
+  public var byteSwapped: UInt2X<Word> {
+    get
+  }
+}
+extension UInt2X : Swift.UnsignedInteger {
+}
+public typealias UInt128 = UInt2X<Swift.UInt64>
+public typealias UInt256 = UInt2X<UInt128>
+public typealias UInt512 = UInt2X<UInt256>
+public typealias UInt1024 = UInt2X<UInt512>
+public typealias Int1X = Swift.FixedWidthInteger & Swift.BinaryInteger & Swift.SignedInteger & Swift.Codable
+public struct Int2X<Word> : Swift.Hashable, Swift.Codable where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger {
+  public typealias IntegerLiteralType = Swift.UInt64
+  public typealias Magnitude = UInt2X<Word>
+  public typealias Words = [Word.Words.Element]
+  public typealias Stride = Swift.Int
+  public var rawValue: Int2X<Word>.Magnitude
+  public init(rawValue: Int2X<Word>.Magnitude)
+  public init(_ source: Int2X<Word>)
+  public init()
+  public func hash(into hasher: inout Swift.Hasher)
+  public func encode(to encoder: Swift.Encoder) throws
+  public var hashValue: Swift.Int {
+    get
+  }
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Int2X {
+  public static func == (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Swift.Bool
+}
+extension Int2X : Swift.ExpressibleByIntegerLiteral {
+  public static var isSigned: Swift.Bool {
+    get
+  }
+  public static var bitWidth: Swift.Int {
+    get
+  }
+  public static var max: Int2X<Word> {
+    get
+  }
+  public static var min: Int2X<Word> {
+    get
+  }
+  public init?<T>(exactly source: T) where T : Swift.BinaryInteger
+  public init<T>(_ source: T) where T : Swift.BinaryInteger
+  public init?<T>(exactly source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(_ source: T) where T : Swift.BinaryFloatingPoint
+  public init<T>(truncatingIfNeeded source: T) where T : Swift.BinaryInteger
+  public init<T>(clamping source: T) where T : Swift.BinaryInteger
+  public init(integerLiteral value: Int2X<Word>.IntegerLiteralType)
+}
+extension Int2X : Swift.Comparable {
+  public var magnitude: Int2X<Word>.Magnitude {
+    get
+  }
+  public static func < (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Swift.Bool
+}
+extension Int2X : Swift.Numeric {
+  prefix public static func ~ (value: Int2X<Word>) -> Int2X<Word>
+  prefix public static func + (value: Int2X<Word>) -> Int2X<Word>
+  prefix public static func - (value: Int2X<Word>) -> Int2X<Word>
+  public func addingReportingOverflow(_ other: Int2X<Word>) -> (partialValue: Int2X<Word>, overflow: Swift.Bool)
+  public static func &+ (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func + (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func += (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public func subtractingReportingOverflow(_ other: Int2X<Word>) -> (partialValue: Int2X<Word>, overflow: Swift.Bool)
+  public static func &- (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func - (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func -= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public func multipliedFullWidth(by other: Int2X<Word>) -> (high: Int2X<Word>, low: Int2X<Word>.Magnitude)
+  public func multipliedReportingOverflow(by other: Int2X<Word>) -> (partialValue: Int2X<Word>, overflow: Swift.Bool)
+  public static func &* (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func * (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func *= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+}
+extension Int2X {
+  public static func &>> (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func &<< (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func &>>= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public static func &<<= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+}
+extension Int2X {
+  public func quotientAndRemainder(dividingBy other: Int2X<Word>) -> (quotient: Int2X<Word>, remainder: Int2X<Word>)
+  public static func / (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func /= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public static func % (lhs: Int2X<Word>, rhs: Int2X<Word>) -> Int2X<Word>
+  public static func %= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public func dividedReportingOverflow(by other: Int2X<Word>) -> (partialValue: Int2X<Word>, overflow: Swift.Bool)
+  public func remainderReportingOverflow(dividingBy other: Int2X<Word>) -> (partialValue: Int2X<Word>, overflow: Swift.Bool)
+  public func dividingFullWidth(_ dividend: (high: Int2X<Word>, low: Int2X<Word>.Magnitude)) -> (quotient: Int2X<Word>, remainder: Int2X<Word>)
+}
+extension Int2X : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public func toString(radix: Swift.Int = 10, uppercase: Swift.Bool = false) -> Swift.String
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension Swift.StringProtocol {
+  public init?<Word>(_ source: Int2X<Word>, radix: Swift.Int = 10, uppercase: Swift.Bool = false) where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger
+}
+extension Int2X : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.StringLiteralType)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.StringLiteralType
+  public typealias StringLiteralType = Swift.StringLiteralType
+  public typealias UnicodeScalarLiteralType = Swift.StringLiteralType
+}
+extension Swift.Int {
+  public init<Word>(_ source: Int2X<Word>) where Word : Swift.Decodable, Word : Swift.Encodable, Word : Swift.FixedWidthInteger, Word : Swift.UnsignedInteger
+}
+extension Int2X : Swift.Strideable {
+  public func distance(to other: Int2X<Word>) -> Swift.Int
+  public func advanced(by n: Swift.Int) -> Int2X<Word>
+}
+extension Int2X : Swift.BinaryInteger {
+  public var bitWidth: Swift.Int {
+    get
+  }
+  public var words: Int2X<Word>.Words {
+    get
+  }
+  public var trailingZeroBitCount: Swift.Int {
+    get
+  }
+  public static func &= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public static func |= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public static func ^= (lhs: inout Int2X<Word>, rhs: Int2X<Word>)
+  public static func <<= <RHS>(lhs: inout Int2X<Word>, rhs: RHS) where RHS : Swift.BinaryInteger
+  public static func >>= <RHS>(lhs: inout Int2X<Word>, rhs: RHS) where RHS : Swift.BinaryInteger
+}
+extension Int2X : Swift.FixedWidthInteger {
+  public init(_truncatingBits _: Swift.UInt)
+  public var nonzeroBitCount: Swift.Int {
+    get
+  }
+  public var leadingZeroBitCount: Swift.Int {
+    get
+  }
+  public var byteSwapped: Int2X<Word> {
+    get
+  }
+}
+extension Int2X : Swift.SignedInteger {
+}
+public typealias Int128 = Int2X<Swift.UInt64>
+public typealias Int256 = Int2X<UInt128>
+public typealias Int512 = Int2X<UInt256>
+public typealias Int1024 = Int2X<UInt512>
+public struct EmptyInfo : BufferLayout {
+  public static var BUFFER_LENGTH: Swift.UInt64
+  public func encode(to encoder: Swift.Encoder) throws
+}
+extension EmptyInfo : BorshCodable {
+  public init(from _: inout BinaryReader) throws
+  public func serialize(to _: inout Foundation.Data) throws
+}
+public protocol SolanaBasicProgram {
+  static var id: PublicKey { get }
+}
+extension Foundation.Data {
+  public func checksum() -> Swift.UInt16
+}
+extension Foundation.Data {
+  public init(hex: Swift.String)
+  public var bytes: [Swift.UInt8] {
+    get
+  }
+  public func toHexString() -> Swift.String
+  public func sha256() -> Foundation.Data
+}
+public enum Ed25519HDKey {
+  public typealias Hex = Swift.String
+  public typealias Path = Swift.String
+  public enum Error : Swift.Error {
+    case invalidDerivationPath
+    case hmacCanNotAuthenticate
+    case canNotGetMasterKeyFromSeed
+    public static func == (a: Ed25519HDKey.Error, b: Ed25519HDKey.Error) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public static let hardenedOffset: Swift.Int
+  public static func getMasterKeyFromSeed(_ seed: Ed25519HDKey.Hex) -> Swift.Result<Ed25519HDKey.Keys, Ed25519HDKey.Error>
+  public static func getPublicKey(privateKey: Foundation.Data, withZeroBytes: Swift.Bool = true) throws -> Foundation.Data
+  public static func derivePath(_ path: Ed25519HDKey.Path, seed: Ed25519HDKey.Hex, offSet: Swift.Int = hardenedOffset) -> Swift.Result<Ed25519HDKey.Keys, Ed25519HDKey.Error>
+}
+public func sha256(data: Foundation.Data) -> Foundation.Data
+extension RIPEMD.Block.K : Swift.Equatable {}
+extension RIPEMD.Block.K : Swift.Hashable {}
+extension RIPEMD.Block.r : Swift.Equatable {}
+extension RIPEMD.Block.r : Swift.Hashable {}
+extension RIPEMD.Block.s : Swift.Equatable {}
+extension RIPEMD.Block.s : Swift.Hashable {}
+extension DerivablePath.DerivableType : Swift.Equatable {}
+extension DerivablePath.DerivableType : Swift.Hashable {}
+extension DerivablePath.DerivableType : Swift.RawRepresentable {}
+extension BorshDecodingError : Swift.Equatable {}
+extension BorshDecodingError : Swift.Hashable {}
+extension Network : Swift.Equatable {}
+extension Network : Swift.Hashable {}
+extension Network : Swift.RawRepresentable {}
+extension BufferLayoutError : Swift.Equatable {}
+extension BufferLayoutError : Swift.Hashable {}
+extension Ed25519HDKey.Error : Swift.Equatable {}
+extension Ed25519HDKey.Error : Swift.Hashable {}
