@@ -767,6 +767,7 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
                                      iconAlignment: .left) { _ in
             
             let rootViewController = WalletViewController()
+            rootViewController.shownFromAppMenu = true
             let navController = ThemedNavigationController(rootViewController: rootViewController)
             self.delegate?.showViewController(viewController: navController)
             

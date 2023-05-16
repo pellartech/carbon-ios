@@ -37,7 +37,7 @@ class WalletViewController: UIViewController {
             static let titleFont: CGFloat = 16
         }
         struct LogoView {
-            static let top: CGFloat = 60
+            static let top: CGFloat = 120
             static let width: CGFloat = 220
             static let height: CGFloat = 46
             static let heightBg: CGFloat = 120
@@ -59,6 +59,9 @@ class WalletViewController: UIViewController {
             static let heightWelcome: CGFloat = 150
             static let heightGetStarted: CGFloat = 300
             static let font: CGFloat = 20
+            static let descrpFont: CGFloat = 16
+            static let descrpHeight: CGFloat = 150
+            static let common: CGFloat = 20
 
         }
         struct LogoImageView {
@@ -87,7 +90,7 @@ class WalletViewController: UIViewController {
             static let height: CGFloat = 20
         }
         struct StartButtonView {
-            static let bottom: CGFloat = -100
+            static let bottom: CGFloat = 10
             static let width: CGFloat = 150
             static let height: CGFloat = 50
             static let corner: CGFloat = 25
@@ -288,12 +291,22 @@ class WalletViewController: UIViewController {
         label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
         label.font = .systemFont(ofSize: UX.WelcomeLabel.font)
         label.textAlignment = .center
-        label.text = "Welcome to carbon wallet"
+        label.text = "What is a Wallet?"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 4
         return label
     }()
     
+    private lazy var welcomeDescpLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .systemFont(ofSize: UX.WelcomeLabel.descrpFont)
+        label.textAlignment = .center
+        label.text = "A Home for your Tokens and NFTs \n You can manage your digital assets, for example send, receive and display.\n \n \n A New Way to Log In \n You can log in through your social account, and a crypto wallet will be automatically generated, simple but secure."
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 100
+        return label
+    }()
     private lazy var tokenLabel : UILabel = {
         let label = UILabel()
         label.textColor = UIColor.white
@@ -348,7 +361,7 @@ class WalletViewController: UIViewController {
     }()
     
 // MARK: - UI Properties
-    private var shownFromAppMenu: Bool = false
+    var shownFromAppMenu: Bool = false
     private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
     private var publicAddress = String()
@@ -382,6 +395,7 @@ class WalletViewController: UIViewController {
         actionsView.addSubview(totalBalanceTitleLabel)
         
         welcomeView.addSubview(welcomeLabel)
+        welcomeView.addSubview(welcomeDescpLabel)
         welcomeView.addSubview(getStartButtonView)
         welcomeView.addSubview(getStartGradientView)
         welcomeView.addSubview(getStartedLabel)
@@ -448,12 +462,12 @@ class WalletViewController: UIViewController {
             receiveBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
             receiveBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             
-            getStartButtonView.bottomAnchor.constraint(equalTo: welcomeView.bottomAnchor,constant: UX.StartButtonView.bottom),
+            getStartButtonView.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
             getStartButtonView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             getStartButtonView.widthAnchor.constraint(equalToConstant: UX.StartButtonView.width),
             getStartButtonView.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
             
-            getStartGradientView.bottomAnchor.constraint(equalTo: welcomeView.bottomAnchor,constant: UX.StartButtonView.bottom),
+            getStartGradientView.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
             getStartGradientView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             getStartGradientView.widthAnchor.constraint(equalToConstant: UX.StartButtonView.width),
             getStartGradientView.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
@@ -499,8 +513,14 @@ class WalletViewController: UIViewController {
             welcomeLabel.widthAnchor.constraint(equalToConstant:  UX.WelcomeLabel.widthWelcome),
             welcomeLabel.heightAnchor.constraint(equalToConstant:  UX.WelcomeLabel.heightWelcome),
             
+            welcomeDescpLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            welcomeDescpLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor,constant: UX.WelcomeLabel.topValueCarbon),
+            welcomeDescpLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: UX.WelcomeLabel.common),
+            welcomeDescpLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -UX.WelcomeLabel.common),
+            welcomeDescpLabel.heightAnchor.constraint(equalToConstant:  UX.WelcomeLabel.descrpHeight),
+            
             getStartedLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            getStartedLabel.bottomAnchor.constraint(equalTo: welcomeView.bottomAnchor,constant: UX.StartButtonView.bottom),
+            getStartedLabel.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
             getStartedLabel.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
             
             tokenLabel.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant: UX.TokenLabel.leading),
