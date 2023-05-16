@@ -54,13 +54,13 @@ class WalletViewController: UIViewController {
             static let common: CGFloat = 20
         }
         struct WelcomeLabel {
-            static let topValueCarbon: CGFloat = 10
+            static let topValueCarbon: CGFloat = 75
             static let widthWelcome: CGFloat = 250
-            static let heightWelcome: CGFloat = 150
+            static let heightWelcome: CGFloat = 20
             static let heightGetStarted: CGFloat = 300
             static let font: CGFloat = 20
             static let descrpFont: CGFloat = 16
-            static let descrpHeight: CGFloat = 150
+            static let descrpHeight: CGFloat = 200
             static let common: CGFloat = 20
 
         }
@@ -90,7 +90,7 @@ class WalletViewController: UIViewController {
             static let height: CGFloat = 20
         }
         struct StartButtonView {
-            static let bottom: CGFloat = 10
+            static let bottom: CGFloat = 100
             static let width: CGFloat = 150
             static let height: CGFloat = 50
             static let corner: CGFloat = 25
