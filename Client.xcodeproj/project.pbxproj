@@ -1206,6 +1206,7 @@
 		F99BEA992A135EAB003F49B2 /* DrawerMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */; };
 		F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */; };
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
+		F99BEA9F2A13601C003F49B2 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5068,6 +5069,7 @@
 		F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerMenuViewController.swift; sourceTree = "<group>"; };
 		F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchNetworkViewController.swift; sourceTree = "<group>"; };
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
+		F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -8110,6 +8112,7 @@
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
 				F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */,
 				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
+				F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -10373,6 +10376,7 @@
 				EB9A178E20E525DF00B12184 /* ThemeSettingsController.swift in Sources */,
 				C8656D75270F834600E199EA /* FlaggableFeatureOptions.swift in Sources */,
 				8AB8573727D951640075C173 /* HomeLogoHeaderViewModel.swift in Sources */,
+				F99BEA9F2A13601C003F49B2 /* ConnectViewController.swift in Sources */,
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
 				21112968289480630082C08B /* HomepageMessageCardViewModel.swift in Sources */,
 				E1CD81BE290C5C7500124B27 /* DevicePickerTableViewHeaderCell.swift in Sources */,

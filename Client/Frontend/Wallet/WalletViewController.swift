@@ -616,18 +616,18 @@ class WalletViewController: UIViewController {
     }
     
     func initiateConnetVC(){
-//        let vc = ConnectViewController()
-//        vc.modalPresentationStyle = .overCurrentContext
-//        vc.delegate = self
-//        vc.data = data
-//        self.present(vc, animated: false)
+        let vc = ConnectViewController()
+        vc.modalPresentationStyle = .overCurrentContext
+        vc.delegate = self
+        vc.data = data
+        self.present(vc, animated: false)
     }
     
     func initiateReceiveVC(){
-//        let vc = ReceiveViewController()
-//        vc.modalPresentationStyle = .overCurrentContext
-//        vc.address = publicAddress
-//        self.present(vc, animated: false)
+        let vc = ReceiveViewController()
+        vc.modalPresentationStyle = .overCurrentContext
+        vc.address = publicAddress
+        self.present(vc, animated: false)
     }
 }
 
