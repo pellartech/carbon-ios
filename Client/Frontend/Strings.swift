@@ -1360,7 +1360,13 @@ extension String {
                 value: "Use your fingerprint to access passwords now.",
                 comment: "Touch ID prompt subtitle when accessing logins and passwords")
         }
-
+        public struct Wallet {
+            public static let Title = MZLocalizedString(
+                "Settings.Wallet.Title.v103",
+                tableName: nil,
+                value: "Wallet",
+                comment: "Title for the wallet screen.")
+        }
         public struct Sync {
             public static let ButtonTitle = MZLocalizedString(
                 "Settings.Sync.ButtonTitle.v103",

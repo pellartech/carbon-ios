@@ -758,30 +758,18 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
     }
 
     private func getWalletAction(navigationController: UINavigationController?) -> PhotonRowActions? {
-        guard LoginListViewController.shouldShowAppMenuShortcut(forPrefs: profile.prefs),
-              let navigationController = navigationController
+        guard LoginListViewController.shouldShowAppMenuShortcut(forPrefs: profile.prefs)
         else { return nil }
-
+        
         return SingleActionViewModel(title: .AppMenu.AppMenuWallet,
                                      iconString: ImageIdentifiers.wallet,
                                      iconType: .Image,
                                      iconAlignment: .left) { _ in
-            let navigationHandler: NavigationHandlerType = { url in
-                UIWindow.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
-                self.delegate?.openURLInNewTab(url, isPrivate: false)
-            }
-
-            if AppAuthenticator.canAuthenticateDeviceOwner() {
-                if LoginOnboarding.shouldShow() {
-                    self.showLoginOnboarding(navigationHandler: navigationHandler, navigationController: navigationController)
-                } else {
-                    self.showLoginListVC(navigationHandler: navigationHandler, navigationController: navigationController)
-                }
-            } else {
-                let rootViewController = WalletViewController()
-                let navController = ThemedNavigationController(rootViewController: rootViewController)
-                self.delegate?.showViewController(viewController: navController)
-            }
+            
+            let rootViewController = WalletViewController()
+            let navController = ThemedNavigationController(rootViewController: rootViewController)
+            self.delegate?.showViewController(viewController: navController)
+            
         }.items
     }
 

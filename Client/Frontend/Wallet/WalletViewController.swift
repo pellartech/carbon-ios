@@ -151,7 +151,7 @@ class WalletViewController: UIViewController {
     
     private lazy var logoBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#2C2C2C")
+        view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -348,6 +348,7 @@ class WalletViewController: UIViewController {
     }()
     
 // MARK: - UI Properties
+    private var shownFromAppMenu: Bool = false
     private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
     private var publicAddress = String()
@@ -364,6 +365,10 @@ class WalletViewController: UIViewController {
     
 // MARK: - UI Methods
     func setUpView(){
+        self.title = .Settings.Wallet.Title
+        if shownFromAppMenu {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+        }
         view.backgroundColor = UIColor.black
         receiveBtnView.alpha = 0
         
@@ -574,6 +579,10 @@ class WalletViewController: UIViewController {
     }
     
 // MARK: - Objc Methods
+    @objc func doneButtonTapped(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
     @objc func connectIconTapped (){
         initiateDrawerVC()
     }
