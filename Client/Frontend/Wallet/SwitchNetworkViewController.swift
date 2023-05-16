@@ -11,6 +11,8 @@ import ParticleConnect
 import ParticleNetworkBase
 import RxSwift
 import UIKit
+import Common
+import Shared
 
 typealias Chain = ParticleNetwork.ChainInfo
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
@@ -52,10 +54,20 @@ class SwitchNetworkViewController: UIViewController {
 
     var data: [[String: [String]]] = []
 
+    // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyTheme()
         configureData()
         configureTableView()
+    }
+    
+    // MARK: - UI Methods
+    func applyTheme() {
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
     }
 
     func configureData() {

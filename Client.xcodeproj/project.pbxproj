@@ -8102,16 +8102,16 @@
 		F99BEA842A135901003F49B2 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
-				F99BEA8A2A135982003F49B2 /* WalletModel.swift */,
-				F99BEA852A13591C003F49B2 /* WalletViewController.swift */,
-				F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */,
+				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
 				F99BEA902A135B62003F49B2 /* WalletManager.swift */,
 				F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */,
+				F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */,
+				F99BEA8A2A135982003F49B2 /* WalletModel.swift */,
+				F99BEA852A13591C003F49B2 /* WalletViewController.swift */,
 				F99BEA942A135C24003F49B2 /* SendViewController.swift */,
 				F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */,
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
 				F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */,
-				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
 				F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */,
 			);
 			path = Wallet;

@@ -12,7 +12,8 @@ import ParticleNetworkBase
 import RxSwift
 import ParticleConnect
 import ConnectCommon
-
+import Common
+import Shared
 
 class ReceiveViewController: UIViewController {
     // MARK: - UI Constants
@@ -164,10 +165,10 @@ class ReceiveViewController: UIViewController {
     // MARK: - UI Methods
     func applyTheme() {
         view.backgroundColor = .clear
-        //        let themeManager :  ThemeManager?
-        //        themeManager =  AppContainer.shared.resolve()
-        //        let theme = themeManager?.currentTheme
-        containerView.backgroundColor = .black
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        containerView.backgroundColor = theme?.colors.layer1
         dimmedView.backgroundColor = .clear
     }
     

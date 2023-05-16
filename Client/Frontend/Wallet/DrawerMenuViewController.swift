@@ -15,6 +15,8 @@ import UIKit
 import ParticleConnect
 import ConnectCommon
 import SDWebImage
+import Common
+import Shared
 
 class DrawerMenuViewController: UIViewController{
     
@@ -68,6 +70,7 @@ class DrawerMenuViewController: UIViewController{
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyTheme()
         setUpView()
         setUpViewConstraint()
         updateUI()
@@ -87,6 +90,14 @@ class DrawerMenuViewController: UIViewController{
     }
     
     // MARK: - UI Methods
+    
+    func applyTheme() {
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
+    }
+    
     func setUpView() {
         self.view.backgroundColor = Utilities().hexStringToUIColor(hex: "#2C2C2C")
         view.addSubview(networkLabel)

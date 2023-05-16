@@ -16,6 +16,8 @@ import SVProgressHUD
 import ParticleAuthService
 import SVProgressHUD
 import SDWebImage
+import Common
+import Shared
 
 var accountModel = [
     AccountModel(title: "Particle", image: "particle", isConnected: false,walletType: WalletType.particle),
@@ -27,7 +29,7 @@ class WalletViewController: UIViewController {
 // MARK: - UI Constants
     private struct UX {
         struct WelcomeView {
-            static let heightGetStarted: CGFloat = 300
+            static let heightGetStarted: CGFloat = 500
         }
         struct BalanceLabel{
             static let topValueCarbon: CGFloat = 10
@@ -371,12 +373,20 @@ class WalletViewController: UIViewController {
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyTheme()
         setUpView()
         setUpViewContraint()
         getLocalUserData()
     }
     
 // MARK: - UI Methods
+    func applyTheme() {
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
+    }
+    
     func setUpView(){
         self.title = .Settings.Wallet.Title
         if shownFromAppMenu {

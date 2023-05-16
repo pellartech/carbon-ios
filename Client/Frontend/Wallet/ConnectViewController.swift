@@ -12,6 +12,8 @@ import ParticleNetworkBase
 import RxSwift
 import ParticleConnect
 import ConnectCommon
+import Common
+import Shared
 
 class ConnectViewController: UIViewController{
     
@@ -158,10 +160,12 @@ class ConnectViewController: UIViewController{
     // MARK: - UI Methods
     func applyTheme() {
         view.backgroundColor = .clear
-        containerView.backgroundColor = .black
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        containerView.backgroundColor = theme?.colors.layer1
         dimmedView.backgroundColor = .clear
     }
-   
   
     func addBlurEffect(){
         let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.dark))

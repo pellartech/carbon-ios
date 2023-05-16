@@ -15,6 +15,8 @@ import ParticleNetworkBase
 import RxSwift
 import ConnectCommon
 import ParticleConnect
+import Common
+import Shared
 
 class SendViewController: UIViewController {
     
@@ -181,12 +183,21 @@ class SendViewController: UIViewController {
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyTheme()
         setUpView()
         setUpViewContraint()
         setUpDropDownValue()
     }
     
     // MARK: - UI Methods
+    
+    func applyTheme() {
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
+    }
+    
     func setUpView(){
         view.backgroundColor = .black
         view.addSubview(titleLabel)
