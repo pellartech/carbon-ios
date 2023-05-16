@@ -1196,6 +1196,13 @@
 		F91ABAA229F1A17F0060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
+		F99BEA862A13591C003F49B2 /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA852A13591C003F49B2 /* WalletViewController.swift */; };
+		F99BEA8B2A135983003F49B2 /* WalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA8A2A135982003F49B2 /* WalletModel.swift */; };
+		F99BEA8F2A135A71003F49B2 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */; };
+		F99BEA912A135B62003F49B2 /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA902A135B62003F49B2 /* WalletManager.swift */; };
+		F99BEA932A135BC5003F49B2 /* WalletProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */; };
+		F99BEA952A135C24003F49B2 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA942A135C24003F49B2 /* SendViewController.swift */; };
+		F99BEA972A135CDD003F49B2 /* ReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5048,6 +5055,13 @@
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
+		F99BEA852A13591C003F49B2 /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
+		F99BEA8A2A135982003F49B2 /* WalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModel.swift; sourceTree = "<group>"; };
+		F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
+		F99BEA902A135B62003F49B2 /* WalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
+		F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletProtocol.swift; sourceTree = "<group>"; };
+		F99BEA942A135C24003F49B2 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
+		F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveViewController.swift; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -5409,7 +5423,6 @@
 				43FA67BEEFB48246D2394C7B /* Pods-WidgetKitExtension.carbonrelease.xcconfig */,
 				6B4B9BA4B163F759BE2D881D /* Pods-WidgetKitExtension.firefoxbeta.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -7961,6 +7974,7 @@
 		F84B21F11A0910F600AAB793 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				F99BEA842A135901003F49B2 /* Wallet */,
 				8AD40FB827BAD1DD00672675 /* TabContentsScripts */,
 				8AD40FB727BAD1D600672675 /* Toolbar+URLBar */,
 				8AED23C327AC1F8700DE7E97 /* Components */,
@@ -8075,6 +8089,20 @@
 				F91ABA9729F11A0B0060105E /* RewardsViewController.swift */,
 			);
 			path = Rewards;
+			sourceTree = "<group>";
+		};
+		F99BEA842A135901003F49B2 /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				F99BEA8A2A135982003F49B2 /* WalletModel.swift */,
+				F99BEA852A13591C003F49B2 /* WalletViewController.swift */,
+				F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */,
+				F99BEA902A135B62003F49B2 /* WalletManager.swift */,
+				F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */,
+				F99BEA942A135C24003F49B2 /* SendViewController.swift */,
+				F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */,
+			);
+			path = Wallet;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -8712,15 +8740,15 @@
 			packageReferences = (
 				1B3D99EF270E89D0006E1264 /* XCRemoteSwiftPackageReference "telemetry-ios" */,
 				1BDA1F8327113788006B2FAB /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */,
-				433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */,
-				433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */,
+				433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */,
+				433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */,
+				433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */,
 				435C85EE2788F4D00072B526 /* XCRemoteSwiftPackageReference "glean-swift" */,
-				432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */,
-				4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */,
-				43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */,
-				43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */,
-				5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */,
+				432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */,
+				4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */,
+				43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */,
+				43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */,
+				5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -10136,6 +10164,7 @@
 				5A271ABD2860B0D700471CE4 /* WebServerUtil.swift in Sources */,
 				964FA97528A1A8F20024BB3B /* ContextualHintEligibilityUtility.swift in Sources */,
 				CA7FC7D324A6A9B70012F347 /* LoginListDataSourceHelper.swift in Sources */,
+				F99BEA952A135C24003F49B2 /* SendViewController.swift in Sources */,
 				43AB6FA425DC53D30016B015 /* LabelButtonHeaderView.swift in Sources */,
 				965C3C942933A860006499ED /* LaunchSessionProvider.swift in Sources */,
 				C8163851268A0899004C7160 /* AddCredentialViewController.swift in Sources */,
@@ -10242,11 +10271,13 @@
 				E15DE7C0293A670700B32667 /* PhotonActionSheetSeparator.swift in Sources */,
 				DFEA639E279F468A00D489C3 /* DynamicHeightCollectionView.swift in Sources */,
 				C87DC85A27B2C8DE006EFCE2 /* LegacyWallpaperFilePathProtocol.swift in Sources */,
+				F99BEA8F2A135A71003F49B2 /* WalletViewModel.swift in Sources */,
 				63306D3921103EAE00F25400 /* SavedTab.swift in Sources */,
 				2F44FCCB1A9E972E00FD20CC /* SearchEnginePicker.swift in Sources */,
 				1DA3CE5F24EEE7C600422BB2 /* TabDataRetriever.swift in Sources */,
 				D04D1B92209790B60074B35F /* Toast.swift in Sources */,
 				8AD5702F27AB4DEA005BFDC8 /* UIStackView+Extension.swift in Sources */,
+				F99BEA972A135CDD003F49B2 /* ReceiveViewController.swift in Sources */,
 				210E0EB8298D9D4500BB4F33 /* DefaultSearchEngineProvider.swift in Sources */,
 				8AE80BBA2891C0C300BC12EA /* JumpBackInSectionLayout.swift in Sources */,
 				21357F2D293FDB60004BF9FD /* RemoteTabsErrorDataSource.swift in Sources */,
@@ -10260,14 +10291,17 @@
 				43F7952525795F69005AEE40 /* SearchTelemetry.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,
 				C82CDD47233E8996002E2743 /* Tab+ChangeUserAgent.swift in Sources */,
+				F99BEA862A13591C003F49B2 /* WalletViewController.swift in Sources */,
 				C4E3984C1D21F2FD004E89BA /* TabTrayButtonExtensions.swift in Sources */,
 				437A857827E43FE100E42764 /* FxAWebViewTelemetry.swift in Sources */,
+				F99BEA912A135B62003F49B2 /* WalletManager.swift in Sources */,
 				E1442FD1294782D9003680B0 /* UIModalPresentationStyle+Photon.swift in Sources */,
 				D3FEC38D1AC4B42F00494F45 /* AutocompleteTextField.swift in Sources */,
 				C849E46526B9C3DD00260F0B /* SlideoverPresentationController.swift in Sources */,
 				D5D0532E2645B3A700759F85 /* ExperimentsTableView.swift in Sources */,
 				2165B2C22860C2F4004C0786 /* AdjustTelemetryHelper.swift in Sources */,
 				8A2D593E27DC0AA100713EC9 /* TopSite.swift in Sources */,
+				F99BEA932A135BC5003F49B2 /* WalletProtocol.swift in Sources */,
 				434E733725EED32E006D3BDE /* BrowserViewController+URLBarDelegate.swift in Sources */,
 				2137785F297F3B1B00D01309 /* DownloadsPanelViewModel.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
@@ -10361,6 +10395,7 @@
 				EB98550124226EF70040F24B /* AppDelegate+SyncSentTabs.swift in Sources */,
 				744ED5611DBFEB8D00A2B5BE /* MailtoLinkHandler.swift in Sources */,
 				59A68E0B4ABBF55E14819668 /* BookmarksPanel.swift in Sources */,
+				F99BEA8B2A135983003F49B2 /* WalletModel.swift in Sources */,
 				D04D1B862097859B0074B35F /* DownloadToast.swift in Sources */,
 				E1463D022981DA190074E16E /* NotificationManager.swift in Sources */,
 				884CA7492344A301002E4711 /* TextContentDetector.swift in Sources */,
@@ -15880,7 +15915,7 @@
 				version = 5.0.1;
 			};
 		};
-		432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */ = {
+		432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adjust/ios_sdk.git";
 			requirement = {
@@ -15888,7 +15923,7 @@
 				version = 4.33.4;
 			};
 		};
-		433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */ = {
+		433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nbhasin2/GCDWebServer.git";
 			requirement = {
@@ -15896,7 +15931,7 @@
 				kind = branch;
 			};
 		};
-		433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */ = {
+		433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kif-framework/KIF.git";
 			requirement = {
@@ -15904,7 +15939,7 @@
 				version = 3.8.7;
 			};
 		};
-		433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */ = {
+		433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mozilla/rust-components-swift.git";
 			requirement = {
@@ -15920,7 +15955,7 @@
 				version = 52.4.0;
 			};
 		};
-		4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */ = {
+		4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -15928,7 +15963,7 @@
 				version = 5.6.0;
 			};
 		};
-		43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */ = {
+		43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nbhasin2/Fuzi.git";
 			requirement = {
@@ -15936,7 +15971,7 @@
 				kind = branch;
 			};
 		};
-		43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */ = {
+		43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mozilla-mobile/MappaMundi.git";
 			requirement = {
@@ -15944,7 +15979,7 @@
 				kind = branch;
 			};
 		};
-		5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */ = {
+		5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
@@ -15977,22 +16012,22 @@
 		};
 		432BD0232790EBD000A0F3C3 /* Adjust */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */;
+			package = 432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */;
 			productName = Adjust;
 		};
 		433F87CD2788EAB600693368 /* GCDWebServers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */;
+			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */;
 			productName = GCDWebServers;
 		};
 		433F87CF2788ECDD00693368 /* GCDWebServers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */;
+			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */;
 			productName = GCDWebServers;
 		};
 		433F87D42788F01500693368 /* KIF */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */;
+			package = 433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */;
 			productName = KIF;
 		};
 		435C85EF2788F4D00072B526 /* Glean */ = {
@@ -16002,12 +16037,12 @@
 		};
 		43A878FB27AB498E0071C372 /* MozillaAppServices */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */;
+			package = 433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */;
 			productName = MozillaAppServices;
 		};
 		43C6A47E27A0679300C79856 /* MappaMundi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */;
+			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */;
 			productName = MappaMundi;
 		};
 		5A37861329A2BFB9006B3A34 /* Common */ = {
@@ -16020,7 +16055,7 @@
 		};
 		5A37861829A2C337006B3A34 /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */;
+			package = 5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
 		5A37861C29A2C37C006B3A34 /* Common */ = {
@@ -16049,17 +16084,17 @@
 		};
 		5A871487292EA1440039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A871489292EA1520039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A87148D292EA3270039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A87148F292EA3910039A5BD /* SiteImageView */ = {
@@ -16068,22 +16103,22 @@
 		};
 		5A8FD0EB293A7D5E00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0ED293A7D6D00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0EF293A7D7F00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0F1293A7D9000333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A9FF8482942454600DF9FBB /* Common */ = {
@@ -16092,17 +16127,17 @@
 		};
 		D433852B27ABC8150069DD33 /* MappaMundi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */;
+			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */;
 			productName = MappaMundi;
 		};
 		F91ABA9B29F1A12B0060105E /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		F91ABA9D29F1A1530060105E /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 /* End XCSwiftPackageProductDependency section */
