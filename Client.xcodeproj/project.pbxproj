@@ -1207,6 +1207,7 @@
 		F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */; };
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F99BEA9F2A13601C003F49B2 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */; };
+		F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5070,6 +5071,7 @@
 		F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchNetworkViewController.swift; sourceTree = "<group>"; };
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
+		F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticleNetwork-Info.plist"; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -7834,6 +7836,7 @@
 				C86E4F6F2493BA8E0087BFD9 /* Generated */,
 				39A359BD1BFCCE7B006B9E87 /* Helpers */,
 				F84B22431A09165600AAB793 /* Info.plist */,
+				F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */,
 				7B2142FC1E5E055000CDD3FC /* InfoPlist.strings */,
 				74821FFD1DB6D3AC00EEEA72 /* MailSchemes.plist */,
 				ACD605D124B35EEE00EE4454 /* metrics.yaml */,
@@ -8896,6 +8899,7 @@
 				39D056382665235700FBEE59 /* initial_experiments.json in Resources */,
 				C8B0F5F8283B7D38007AE65D /* pocketsponsoredfeed.json in Resources */,
 				D38A1EE01CB458EC0080C842 /* CertError.html in Resources */,
+				F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */,
 				8AEE62CB2756BA34003207D1 /* DownloadHelper.js in Resources */,
 				8AEE62CA2756BA34003207D1 /* TrackingProtectionStats.js in Resources */,
 				0BA1E0301B051A07007675AF /* NetError.css in Resources */,

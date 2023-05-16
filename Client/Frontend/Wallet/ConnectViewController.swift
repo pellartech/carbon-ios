@@ -37,7 +37,7 @@ class ConnectViewController: UIViewController{
             static let font: CGFloat = 28
         }
         struct TableView {
-            static let top: CGFloat = 155
+            static let top: CGFloat = 100
             static let common: CGFloat = 10
         }
         
@@ -76,13 +76,6 @@ class ConnectViewController: UIViewController{
     }()
     
     ///UILabel
-    var titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Select the account to be add in carbon wallet"
-        label.font = .boldSystemFont(ofSize: UX.TitleLabel.font)
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        return label
-    }()
     
     var dummyLabel: UILabel = {
         let label = UILabel()
@@ -118,7 +111,7 @@ class ConnectViewController: UIViewController{
     ///UIStackView
     lazy var contentStackView: UIStackView = {
         let spacer = UIView()
-        let stackView = UIStackView(arrangedSubviews: [titleLabel,dummyLabel,walletAuthTitleLabel,spacer])
+        let stackView = UIStackView(arrangedSubviews: [dummyLabel,walletAuthTitleLabel,spacer])
         stackView.alignment = .center
         stackView.axis = .vertical
         stackView.spacing = UX.ContainerView.spacing
@@ -379,7 +372,7 @@ class ConnectTableCell: UITableViewCell {
             static let fontAt: CGFloat = 12
             static let top: CGFloat = 20
             static let topAt: CGFloat = 45
-            static let trailing: CGFloat = -10
+            static let trailing: CGFloat = -30
             static let height: CGFloat = 20
             static let width: CGFloat = 50
         }

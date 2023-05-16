@@ -56,7 +56,7 @@ class WalletViewController: UIViewController {
             static let common: CGFloat = 20
         }
         struct WelcomeLabel {
-            static let topValueCarbon: CGFloat = 75
+            static let topValueCarbon: CGFloat = 25
             static let widthWelcome: CGFloat = 250
             static let heightWelcome: CGFloat = 20
             static let heightGetStarted: CGFloat = 300
@@ -64,6 +64,7 @@ class WalletViewController: UIViewController {
             static let descrpFont: CGFloat = 16
             static let descrpHeight: CGFloat = 200
             static let common: CGFloat = 20
+            static let topValue: CGFloat = 75
 
         }
         struct LogoImageView {
@@ -195,11 +196,6 @@ class WalletViewController: UIViewController {
         view.layer.cornerRadius = UX.StartButtonView.corner
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.addSubview(blurEffectView)
         return view
     }()
     
@@ -247,8 +243,9 @@ class WalletViewController: UIViewController {
         return label
     }()
     
-    private lazy var getStartedLabel: GradientLabel = {
-        let label = GradientLabel()
+    private lazy var getStartedLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
         label.font = .boldSystemFont(ofSize:  UX.WalletLabel.font)
         label.textAlignment = .center
         label.text = "Get started"
@@ -392,9 +389,7 @@ class WalletViewController: UIViewController {
         if shownFromAppMenu {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
         }
-        view.backgroundColor = UIColor.black
         receiveBtnView.alpha = 0
-        
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
@@ -519,7 +514,7 @@ class WalletViewController: UIViewController {
             carbonBalanceLabel.topAnchor.constraint(equalTo: totalBalanceLabel.bottomAnchor,constant: UX.BalanceLabel.topValueCarbon),
             
             welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            welcomeLabel.topAnchor.constraint(equalTo: welcomeView.topAnchor,constant: UX.WelcomeLabel.topValueCarbon),
+            welcomeLabel.topAnchor.constraint(equalTo: welcomeView.topAnchor,constant: UX.WelcomeLabel.topValue),
             welcomeLabel.widthAnchor.constraint(equalToConstant:  UX.WelcomeLabel.widthWelcome),
             welcomeLabel.heightAnchor.constraint(equalToConstant:  UX.WelcomeLabel.heightWelcome),
             

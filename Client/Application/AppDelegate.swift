@@ -7,6 +7,15 @@ import Storage
 import CoreSpotlight
 import UIKit
 import Common
+import CoreData
+import ParticleNetworkBase
+import ParticleAuthService
+import ConnectCommon
+import ConnectEVMAdapter
+import ConnectPhantomAdapter
+import ConnectSolanaAdapter
+import ConnectWalletConnectAdapter
+import ParticleConnect
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let logger = DefaultLogger.shared
@@ -107,7 +116,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                              forKey: ContentBlockingConfig.Prefs.analyticsKey)
         profile.prefs.setString("social",
                              forKey: ContentBlockingConfig.Prefs.socialKey)
+        initiaterParticleConnect()
         return true
+    }
+    
+    func initiaterParticleConnect(){
+        let chainInfo = ParticleNetwork.ChainInfo.ethereum(.mainnet)
+        let devEnv = ParticleNetwork.DevEnvironment.debug
+        let config = ParticleNetworkConfiguration(chainInfo: chainInfo, devEnv: devEnv)
+        ParticleNetwork.initialize(config: config)
+        
+        var adapters: [ConnectAdapter] = [
+            EVMConnectAdapter(),
+            SolanaConnectAdapter(),
+            MetaMaskConnectAdapter(),
+            ParticleConnectAdapter(),
+            PhantomConnectAdapter(),
+            WalletConnectAdapter(),
+            RainbowConnectAdapter(),
+            BitkeepConnectAdapter(),
+            ImtokenConnectAdapter(),
+            TrustConnectAdapter(),
+            GnosisConnectAdapter()
+        ]
+
+        let moreAdapterClasses: [WalletConnectAdapter.Type] =
+            [ZerionConnectAdapter.self,
+             MathConnectAdapter.self,
+             OmniConnectAdapter.self,
+             Inch1ConnectAdapter.self,
+             ZengoConnectAdapter.self,
+             AlphaConnectAdapter.self,
+             BitpieConnectAdapter.self]
+
+        adapters.append(contentsOf: moreAdapterClasses.map {
+            $0.init()
+        })
+
+        ParticleConnect.initialize(env: .debug, chainInfo: .ethereum(.mainnet), dAppData: DAppMetaData(name: "Particle Connect", icon: URL(string: "https://connect.particle.network/icons/512.png")!, url: URL(string: "https://connect.particle.network")!)) {
+            adapters
+        }
     }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
