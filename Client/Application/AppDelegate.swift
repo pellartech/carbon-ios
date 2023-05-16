@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var backgroundSyncUtil: BackgroundSyncUtil?
     private var widgetManager: TopSitesWidgetManager?
     private var menuBuilderHelper: MenuBuilderHelper?
+    var window: UIWindow?
 
     func application(
         _ application: UIApplication,

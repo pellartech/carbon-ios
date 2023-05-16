@@ -1208,6 +1208,7 @@
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F99BEA9F2A13601C003F49B2 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */; };
 		F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */; };
+		F99BEAA32A138F16003F49B2 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99BEAA22A138F16003F49B2 /* SDWebImage.framework */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5072,6 +5073,7 @@
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticleNetwork-Info.plist"; sourceTree = "<group>"; };
+		F99BEAA22A138F16003F49B2 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -5156,6 +5158,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F99BEAA32A138F16003F49B2 /* SDWebImage.framework in Frameworks */,
 				F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */,
 				5A70EF0E295DFCCF00790249 /* Common in Frameworks */,
 				8A08EC6427EBDCAD00E119C7 /* AdServices.framework in Frameworks */,
@@ -6067,6 +6070,7 @@
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F99BEAA22A138F16003F49B2 /* SDWebImage.framework */,
 				8A08EC6327EBDCAC00E119C7 /* AdServices.framework */,
 				C8E18F1F222EDED000E30E52 /* SafariServices.framework */,
 				C8E18F1D222EDE4400E30E52 /* Accelerate.framework */,

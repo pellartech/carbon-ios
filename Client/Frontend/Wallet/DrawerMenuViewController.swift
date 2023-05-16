@@ -24,17 +24,19 @@ class DrawerMenuViewController: UIViewController{
     private struct UX {
         struct NetworkLabel {
             static let font: CGFloat = 20
-            static let top: CGFloat = 20
+            static let top: CGFloat = 50
         }
         struct TableView {
-            static let top: CGFloat = 50
+            static let top: CGFloat = 75
         }
     }
 
     // MARK: - UI Elements
     ///UILabel
-    private lazy var networkLabel : UILabel = {
-        let label = UILabel()
+    private lazy var networkLabel : GradientLabel = {
+        let label = GradientLabel()
+        label.textColor = UIColor.white
+        label.text = "Accounts"
         label.textColor = UIColor.white
         label.font = UIFont.systemFont(ofSize: UX.NetworkLabel.font)
         label.textAlignment = .left
@@ -99,10 +101,9 @@ class DrawerMenuViewController: UIViewController{
     }
     
     func setUpView() {
-        self.view.backgroundColor = Utilities().hexStringToUIColor(hex: "#2C2C2C")
         view.addSubview(networkLabel)
         view.addSubview(tableView)
-    
+        
     }
     
     func setUpViewConstraint() {
@@ -140,9 +141,9 @@ class DrawerMenuViewController: UIViewController{
     }
     
     func updateUI(){
-        let name = ParticleNetwork.getChainInfo().name
-        let network = ParticleNetwork.getChainInfo().network
-        networkLabel.text = "Network : \(name) \n \(network.lowercased())"
+//        let name = ParticleNetwork.getChainInfo().name
+//        let network = ParticleNetwork.getChainInfo().network
+//        networkLabel.text = "Network : \(name) \n \(network.lowercased())"
     }
 }
 // MARK: - Extension - UITableViewDataSource

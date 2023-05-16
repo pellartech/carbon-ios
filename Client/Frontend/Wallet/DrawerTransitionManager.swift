@@ -71,7 +71,7 @@ class DrawerTransitionManager: NSObject, UIViewControllerTransitioningDelegate {
 class DrawerPresentationController: UIPresentationController {
 
     override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
-        return CGSize(width: parentSize.width * 0.75, height: parentSize.height - 120)
+        return CGSize(width: parentSize.width * 0.75, height: parentSize.height )
     }
 
     override var frameOfPresentedViewInContainerView: CGRect {
@@ -80,7 +80,6 @@ class DrawerPresentationController: UIPresentationController {
             return frame
         }
         frame.size = size(forChildContentContainer: presentedViewController, withParentContainerSize: containerView.bounds.size)
-        frame.origin.y = 120
         return frame
     }
 

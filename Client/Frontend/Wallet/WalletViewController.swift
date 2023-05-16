@@ -33,10 +33,12 @@ class WalletViewController: UIViewController {
         }
         struct BalanceLabel{
             static let topValueCarbon: CGFloat = 10
-            static let topValue: CGFloat = 20
+            static let topValue: CGFloat = 50
             static let font: CGFloat = 45
             static let carbonFont: CGFloat = 12
             static let titleFont: CGFloat = 16
+            static let top: CGFloat = 30
+
         }
         struct LogoView {
             static let top: CGFloat = 120
@@ -48,12 +50,13 @@ class WalletViewController: UIViewController {
             static let heightBackGround: CGFloat = 350
         }
         struct ActionView {
-            static let heightActionBg: CGFloat = 30
-            static let topActionBg: CGFloat = 20
+            static let heightActionBg: CGFloat = 25
+            static let topActionBg: CGFloat = 10
         }
         struct UserTokenView {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 20
+            static let top: CGFloat = 50
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -99,7 +102,7 @@ class WalletViewController: UIViewController {
             static let corner: CGFloat = 25
         }
         struct ButtonView {
-            static let top: CGFloat = -50
+            static let top: CGFloat = -20
             static let centerX: CGFloat = 90
             static let height: CGFloat = 50
             static let width: CGFloat = 163
@@ -119,7 +122,7 @@ class WalletViewController: UIViewController {
 
         }
         struct WalletLabel {
-            static let font: CGFloat = 20
+            static let font: CGFloat = 18
 
         }
     
@@ -142,7 +145,7 @@ class WalletViewController: UIViewController {
     private lazy var userTokensView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         view.layer.cornerRadius = UX.UserTokenView.cornerRadius
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
@@ -336,7 +339,7 @@ class WalletViewController: UIViewController {
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.receiveBtnTapped), for: .touchUpInside)
-        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
@@ -452,7 +455,7 @@ class WalletViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
             contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
             
-            userTokensView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.common),
+            userTokensView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.top),
             userTokensView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: UX.UserTokenView.common),
             userTokensView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -UX.UserTokenView.common),
             userTokensView.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: -UX.UserTokenView.common),
@@ -505,10 +508,10 @@ class WalletViewController: UIViewController {
             walletLabel.heightAnchor.constraint(equalToConstant: UX.Wallet.height),
             
             totalBalanceTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
-            totalBalanceTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor),
+            totalBalanceTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
             totalBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            totalBalanceLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.BalanceLabel.topValue),
+            totalBalanceLabel.topAnchor.constraint(equalTo: totalBalanceTitleLabel.bottomAnchor,constant: UX.BalanceLabel.top),
             
             carbonBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             carbonBalanceLabel.topAnchor.constraint(equalTo: totalBalanceLabel.bottomAnchor,constant: UX.BalanceLabel.topValueCarbon),
@@ -622,7 +625,7 @@ class WalletViewController: UIViewController {
     @objc func sendBtnTapped (){
         receiveBtnView.alpha = 0
         sendBtnView.alpha = 1
-        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         sendButton.backgroundColor = UIColor.clear
         initiateSendVC()
     }
@@ -630,7 +633,7 @@ class WalletViewController: UIViewController {
     @objc func receiveBtnTapped (){
         receiveBtnView.alpha = 1
         sendBtnView.alpha = 0
-        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
         receiveButton.backgroundColor = UIColor.clear
         initiateReceiveVC()
     }
