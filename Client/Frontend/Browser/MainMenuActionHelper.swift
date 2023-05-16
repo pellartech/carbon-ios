@@ -224,6 +224,9 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
 
         let passwordsAction = getPasswordAction(navigationController: navigationController)
         append(to: &section, action: passwordsAction)
+        
+        let walletAction = getWalletAction(navigationController: navigationController)
+        append(to: &section, action: walletAction)
 
         if !isHomePage && !isFileURL {
             let reportSiteIssueAction = getReportSiteIssueAction()
@@ -482,7 +485,6 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         }
     
         var iconURL: URL?
-        let str = ""
         let iconType: PhotonActionSheetIconType =  .Image
         let syncOption = SingleActionViewModel(title: "title",
                                                iconString: "iconString",
@@ -749,6 +751,34 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
                 }
             } else {
                 let rootViewController = DevicePasscodeRequiredViewController(shownFromAppMenu: true)
+                let navController = ThemedNavigationController(rootViewController: rootViewController)
+                self.delegate?.showViewController(viewController: navController)
+            }
+        }.items
+    }
+
+    private func getWalletAction(navigationController: UINavigationController?) -> PhotonRowActions? {
+        guard LoginListViewController.shouldShowAppMenuShortcut(forPrefs: profile.prefs),
+              let navigationController = navigationController
+        else { return nil }
+
+        return SingleActionViewModel(title: .AppMenu.AppMenuWallet,
+                                     iconString: ImageIdentifiers.wallet,
+                                     iconType: .Image,
+                                     iconAlignment: .left) { _ in
+            let navigationHandler: NavigationHandlerType = { url in
+                UIWindow.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
+                self.delegate?.openURLInNewTab(url, isPrivate: false)
+            }
+
+            if AppAuthenticator.canAuthenticateDeviceOwner() {
+                if LoginOnboarding.shouldShow() {
+                    self.showLoginOnboarding(navigationHandler: navigationHandler, navigationController: navigationController)
+                } else {
+                    self.showLoginListVC(navigationHandler: navigationHandler, navigationController: navigationController)
+                }
+            } else {
+                let rootViewController = WalletViewController()
                 let navController = ThemedNavigationController(rootViewController: rootViewController)
                 self.delegate?.showViewController(viewController: navController)
             }

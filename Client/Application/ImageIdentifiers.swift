@@ -45,6 +45,7 @@ public struct ImageIdentifiers {
     public static let homeHeaderLogoBall = "fxHomeHeaderLogoBall"
     public static let homeHeaderLogoText = "fxHomeHeaderLogoText"
     public static let key = "key"
+    public static let wallet = "wallet"
     public static let largePrivateTabsMask = "largePrivateMask"
     public static let libraryBookmarks = "library-bookmark"
     public static let libraryDownloads = "library-downloads"

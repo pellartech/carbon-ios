@@ -2836,6 +2836,11 @@ extension String {
             tableName: nil,
             value: "Passwords",
             comment: "Label for the button, displayed in the menu, takes you to to passwords screen when pressed.")
+        public static let AppMenuWallet = MZLocalizedString(
+            "Menu.Wallet.Label",
+            tableName: nil,
+            value: "Wallet",
+            comment: "Label for the button, displayed in the menu, takes you to to wallet screen when pressed.")
         public static let AppMenuCopyURLConfirmMessage = MZLocalizedString(
             "Menu.CopyURL.Confirm",
             tableName: nil,
