@@ -452,9 +452,9 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         let openWattet = SingleActionViewModel(title: title,
                   
                                                iconString: icon) { _ in
-            let walletViewController = WalletViewController()
-            let controller = ThemedNavigationController(rootViewController: walletViewController)
-            self.delegate?.showViewController(viewController: controller)
+//            let walletViewController = WalletViewController()
+//            let controller = ThemedNavigationController(rootViewController: walletViewController)
+//            self.delegate?.showViewController(viewController: controller)
         }.items
         return openWattet
     }

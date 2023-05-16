@@ -1,0 +1,350 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target x86_64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name ConnectCommon
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Alamofire
+import BigInt
+import CommonCrypto
+import CryptoSwift
+import Foundation
+import ParticleNetworkBase
+import RxAlamofire
+import RxSwift
+import Swift
+import SwiftyJSON
+import TweetNacl
+import UIKit
+import _Concurrency
+import _StringProcessing
+import secp256k1
+public protocol KeystoreUtilProtocol {
+  static func encode(privateKey: Foundation.Data, password: Swift.String) throws -> Foundation.Data
+  static func decode(data: Foundation.Data, password: Swift.String) throws -> Foundation.Data
+}
+public enum KeystoreUtilError : Foundation.LocalizedError {
+  case corruptedKeystore
+  case decodeFailed
+  case encodeFailed
+  case unknown
+  public static func == (a: ConnectCommon.KeystoreUtilError, b: ConnectCommon.KeystoreUtilError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class KeystoreUtil : ConnectCommon.KeystoreUtilProtocol {
+  public static func encode(privateKey: Foundation.Data, password: Swift.String) throws -> Foundation.Data
+  public static func encode(privateKey: Foundation.Data, password: Swift.String, salt: Foundation.Data, iv: Foundation.Data) throws -> Foundation.Data
+  public static func decode(data: Foundation.Data, password: Swift.String) throws -> Foundation.Data
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class HexUtil {
+  public static func byteArray(fromHex string: Swift.String) throws -> [Swift.UInt8]
+  @objc deinit
+}
+public struct DAppMetaData {
+  public let name: Swift.String
+  public let icon: Foundation.URL
+  public let url: Foundation.URL
+  public static let standard: ConnectCommon.DAppMetaData
+  public init(name: Swift.String, icon: Foundation.URL, url: Foundation.URL)
+}
+public struct AdapterInfo : Swift.Codable, Swift.Equatable {
+  public let name: Swift.String
+  public let url: Swift.String
+  public let icon: Swift.String
+  public let redirectUrlHost: Swift.String
+  public let supportChains: [ConnectCommon.ChainType]
+  public let deepLink: Swift.String
+  public let scheme: Swift.String
+  public init(name: Swift.String, url: Swift.String, icon: Swift.String, redirectUrlHost: Swift.String, supportChains: [ConnectCommon.ChainType], deepLink: Swift.String, scheme: Swift.String)
+  public static func == (a: ConnectCommon.AdapterInfo, b: ConnectCommon.AdapterInfo) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum WalletType : Swift.Codable, Swift.Equatable {
+  case particle
+  case evmPrivateKey
+  case solanaPrivateKey
+  case metaMask
+  case rainbow
+  case walletConnect
+  case trust
+  case phantom
+  case imtoken
+  case bitkeep
+  case gnosis
+  case zerion
+  case math
+  case omni
+  case inch1
+  case zengo
+  case alpha
+  case bitpie
+  case custom(info: ConnectCommon.AdapterInfo)
+  public var stringValue: Swift.String {
+    get
+  }
+  public static func == (lhs: ConnectCommon.WalletType, rhs: ConnectCommon.WalletType) -> Swift.Bool
+  public var info: ConnectCommon.AdapterInfo {
+    get
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum Wordlists {
+  public static let english: [Swift.String]
+}
+public struct SiweMessage : Swift.Hashable {
+  public var domain: Swift.String
+  public var address: Swift.String
+  public var statement: Swift.String?
+  public var uri: Foundation.URL
+  public var version: Swift.String
+  public var chainId: Swift.Int
+  public var nonce: Swift.String
+  public var issuedAt: Foundation.Date
+  public var expirationTime: Foundation.Date?
+  public var notBefore: Foundation.Date?
+  public var requestId: Swift.String?
+  public var resources: [Foundation.URL]?
+  public init(domain: Swift.String, address: Swift.String, uri: Foundation.URL) throws
+  public init(domain: Swift.String, address: Swift.String, statement: Swift.String?, uri: Foundation.URL, version: Swift.String, chainId: Swift.Int, nonce: Swift.String, issuedAt: Foundation.Date, expirationTime: Foundation.Date?, notBefore: Foundation.Date?, requestId: Swift.String?, resources: [Foundation.URL]?) throws
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: ConnectCommon.SiweMessage, b: ConnectCommon.SiweMessage) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum ChainType : Swift.String, Swift.Codable {
+  case solana
+  case evm
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum WalletReadyState {
+  case installed
+  case notDetected
+  case loadable
+  case unsupported
+  case undetectable
+  public static func == (a: ConnectCommon.WalletReadyState, b: ConnectCommon.WalletReadyState) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+open class ConnectConfig {
+  public static var none: ConnectCommon.ConnectConfig
+  public init()
+  @objc deinit
+}
+public protocol ConnectAdapter {
+  var walletType: ConnectCommon.WalletType { get }
+  var readyState: ConnectCommon.WalletReadyState { get }
+  func getAccounts() -> [ConnectCommon.Account]
+  func connect<T>(_ config: T?) -> RxSwift.Single<ConnectCommon.Account?> where T : ConnectCommon.ConnectConfig
+  func login(config: ConnectCommon.SiweMessage, publicAddress: Swift.String) -> RxSwift.Single<(Swift.String, Swift.String)>
+  func verify(message: ConnectCommon.SiweMessage, against signature: Swift.String) -> RxSwift.Single<Swift.Bool>
+  func isConnected(publicAddress: Swift.String) -> Swift.Bool
+  func disconnect(publicAddress: Swift.String) -> RxSwift.Single<Swift.String>
+  func signAndSendTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  func signAllTransactions(publicAddress: Swift.String, transactions: [Swift.String]) -> RxSwift.Single<[Swift.String]>
+  func signTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  func signMessage(publicAddress: Swift.String, message: Swift.String) -> RxSwift.Single<Swift.String>
+  func signTypeData(publicAddress: Swift.String, data: Swift.String) -> RxSwift.Single<Swift.String>
+  func handleUrl(_ url: Foundation.URL) -> Swift.Bool
+  func request(publicAddress: Swift.String, method: Swift.String, parameters: [Swift.Encodable]) -> RxSwift.Single<SwiftyJSON.JSON?>
+  func switchEthereumChain(publicAddress: Swift.String, chainId: Swift.Int) -> RxSwift.Single<Swift.String>
+  func addEthereumChain(publicAddress: Swift.String, chainId: Swift.Int, chainName: Swift.String?, nativeCurrency: ConnectCommon.NativeCurrency?, rpcUrl: Swift.String?, blockExplorerUrl: Swift.String?) -> RxSwift.Single<Swift.String>
+}
+extension ConnectCommon.ConnectAdapter {
+  public func login(config: ConnectCommon.SiweMessage, publicAddress: Swift.String) -> RxSwift.Single<(Swift.String, Swift.String)>
+  public func verify(message: ConnectCommon.SiweMessage, against signature: Swift.String) -> RxSwift.Single<Swift.Bool>
+}
+public struct NativeCurrency : Swift.Codable {
+  public let name: Swift.String
+  public let symbol: Swift.String
+  public let decimals: Swift.UInt8
+  public init(name: Swift.String, symbol: Swift.String, decimals: Swift.UInt8)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+@_hasMissingDesignatedInitializers public class AppUtils {
+  public static func isAppInstalled(scheme: Swift.String) -> Swift.Bool
+  @objc deinit
+}
+public enum ConnectError : Swift.Error {
+  case disconnected
+  case unauthorized
+  case rejected
+  case params
+  case unSupportMethod
+  case unSupportChain
+  case custom(Swift.Int?, Swift.String?)
+  public var code: Swift.Int? {
+    get
+  }
+  public var message: Swift.String? {
+    get
+  }
+}
+extension ConnectCommon.SiweMessage : Swift.Codable {
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct Account : Swift.Codable {
+  public let publicAddress: Swift.String
+  public let name: Swift.String?
+  public let url: Swift.String?
+  public let icons: [Swift.String]
+  public let description: Swift.String?
+  public let mnemonic: Swift.String?
+  public let walletType: ConnectCommon.WalletType
+  public init(publicAddress: Swift.String, name: Swift.String?, url: Swift.String?, icons: [Swift.String], description: Swift.String?, mnemonic: Swift.String?, walletType: ConnectCommon.WalletType)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Foundation.Data {
+  public static func randomOfLength(_ length: Swift.Int) -> Foundation.Data?
+}
+public enum KeyUtilError : Swift.Error {
+  case invalidContext
+  case privateKeyInvalid
+  case unknownError
+  case signatureFailure
+  case signatureParseFailure
+  case badArguments
+  public static func == (a: ConnectCommon.KeyUtilError, b: ConnectCommon.KeyUtilError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class KeyUtil {
+  public static func generatePrivateKeyData() -> Foundation.Data?
+  public static func generatePublicKey(from privateKey: Foundation.Data) throws -> Foundation.Data
+  public static func generateAddress(from publicKey: Foundation.Data) -> ConnectCommon.EthereumAddress
+  public static func sign(message: Foundation.Data, with privateKey: Foundation.Data, hashing: Swift.Bool) throws -> Foundation.Data
+  public static func recoverPublicKey(message: Foundation.Data, signature: Foundation.Data) throws -> Swift.String
+  @objc deinit
+}
+public class Mnemonic {
+  public enum Error : Swift.Error {
+    case invalidMnemonic
+    case invalidEntropy
+    public static func == (a: ConnectCommon.Mnemonic.Error, b: ConnectCommon.Mnemonic.Error) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  final public let phrase: [Swift.String]
+  public init(strength: Swift.Int = 256, wordlist: [Swift.String] = Wordlists.english)
+  public init(phrase: [Swift.String], passphrase: Swift.String = "") throws
+  public init(entropy: [Swift.UInt8], wordlist: [Swift.String] = Wordlists.english) throws
+  public static func toMnemonic(_ bytes: [Swift.UInt8], wordlist: [Swift.String] = Wordlists.english) throws -> [Swift.String]
+  public static func toEntropy(_ phrase: [Swift.String], wordlist: [Swift.String] = Wordlists.english) throws -> [Swift.UInt8]
+  public static func isValid(phrase: [Swift.String], wordlist: [Swift.String] = Wordlists.english) -> Swift.Bool
+  public static func deriveChecksumBits(_ bytes: [Swift.UInt8]) -> Swift.String
+  public var seed: [Swift.UInt8] {
+    get
+  }
+  @objc deinit
+}
+extension ConnectCommon.Mnemonic : Swift.Equatable {
+  public static func == (lhs: ConnectCommon.Mnemonic, rhs: ConnectCommon.Mnemonic) -> Swift.Bool
+}
+public struct EthereumAddress : Swift.Codable, Swift.Hashable {
+  public let value: Swift.String
+  public init(_ value: Swift.String)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (lhs: ConnectCommon.EthereumAddress, rhs: ConnectCommon.EthereumAddress) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension ConnectCommon.EthereumAddress : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.String)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+}
+extension ConnectCommon.SiweMessage : Swift.CustomStringConvertible {
+  public static let dateFormatter: Foundation.DateFormatter
+  public var description: Swift.String {
+    get
+  }
+  public init(_ description: Swift.String) throws
+}
+public enum RpcUrl {
+  public static let evm: Swift.String
+  public static let solana: Swift.String
+}
+public class APIService {
+  public init(rpcUrl: Swift.String)
+  public func request<T>(httpMethod: Alamofire.HTTPMethod = .post, path: Swift.String, method: Swift.String, parameters: [Swift.Encodable?] = []) -> RxSwift.Single<ConnectCommon.Response<T>> where T : Swift.Decodable
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ConnectManager {
+  public static func getChainId() -> Swift.Int
+  public static func setScheme(_ scheme: Swift.String, dAppData: ConnectCommon.DAppMetaData)
+  public static func getScheme() -> Swift.String
+  public static func getDAppData() -> ConnectCommon.DAppMetaData
+  public static func getChainType() -> ConnectCommon.ChainType
+  public static func activeLog(publicAddress: Swift.String?, activeLoginType: ParticleNetworkBase.Logger.ActiveLoginType, activeActionType: ParticleNetworkBase.Logger.ActiveActionType, userInfo: Swift.String? = nil)
+  public static func activeLogParticle(identity: Swift.String, publicAddress: Swift.String?, activeLoginType: ParticleNetworkBase.Logger.ActiveLoginType, activeActionType: ParticleNetworkBase.Logger.ActiveActionType, userInfo: Swift.String? = nil)
+  @objc deinit
+}
+public struct Crypto {
+  public static func randomKey(count: Swift.Int = 32) throws -> Foundation.Data
+  public static func randomKey(count: Swift.Int = 32) throws -> Swift.String
+}
+public struct Request : Swift.Encodable {
+  public init(method: Swift.String, params: [Swift.Encodable], id: Swift.String = UUID().uuidString, jsonrpc: Swift.String = "2.0", chainId: Swift.Int)
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct EncodableWrapper : Swift.Encodable {
+  public init(wrapped: Swift.Encodable)
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct Response<T> : Swift.Decodable where T : Swift.Decodable {
+  public let chainId: Swift.Int?
+  public let jsonrpc: Swift.String
+  public let id: Swift.String?
+  public let result: T?
+  public let error: ConnectCommon.ResponseError?
+  public let method: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ResponseError : Swift.Codable {
+  public init(code: Swift.Int?, message: Swift.String?)
+  public let code: Swift.Int?
+  public let message: Swift.String?
+  public var description: Swift.String {
+    get
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public protocol LocalAdapter {
+  func importWalletFromPrivateKey(_ privateKey: Swift.String) -> RxSwift.Single<ConnectCommon.Account?>
+  func importWalletFromMnemonic(_ mnemonic: Swift.String) -> RxSwift.Single<ConnectCommon.Account?>
+  func exportWalletPrivateKey(publicAddress: Swift.String) -> RxSwift.Single<Swift.String?>
+}
+extension ConnectCommon.KeystoreUtilError : Swift.Equatable {}
+extension ConnectCommon.KeystoreUtilError : Swift.Hashable {}
+extension ConnectCommon.ChainType : Swift.Equatable {}
+extension ConnectCommon.ChainType : Swift.Hashable {}
+extension ConnectCommon.ChainType : Swift.RawRepresentable {}
+extension ConnectCommon.WalletReadyState : Swift.Equatable {}
+extension ConnectCommon.WalletReadyState : Swift.Hashable {}
+extension ConnectCommon.KeyUtilError : Swift.Equatable {}
+extension ConnectCommon.KeyUtilError : Swift.Hashable {}
+extension ConnectCommon.Mnemonic.Error : Swift.Equatable {}
+extension ConnectCommon.Mnemonic.Error : Swift.Hashable {}

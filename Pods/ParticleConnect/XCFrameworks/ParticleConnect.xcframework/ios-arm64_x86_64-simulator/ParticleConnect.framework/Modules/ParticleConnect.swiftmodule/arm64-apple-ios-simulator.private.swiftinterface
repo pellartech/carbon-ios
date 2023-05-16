@@ -1,0 +1,60 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name ParticleConnect
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import ConnectCommon
+import Foundation
+import ParticleAuthService
+@_exported import ParticleConnect
+import ParticleNetworkBase
+import RxSwift
+import Swift
+import SwiftyJSON
+import _Concurrency
+import _StringProcessing
+@_hasMissingDesignatedInitializers public class ParticleConnect {
+  public var scheme: Swift.String {
+    get
+  }
+  public static func getDAppData() -> ConnectCommon.DAppMetaData
+  public static func getScheme() -> Swift.String
+  public static func initialize(env: ParticleNetworkBase.ParticleNetwork.DevEnvironment, chainInfo: ParticleNetworkBase.ParticleNetwork.ChainInfo, dAppData: ConnectCommon.DAppMetaData = DAppMetaData.standard, createAdapters: () -> [ConnectCommon.ConnectAdapter])
+  public static func setChain(chainInfo: ParticleNetworkBase.ParticleNetwork.ChainInfo)
+  public static func getAdapterByAddress(publicAddress: Swift.String) -> [ConnectCommon.ConnectAdapter]
+  public static func getAdapters(chainType: ConnectCommon.ChainType) -> [ConnectCommon.ConnectAdapter]
+  public static func getAllAdapters() -> [ConnectCommon.ConnectAdapter]
+  public static func handleUrl(_ url: Foundation.URL) -> Swift.Bool
+  @objc deinit
+}
+public class ParticleConnectConfig : ConnectCommon.ConnectConfig {
+  public var loginType: LoginType
+  public var supportAuthType: [SupportAuthType]
+  public var loginFormMode: Swift.Bool
+  public var phoneOrEmailAccount: Swift.String?
+  public var socialLoginPrompt: SocialLoginPrompt?
+  public init(loginType: LoginType = .email, supportAuthType: [SupportAuthType] = [SupportAuthType.all], loginFormMode: Swift.Bool = false, phoneOrEmailAccount: Swift.String? = nil, socialLoginPrompt: SocialLoginPrompt? = nil)
+  @objc deinit
+}
+public class ParticleConnectAdapter : ConnectCommon.ConnectAdapter {
+  public init()
+  public var walletType: ConnectCommon.WalletType {
+    get
+  }
+  public var readyState: ConnectCommon.WalletReadyState {
+    get
+  }
+  public func connect<T>(_ config: T? = nil) -> RxSwift.Single<ConnectCommon.Account?> where T : ConnectCommon.ConnectConfig
+  public func getAccounts() -> [ConnectCommon.Account]
+  public func isConnected(publicAddress: Swift.String) -> Swift.Bool
+  public func disconnect(publicAddress: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signAndSendTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signAllTransactions(publicAddress: Swift.String, transactions: [Swift.String]) -> RxSwift.Single<[Swift.String]>
+  public func signTransaction(publicAddress: Swift.String, transaction: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signMessage(publicAddress: Swift.String, message: Swift.String) -> RxSwift.Single<Swift.String>
+  public func signTypeData(publicAddress: Swift.String, data: Swift.String) -> RxSwift.Single<Swift.String>
+  public func handleUrl(_ url: Foundation.URL) -> Swift.Bool
+  public func request(publicAddress: Swift.String, method: Swift.String, parameters: [Swift.Encodable]) -> RxSwift.Single<SwiftyJSON.JSON?>
+  public func switchEthereumChain(publicAddress: Swift.String, chainId: Swift.Int) -> RxSwift.Single<Swift.String>
+  public func addEthereumChain(publicAddress: Swift.String, chainId: Swift.Int, chainName: Swift.String?, nativeCurrency: ConnectCommon.NativeCurrency?, rpcUrl: Swift.String?, blockExplorerUrl: Swift.String?) -> RxSwift.Single<Swift.String>
+  @objc deinit
+}

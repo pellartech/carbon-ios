@@ -1,0 +1,6 @@
+framework module Pods_ShareTo {
+  umbrella header "Pods-ShareTo-umbrella.h"
+
+  export *
+  module * { export * }
+}
