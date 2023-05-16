@@ -1196,6 +1196,19 @@
 		F91ABAA229F1A17F0060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
+		F99BEA6D2A13496A003F49B2 /* SwitchChainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA672A134967003F49B2 /* SwitchChainViewController.swift */; };
+		F99BEA6E2A13496A003F49B2 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA682A134968003F49B2 /* SendViewController.swift */; };
+		F99BEA6F2A13496A003F49B2 /* DrawerMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA692A134968003F49B2 /* DrawerMenuViewController.swift */; };
+		F99BEA702A13496A003F49B2 /* ReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA6A2A134969003F49B2 /* ReceiveViewController.swift */; };
+		F99BEA712A13496A003F49B2 /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA6B2A134969003F49B2 /* WalletViewController.swift */; };
+		F99BEA722A13496A003F49B2 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA6C2A13496A003F49B2 /* ConnectViewController.swift */; };
+		F99BEA752A13496F003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA732A13496E003F49B2 /* DrawerTransitionManager.swift */; };
+		F99BEA762A13496F003F49B2 /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA742A13496F003F49B2 /* WalletManager.swift */; };
+		F99BEA7B2A134981003F49B2 /* TokensTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA782A134981003F49B2 /* TokensTVCell.swift */; };
+		F99BEA7C2A134981003F49B2 /* DrawerTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA792A134981003F49B2 /* DrawerTVCell.swift */; };
+		F99BEA7D2A134981003F49B2 /* ConnectTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA7A2A134981003F49B2 /* ConnectTVCell.swift */; };
+		F99BEA802A134994003F49B2 /* WalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA7F2A134994003F49B2 /* WalletModel.swift */; };
+		F99BEA832A1349AD003F49B2 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA822A1349AD003F49B2 /* WalletViewModel.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5048,6 +5061,19 @@
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
+		F99BEA672A134967003F49B2 /* SwitchChainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchChainViewController.swift; sourceTree = "<group>"; };
+		F99BEA682A134968003F49B2 /* SendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
+		F99BEA692A134968003F49B2 /* DrawerMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerMenuViewController.swift; sourceTree = "<group>"; };
+		F99BEA6A2A134969003F49B2 /* ReceiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiveViewController.swift; sourceTree = "<group>"; };
+		F99BEA6B2A134969003F49B2 /* WalletViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
+		F99BEA6C2A13496A003F49B2 /* ConnectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
+		F99BEA732A13496E003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
+		F99BEA742A13496F003F49B2 /* WalletManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
+		F99BEA782A134981003F49B2 /* TokensTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokensTVCell.swift; sourceTree = "<group>"; };
+		F99BEA792A134981003F49B2 /* DrawerTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerTVCell.swift; sourceTree = "<group>"; };
+		F99BEA7A2A134981003F49B2 /* ConnectTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectTVCell.swift; sourceTree = "<group>"; };
+		F99BEA7F2A134994003F49B2 /* WalletModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletModel.swift; sourceTree = "<group>"; };
+		F99BEA822A1349AD003F49B2 /* WalletViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
 		F9B488076407AA8B6E1FCEFF /* Pods-CredentialProvider.fennec.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CredentialProvider.fennec.xcconfig"; path = "Target Support Files/Pods-CredentialProvider/Pods-CredentialProvider.fennec.xcconfig"; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -6444,7 +6470,6 @@
 				7DBED733798112C906282DF0 /* Pods-WidgetKitExtension.carbonrelease.xcconfig */,
 				6BF0D59EC32A5150F2738A12 /* Pods-WidgetKitExtension.firefoxbeta.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -7961,7 +7986,7 @@
 		F84B21F11A0910F600AAB793 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
-				F949D1052A011C1F00A51A02 /* Wallet */,
+				F99BEA662A134940003F49B2 /* Wallet */,
 				8AD40FB827BAD1DD00672675 /* TabContentsScripts */,
 				8AD40FB727BAD1D600672675 /* Toolbar+URLBar */,
 				8AED23C327AC1F8700DE7E97 /* Components */,
@@ -8078,11 +8103,48 @@
 			path = Rewards;
 			sourceTree = "<group>";
 		};
-		F949D1052A011C1F00A51A02 /* Wallet */ = {
+		F99BEA662A134940003F49B2 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				F99BEA812A1349A1003F49B2 /* ViewModel */,
+				F99BEA7E2A134986003F49B2 /* Model */,
+				F99BEA772A134974003F49B2 /* Cell */,
+				F99BEA732A13496E003F49B2 /* DrawerTransitionManager.swift */,
+				F99BEA742A13496F003F49B2 /* WalletManager.swift */,
+				F99BEA6C2A13496A003F49B2 /* ConnectViewController.swift */,
+				F99BEA692A134968003F49B2 /* DrawerMenuViewController.swift */,
+				F99BEA6A2A134969003F49B2 /* ReceiveViewController.swift */,
+				F99BEA682A134968003F49B2 /* SendViewController.swift */,
+				F99BEA672A134967003F49B2 /* SwitchChainViewController.swift */,
+				F99BEA6B2A134969003F49B2 /* WalletViewController.swift */,
 			);
 			path = Wallet;
+			sourceTree = "<group>";
+		};
+		F99BEA772A134974003F49B2 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F99BEA7A2A134981003F49B2 /* ConnectTVCell.swift */,
+				F99BEA792A134981003F49B2 /* DrawerTVCell.swift */,
+				F99BEA782A134981003F49B2 /* TokensTVCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		F99BEA7E2A134986003F49B2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F99BEA7F2A134994003F49B2 /* WalletModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		F99BEA812A1349A1003F49B2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				F99BEA822A1349AD003F49B2 /* WalletViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -8720,15 +8782,15 @@
 			packageReferences = (
 				1B3D99EF270E89D0006E1264 /* XCRemoteSwiftPackageReference "telemetry-ios" */,
 				1BDA1F8327113788006B2FAB /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */,
-				433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */,
-				433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */,
+				433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */,
+				433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */,
+				433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */,
 				435C85EE2788F4D00072B526 /* XCRemoteSwiftPackageReference "glean-swift" */,
-				432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */,
-				4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */,
-				43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */,
-				43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */,
-				5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */,
+				432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */,
+				4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */,
+				43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */,
+				43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */,
+				5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -9918,6 +9980,7 @@
 				E68E39BE1C46F42000B85F42 /* AppSettingsTableViewController.swift in Sources */,
 				E1A6AB4628CA6A4C00EBEBDD /* String+Extension.swift in Sources */,
 				210887CC293E8800000AB4EE /* RemoteTabsErrorCell.swift in Sources */,
+				F99BEA6E2A13496A003F49B2 /* SendViewController.swift in Sources */,
 				F85C7F0F271DD154004BDBA4 /* AppAuthenticator.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
 				C8BA0E7627F20B8E00DD8214 /* HistoryDeletionUtility.swift in Sources */,
@@ -9928,11 +9991,13 @@
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,
 				CAA3B7E62497DCB60094E3C1 /* LoginDataSource.swift in Sources */,
 				1DFE57FF27BAE3150025DE58 /* HomepageSectionType.swift in Sources */,
+				F99BEA722A13496A003F49B2 /* ConnectViewController.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
 				E1CD81BC290C5C3F00124B27 /* DevicePickerTableViewCell.swift in Sources */,
 				8AD40FD527BB1C1000672675 /* LockButton.swift in Sources */,
 				5F130D2E2483508E00B0F7D0 /* FxAWebViewModel.swift in Sources */,
 				E571EE772875694C0051D9AA /* MockPocketSponsoredStoriesProvider.swift in Sources */,
+				F99BEA7D2A134981003F49B2 /* ConnectTVCell.swift in Sources */,
 				2109478928AFD24C00B73D44 /* OnboardingViewControllerProtocol.swift in Sources */,
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
 				8AB8573027D94CAD0075C173 /* HomepageViewModelProtocol.swift in Sources */,
@@ -9955,6 +10020,7 @@
 				435D660523D794B90046EFA2 /* UpdateViewModel.swift in Sources */,
 				215B457F27D7FD4B00E5E800 /* TabGroupData.swift in Sources */,
 				E12BD0B028AC3A7E0029AAF0 /* UIEdgeInsets+Extension.swift in Sources */,
+				F99BEA7C2A134981003F49B2 /* DrawerTVCell.swift in Sources */,
 				D0152245229855A8009DE753 /* OneLineTableViewCell.swift in Sources */,
 				F018F84C2719AE8300B9A52D /* ThemedDefaultNavigationController.swift in Sources */,
 				602B3D6729B0E1DB0066DEF8 /* ConversionValueUtil.swift in Sources */,
@@ -9978,6 +10044,7 @@
 				8A7368AD27924AAF005D7704 /* CanRemoveQuickActionBookmark.swift in Sources */,
 				8A0621B829428FBD005D1EFD /* OpenTabNotificationObject.swift in Sources */,
 				C8D0D6F2281C182D00AFAED9 /* FeatureFlagUserPrefsMigrationUtility.swift in Sources */,
+				F99BEA7B2A134981003F49B2 /* TokensTVCell.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				C87DC85C27B2C94D006EFCE2 /* LegacyWallpaperResourceManager.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
@@ -9997,6 +10064,7 @@
 				1D0BA05C24F46A0400D731B5 /* TopSitesProvider.swift in Sources */,
 				F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */,
 				0BF0DB941A8545800039F300 /* URLBarView.swift in Sources */,
+				F99BEA702A13496A003F49B2 /* ReceiveViewController.swift in Sources */,
 				DFACBF7F277B5F7B003D5F41 /* WallpaperBackgroundView.swift in Sources */,
 				D01017F5219CB6BD009CBB5A /* DownloadContentScript.swift in Sources */,
 				39F819C61FD70F5D009E31E4 /* TabEventHandlers.swift in Sources */,
@@ -10089,11 +10157,15 @@
 				C87DF9DB267247190097E707 /* UIConstants+BottomInset.swift in Sources */,
 				8AD08D1527E9198E00B8E907 /* TabsQuantityTelemetry.swift in Sources */,
 				1DA3CE6324EEE83200422BB2 /* SavedTab+ConfigureExtension.swift in Sources */,
+				F99BEA802A134994003F49B2 /* WalletModel.swift in Sources */,
 				C87DC85627B2C8B0006EFCE2 /* LegacyWallpaperNetworkUtility.swift in Sources */,
 				E15DE7C4293A7B0F00B32667 /* PhotonActionSheetTitleHeaderView.swift in Sources */,
+				F99BEA6D2A13496A003F49B2 /* SwitchChainViewController.swift in Sources */,
 				392ED7E61D0AEFEF009D9B62 /* HomePageAccessors.swift in Sources */,
 				8A0017C128A3FF6100FEFC8B /* MessageCardDataAdaptor.swift in Sources */,
+				F99BEA712A13496A003F49B2 /* WalletViewController.swift in Sources */,
 				7BA8D1C71BA037F500C8AE9E /* OpenInHelper.swift in Sources */,
+				F99BEA762A13496F003F49B2 /* WalletManager.swift in Sources */,
 				8AD40FC727BADC3400672675 /* ToolbarTextField.swift in Sources */,
 				CA90753824929B22005B794D /* NoLoginsView.swift in Sources */,
 				E4B423BE1AB9FE6A007E66C8 /* ReaderModeCache.swift in Sources */,
@@ -10159,6 +10231,7 @@
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
 				E1442FD2294782D9003680B0 /* UIViewController+Extension.swift in Sources */,
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,
+				F99BEA752A13496F003F49B2 /* DrawerTransitionManager.swift in Sources */,
 				E127313C28B6AD99006F39D2 /* WallpaperSettingsViewController.swift in Sources */,
 				9636D92A27F767EC00771F5E /* GleanPlumbMessageUtility.swift in Sources */,
 				E127313F28B6C194006F39D2 /* WallpaperSettingsHeaderView.swift in Sources */,
@@ -10277,6 +10350,7 @@
 				2165B2C22860C2F4004C0786 /* AdjustTelemetryHelper.swift in Sources */,
 				8A2D593E27DC0AA100713EC9 /* TopSite.swift in Sources */,
 				434E733725EED32E006D3BDE /* BrowserViewController+URLBarDelegate.swift in Sources */,
+				F99BEA832A1349AD003F49B2 /* WalletViewModel.swift in Sources */,
 				2137785F297F3B1B00D01309 /* DownloadsPanelViewModel.swift in Sources */,
 				EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */,
 				0BA02DB22942605600C92603 /* CreditCardHelper.swift in Sources */,
@@ -10373,6 +10447,7 @@
 				E1463D022981DA190074E16E /* NotificationManager.swift in Sources */,
 				884CA7492344A301002E4711 /* TextContentDetector.swift in Sources */,
 				C8656D77270F858900E199EA /* TabsSettingsViewControler.swift in Sources */,
+				F99BEA6F2A13496A003F49B2 /* DrawerMenuViewController.swift in Sources */,
 				8A9F0B5627C595F300FE09AE /* ImageIdentifiers.swift in Sources */,
 				7B844E3D1BBDDB9D00E733A2 /* ChevronView.swift in Sources */,
 				43A5643823CD1E1C00B6857D /* UpdateViewController.swift in Sources */,
@@ -13887,6 +13962,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E60961891B62B8C800DD640F /* Firefox.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Xlinker",
@@ -14077,6 +14153,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E6DCC1ED1DCBB6AA00CEC4B7 /* Fennec.enterprise.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Xlinker",
@@ -14308,6 +14385,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E6FCC43C1C40565200DF6113 /* FirefoxBeta.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Xlinker",
@@ -14754,7 +14832,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E60961861B62B8A700DD640F /* Fennec.xcconfig */;
 			buildSettings = {
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				ARCHS = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Xlinker",
@@ -14779,7 +14858,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DQW7B5HUNY;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_KEY_CFBundleDisplayName = Carbon;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -14840,6 +14919,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ALWAYS_USE_SEPARATE_HEADERMAPS = NO;
+				ARCHS = arm64;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -14850,7 +14930,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -14902,7 +14982,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DQW7B5HUNY;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_KEY_CFBundleDisplayName = Carbon;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -15247,6 +15327,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ALWAYS_USE_SEPARATE_HEADERMAPS = NO;
+				ARCHS = arm64;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -15888,7 +15969,7 @@
 				version = 5.0.1;
 			};
 		};
-		432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */ = {
+		432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adjust/ios_sdk.git";
 			requirement = {
@@ -15896,7 +15977,7 @@
 				version = 4.33.4;
 			};
 		};
-		433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */ = {
+		433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nbhasin2/GCDWebServer.git";
 			requirement = {
@@ -15904,7 +15985,7 @@
 				kind = branch;
 			};
 		};
-		433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */ = {
+		433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kif-framework/KIF.git";
 			requirement = {
@@ -15912,7 +15993,7 @@
 				version = 3.8.7;
 			};
 		};
-		433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */ = {
+		433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mozilla/rust-components-swift.git";
 			requirement = {
@@ -15928,7 +16009,7 @@
 				version = 52.4.0;
 			};
 		};
-		4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */ = {
+		4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -15936,7 +16017,7 @@
 				version = 5.6.0;
 			};
 		};
-		43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */ = {
+		43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nbhasin2/Fuzi.git";
 			requirement = {
@@ -15944,7 +16025,7 @@
 				kind = branch;
 			};
 		};
-		43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */ = {
+		43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mozilla-mobile/MappaMundi.git";
 			requirement = {
@@ -15952,7 +16033,7 @@
 				kind = branch;
 			};
 		};
-		5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */ = {
+		5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
@@ -15985,22 +16066,22 @@
 		};
 		432BD0232790EBD000A0F3C3 /* Adjust */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk.git" */;
+			package = 432BD0222790EBD000A0F3C3 /* XCRemoteSwiftPackageReference "ios_sdk" */;
 			productName = Adjust;
 		};
 		433F87CD2788EAB600693368 /* GCDWebServers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */;
+			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */;
 			productName = GCDWebServers;
 		};
 		433F87CF2788ECDD00693368 /* GCDWebServers */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer.git" */;
+			package = 433F87CC2788EAB600693368 /* XCRemoteSwiftPackageReference "GCDWebServer" */;
 			productName = GCDWebServers;
 		};
 		433F87D42788F01500693368 /* KIF */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF.git" */;
+			package = 433F87D12788EF5B00693368 /* XCRemoteSwiftPackageReference "KIF" */;
 			productName = KIF;
 		};
 		435C85EF2788F4D00072B526 /* Glean */ = {
@@ -16010,12 +16091,12 @@
 		};
 		43A878FB27AB498E0071C372 /* MozillaAppServices */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift.git" */;
+			package = 433F87D62788F34500693368 /* XCRemoteSwiftPackageReference "rust-components-swift" */;
 			productName = MozillaAppServices;
 		};
 		43C6A47E27A0679300C79856 /* MappaMundi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */;
+			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */;
 			productName = MappaMundi;
 		};
 		5A37861329A2BFB9006B3A34 /* Common */ = {
@@ -16028,7 +16109,7 @@
 		};
 		5A37861829A2C337006B3A34 /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa.git" */;
+			package = 5A37861729A2C337006B3A34 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
 		5A37861C29A2C37C006B3A34 /* Common */ = {
@@ -16057,17 +16138,17 @@
 		};
 		5A871487292EA1440039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A871489292EA1520039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A87148D292EA3270039A5BD /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		5A87148F292EA3910039A5BD /* SiteImageView */ = {
@@ -16076,22 +16157,22 @@
 		};
 		5A8FD0EB293A7D5E00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0ED293A7D6D00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0EF293A7D7F00333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A8FD0F1293A7D9000333AA7 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit.git" */;
+			package = 4368F83B279669690013419B /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 		5A9FF8482942454600DF9FBB /* Common */ = {
@@ -16100,17 +16181,17 @@
 		};
 		D433852B27ABC8150069DD33 /* MappaMundi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi.git" */;
+			package = 43C6A47D27A0679300C79856 /* XCRemoteSwiftPackageReference "MappaMundi" */;
 			productName = MappaMundi;
 		};
 		F91ABA9B29F1A12B0060105E /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 		F91ABA9D29F1A1530060105E /* Fuzi */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi.git" */;
+			package = 43AFC0E027967BFA0039DDF4 /* XCRemoteSwiftPackageReference "Fuzi" */;
 			productName = Fuzi;
 		};
 /* End XCSwiftPackageProductDependency section */
