@@ -610,9 +610,9 @@ class WalletViewController: UIViewController {
     }
     
     func initiateDrawerVC(){
-//        let drawerController = DrawerMenuViewController()
-//        drawerController.delegate = self
-//        present(drawerController, animated: true)
+        let drawerController = DrawerMenuViewController()
+        drawerController.delegate = self
+        present(drawerController, animated: true)
     }
     
     func initiateConnetVC(){

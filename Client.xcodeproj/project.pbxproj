@@ -1203,6 +1203,9 @@
 		F99BEA932A135BC5003F49B2 /* WalletProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */; };
 		F99BEA952A135C24003F49B2 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA942A135C24003F49B2 /* SendViewController.swift */; };
 		F99BEA972A135CDD003F49B2 /* ReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */; };
+		F99BEA992A135EAB003F49B2 /* DrawerMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */; };
+		F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */; };
+		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5062,6 +5065,9 @@
 		F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletProtocol.swift; sourceTree = "<group>"; };
 		F99BEA942A135C24003F49B2 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveViewController.swift; sourceTree = "<group>"; };
+		F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerMenuViewController.swift; sourceTree = "<group>"; };
+		F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchNetworkViewController.swift; sourceTree = "<group>"; };
+		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -8101,6 +8107,9 @@
 				F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */,
 				F99BEA942A135C24003F49B2 /* SendViewController.swift */,
 				F99BEA962A135CDD003F49B2 /* ReceiveViewController.swift */,
+				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
+				F99BEA9A2A135F0D003F49B2 /* SwitchNetworkViewController.swift */,
+				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -10082,6 +10091,7 @@
 				8A161413282C2F8F00DDBB02 /* NimbusSponsoredTileLayer.swift in Sources */,
 				0BB5B2881AC0A2B90052877D /* SnackBar.swift in Sources */,
 				E1442FCF294782D9003680B0 /* UIView+Screenshot.swift in Sources */,
+				F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */,
 				8AB8572C27D945FA0075C173 /* TopSitesDataAdaptor.swift in Sources */,
 				EBC4869F2195F58300CDA48D /* SessionRestoreHandler.swift in Sources */,
 				C889569A27E8D1AC00E3779E /* InactiveTabHeader.swift in Sources */,
@@ -10409,6 +10419,7 @@
 				E4C358551AF144BA00299F7E /* FSReadingList.m in Sources */,
 				8AE1E1CB27B18F560024C45E /* SearchBarSettingsViewController.swift in Sources */,
 				8AD40FC527BADC1F00672675 /* TabToolbarHelper.swift in Sources */,
+				F99BEA992A135EAB003F49B2 /* DrawerMenuViewController.swift in Sources */,
 				9609F4CA26B57CE800F81493 /* Calendar+Extension.swift in Sources */,
 				E663D5781BB341C4001EF30E /* ToggleButton.swift in Sources */,
 				DFA51481275FFEE500266AA0 /* HistoryHighlightsManager.swift in Sources */,
@@ -10421,6 +10432,7 @@
 				E58368AA287D632F0087A449 /* StoryProvider.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				F85C7EDD27109241004BDBA4 /* LoginOnboardingViewController.swift in Sources */,
+				F99BEA9B2A135F0D003F49B2 /* SwitchNetworkViewController.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
 				966206CD2698DE1E005C0A55 /* RecentlySavedViewModel.swift in Sources */,
