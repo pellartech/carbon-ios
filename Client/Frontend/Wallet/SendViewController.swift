@@ -255,9 +255,9 @@ class SendViewController: UIViewController {
         ])
         
     }
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-           self.view.endEditing(true)
-       }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
     func setUpDropDownValue(){
         for token in tokens {
