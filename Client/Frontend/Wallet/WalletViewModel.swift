@@ -68,12 +68,11 @@ public class WalletViewModel {
     
     func sendNativeEVM(amountString: String,sender:String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
-        let adapters = ParticleConnect.getAdapters(chainType: .evm)
-        let adapter: ConnectAdapter = adapters[0]
-        ParticleWalletAPI.getEvmService().createTransaction(from:sender, to: receiver, value: amount.toHexString(), data: "").flatMap {
+        let sende = ParticleAuthService.getAddress()
+        ParticleWalletAPI.getEvmService().createTransaction(from:sende, to: receiver, value: amount.toHexString(), data: "0x").flatMap {
             transaction -> Single<String> in
             print("transaction = \(transaction)")
-            return adapter.signAndSendTransaction(publicAddress: sender, transaction: transaction)
+            return ParticleAuthService.signAndSendTransaction(transaction)
         }.subscribe { result in
             switch result {
             case .failure(let error):
@@ -85,16 +84,14 @@ public class WalletViewModel {
         }.disposed(by: bag)
     
     }
+
     func sendERC20Token(amountString: String,sender:String,receiver: String,filterToken: TokenModel,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
-        let adapters = ParticleConnect.getAdapters(chainType: .evm)
-        let adapter: ConnectAdapter = adapters[0]
         let contractParams = ContractParams.erc20Transfer(contractAddress: filterToken.address, to: receiver, amount: amount)
-        
         ParticleWalletAPI.getEvmService().createTransaction(from: sender,to: receiver,contractParams: contractParams).flatMap {
             transaction -> Single<String> in
             print("transaction = \(transaction)")
-            return adapter.signAndSendTransaction(publicAddress: sender, transaction: transaction)
+            return ParticleAuthService.signAndSendTransaction(transaction)
         }.subscribe {result in
             switch result {
             case .failure(let error):

@@ -273,7 +273,7 @@ class SendViewController: UIViewController {
         if (toTextField.text != "" && amountTextField.text != ""){
             switch dropDown.text{
             case  "ETH": sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!, sender: publicAddress)
-            default : sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!, sender: publicAddress)
+            default : sendERC20Token(amountString: amountTextField.text!, receiver: toTextField.text!, sender: publicAddress)
             }
         }
     }
