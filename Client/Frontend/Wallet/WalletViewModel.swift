@@ -66,13 +66,10 @@ public class WalletViewModel {
         }.disposed(by: bag)
     }
     
-    func sendNativeEVM(amountString: String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
-        
-        let sender = ParticleAuthService.getAddress()
+    func sendNativeEVM(amountString: String,sender:String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
         let adapters = ParticleConnect.getAdapters(chainType: .evm)
         let adapter: ConnectAdapter = adapters[0]
-        
         ParticleWalletAPI.getEvmService().createTransaction(from:sender, to: receiver, value: amount.toHexString(), data: "0x").flatMap {
             transaction -> Single<String> in
             print("transaction = \(transaction)")
@@ -88,9 +85,7 @@ public class WalletViewModel {
         }.disposed(by: bag)
     
     }
-    func sendERC20Token(amountString: String,receiver: String,filterToken: TokenModel,completed : @escaping (Result<String, Error>) -> Void) {
-        
-        let sender = ParticleAuthService.getAddress()
+    func sendERC20Token(amountString: String,sender:String,receiver: String,filterToken: TokenModel,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
         let adapters = ParticleConnect.getAdapters(chainType: .evm)
         let adapter: ConnectAdapter = adapters[0]

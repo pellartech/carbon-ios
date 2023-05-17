@@ -109,15 +109,22 @@ class SendViewController: UIViewController {
     ///DropDown
     var dropDown: DropDown = {
         let dropDown = DropDown()
-        dropDown.backgroundColor = UIColor.black
-        dropDown.arrowColor = UIColor.white
+        dropDown.backgroundColor = UIColor.clear
+        dropDown.rowBackgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        dropDown.textColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.itemsColor = UIColor.white
+        dropDown.tintColor = Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.itemsTintColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
+        dropDown.selectedRowColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        dropDown.borderColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        dropDown.arrowColor = UIColor.clear
+        dropDown.isSearchEnable = false
         dropDown.translatesAutoresizingMaskIntoConstraints = false
         dropDown.font = .boldSystemFont(ofSize:  UX.TokenLabel.font)
         dropDown.frame = CGRect(x: 0, y: 0, width: UX.DropDown.width, height: UX.DropDown.height)
-        dropDown.selectedRowColor = UIColor.black
-        dropDown.textColor = UIColor.white
-        dropDown.itemsTintColor = Utilities().hexStringToUIColor(hex: "#FF7929")
         dropDown.textAlignment = .center
+        dropDown.borderWidth = 1
+        dropDown.layer.cornerRadius = 20
         return dropDown
     }()
     
@@ -175,7 +182,7 @@ class SendViewController: UIViewController {
     
     // MARK: - UI Properties
     var tokens = [TokenModel]()
-    var address = String()
+    var publicAddress = String()
     let bag = DisposeBag()
     var adapter: ConnectAdapter!
     let viewModel = WalletViewModel()
@@ -199,7 +206,6 @@ class SendViewController: UIViewController {
     }
     
     func setUpView(){
-        view.backgroundColor = .black
         view.addSubview(titleLabel)
         view.addSubview(dropDown)
         view.addSubview(toLabel)
@@ -249,6 +255,9 @@ class SendViewController: UIViewController {
         ])
         
     }
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+           self.view.endEditing(true)
+       }
     
     func setUpDropDownValue(){
         for token in tokens {
@@ -263,18 +272,16 @@ class SendViewController: UIViewController {
     @objc func sendBtnTapped() {
         if (toTextField.text != "" && amountTextField.text != ""){
             switch dropDown.text{
-            case  "ETH": sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!)
-            default : sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!)
+            case  "ETH": sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!, sender: publicAddress)
+            default : sendNativeEVM(amountString: amountTextField.text!, receiver: toTextField.text!, sender: publicAddress)
             }
-        }else{
-//            self.showToast(title: "Oops!", message: "Please enter the value")
         }
     }
     
     // MARK: - View Model Methods - Network actions
-    func sendNativeEVM(amountString: String,receiver: String) {
+    func sendNativeEVM(amountString: String,receiver: String,sender:String) {
         SVProgressHUD.show()
-        self.viewModel.sendNativeEVM(amountString: amountString, receiver: receiver){ result in
+        self.viewModel.sendNativeEVM(amountString: amountString,sender:sender ,receiver: receiver){ result in
             switch result {
             case .success(let tokens):
                 print(tokens)
@@ -287,12 +294,12 @@ class SendViewController: UIViewController {
         }
     }
     
-    func sendERC20Token(amountString: String,receiver: String) {
+    func sendERC20Token(amountString: String,receiver: String,sender:String) {
         SVProgressHUD.show()
         let filterToken = tokens.filter {
             $0.tokenInfo.name == self.dropDown.text!
         }
-        self.viewModel.sendERC20Token(amountString: amountString, receiver: receiver, filterToken: filterToken[0]){ result in
+        self.viewModel.sendERC20Token(amountString: amountString,sender: sender, receiver: receiver, filterToken: filterToken[0]){ result in
             switch result {
             case .success(let tokens):
                 print(tokens)

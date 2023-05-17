@@ -43,7 +43,7 @@ class WalletViewController: UIViewController {
             static let carbonFont: CGFloat = 12
             static let titleFont: CGFloat = 16
             static let top: CGFloat = 30
-
+            static let width: CGFloat = 300
         }
         struct LogoView {
             static let top: CGFloat = 120
@@ -52,7 +52,7 @@ class WalletViewController: UIViewController {
             static let heightBg: CGFloat = 120
         }
         struct ContentView {
-            static let heightBackGround: CGFloat = 350
+            static let heightBackGround: CGFloat = 420
         }
         struct ActionView {
             static let heightActionBg: CGFloat = 25
@@ -61,7 +61,7 @@ class WalletViewController: UIViewController {
         struct UserTokenView {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 20
-            static let top: CGFloat = 100
+            static let top: CGFloat = 40
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -107,7 +107,7 @@ class WalletViewController: UIViewController {
             static let corner: CGFloat = 25
         }
         struct ButtonView {
-            static let top: CGFloat = 30
+            static let top: CGFloat = -30
             static let centerX: CGFloat = 90
             static let height: CGFloat = 50
             static let width: CGFloat = 163
@@ -287,6 +287,7 @@ class WalletViewController: UIViewController {
         label.textAlignment = .center
         label.text = "$0"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -558,7 +559,8 @@ class WalletViewController: UIViewController {
             
             totalBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             totalBalanceLabel.topAnchor.constraint(equalTo: totalBalanceTitleLabel.bottomAnchor,constant: UX.BalanceLabel.top),
-            
+            totalBalanceLabel.widthAnchor.constraint(equalToConstant: UX.BalanceLabel.width),
+
             carbonBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             carbonBalanceLabel.topAnchor.constraint(equalTo: totalBalanceLabel.bottomAnchor,constant: UX.BalanceLabel.topValueCarbon),
             
@@ -685,9 +687,9 @@ class WalletViewController: UIViewController {
                         self.contentView.isHidden = false
                         self.userTokensView.isHidden = false
                         self.tableView.reloadData()
-                        var total = BInt()
+                        var total = Decimal()
                         for token in self.tokensModel{
-                             total = total + token.amount
+                            total = total + self.toEther(wei: token.amount)
                         }
                         self.totalBalanceLabel.text = "$\(total)"
                     }
@@ -735,7 +737,7 @@ class WalletViewController: UIViewController {
 // MARK: - Helper Methods - Initiate view controller
     func initiateSendVC(){
         let vc = SendViewController()
-        vc.address = publicAddress
+        vc.publicAddress = publicAddress
         vc.tokens = self.tokensModel
         self.present(vc, animated: true)
     }
@@ -759,6 +761,14 @@ class WalletViewController: UIViewController {
         vc.modalPresentationStyle = .overCurrentContext
         vc.address = publicAddress
         self.present(vc, animated: false)
+    }
+    func toEther(wei: BInt) -> Decimal {
+        let etherInWei = pow(Decimal(10), 18)
+        if let decimalWei = Decimal(string: wei.description){
+            return decimalWei / etherInWei
+        }else{
+            return Decimal()
+        }
     }
 }
 
