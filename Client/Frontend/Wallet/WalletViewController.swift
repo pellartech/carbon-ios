@@ -410,6 +410,7 @@ class WalletViewController: UIViewController {
         super.viewDidLoad()
         applyTheme()
         setUpView()
+        setUpNetwork()
         setUpViewContraint()
         getLocalUserData()
         getNetworkList()
@@ -423,11 +424,14 @@ class WalletViewController: UIViewController {
         view.backgroundColor = theme?.colors.layer1
     }
     
+    func setUpNetwork(){
+        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        ParticleNetwork.setChainInfo(chainInfo)
+    }
+    
     func setUpView(){
         self.title = .Settings.Wallet.Title
-        if shownFromAppMenu {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
-        }
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(doneButtonTapped))
         receiveBtnView.alpha = 0
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
@@ -654,10 +658,9 @@ class WalletViewController: UIViewController {
 // MARK: - View Model Methods - Network actions
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
-        
-        welcomeView.isHidden = data.count > 0 ? true : false
-        contentView.isHidden = data.count > 0 ? false : true
-        userTokensView.isHidden = data.count > 0 ? false : true
+        welcomeView.isHidden =  false
+        contentView.isHidden = true
+        userTokensView.isHidden = true
         publicAddress = address
         
         self.viewModel.addCustomTokenToUserAccount(address: publicAddress) {result in
@@ -676,8 +679,18 @@ class WalletViewController: UIViewController {
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                DispatchQueue.global().async {
+                    DispatchQueue.main.async {
+                        self.welcomeView.isHidden =  true
+                        self.contentView.isHidden = false
+                        self.userTokensView.isHidden = false
+                        self.tableView.reloadData()
+                        var total = BInt()
+                        for token in self.tokensModel{
+                             total = total + token.amount
+                        }
+                        self.totalBalanceLabel.text = "$\(total)"
+                    }
                 }
                 SVProgressHUD.dismiss()
             case .failure(let error):

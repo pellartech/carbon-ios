@@ -142,7 +142,6 @@ class ConnectViewController: UIViewController{
         addTapGesture()
         setupPanGesture()
         setUpViewContraint()
-        settingUpUI()
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -150,6 +149,9 @@ class ConnectViewController: UIViewController{
         animatePresentContainer()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        settingUpUI()
+    }
     // MARK: - UI Methods
     func applyTheme() {
         view.backgroundColor = .clear
@@ -217,12 +219,10 @@ class ConnectViewController: UIViewController{
     }
     
     func settingUpUI(){
-        if let _ = data.first(where: { $0.walletType == .particle }) {
-            accountModel[0].isConnected = true
-        }
-        if let _ = data.first(where: { $0.walletType == .metaMask }) {
-            accountModel[1].isConnected = true
-        }
+        var filterParticle = data.filter{$0.walletType == .particle}
+        accountModel[0].isConnected = filterParticle.count > 0 ? true : false
+        var filterMeta = data.filter{$0.walletType == .metaMask}
+        accountModel[1].isConnected = filterMeta.count > 0 ? true : false
     }
     
     // MARK: - Objc Methodss
@@ -340,7 +340,9 @@ extension ConnectViewController : UITableViewDelegate, UITableViewDataSource{
                 if let account = account {
                     let connectWalletModel = ConnectWalletModel(publicAddress: account.publicAddress, name: account.name, url: account.url, icons: account.icons, description: account.description, isSelected: false, walletType: account.walletType, chainId: ConnectManager.getChainId())
                     WalletManager.shared.updateWallet(connectWalletModel)
-                    self.dismiss(animated: true)
+                    self.dismiss(animated: true) {
+                        self.delegate?.accountPublicAddress(address: account.publicAddress)
+                    }
                 }
             }
             
