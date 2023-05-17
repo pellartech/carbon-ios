@@ -70,7 +70,7 @@ public class WalletViewModel {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
         let adapters = ParticleConnect.getAdapters(chainType: .evm)
         let adapter: ConnectAdapter = adapters[0]
-        ParticleWalletAPI.getEvmService().createTransaction(from:sender, to: receiver, value: amount.toHexString(), data: "0x").flatMap {
+        ParticleWalletAPI.getEvmService().createTransaction(from:sender, to: receiver, value: amount.toHexString(), data: "").flatMap {
             transaction -> Single<String> in
             print("transaction = \(transaction)")
             return adapter.signAndSendTransaction(publicAddress: sender, transaction: transaction)
