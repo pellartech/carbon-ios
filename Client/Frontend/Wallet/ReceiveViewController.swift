@@ -109,6 +109,16 @@ class ReceiveViewController: UIViewController {
         return label
     }()
     
+    lazy var copyToClipboardLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Copy to clipboard"
+        label.textColor = UIColor.white
+        label.numberOfLines = 3
+        label.font = .systemFont(ofSize: UX.AddressLabel.font)
+        label.frame  = CGRect(x: 0, y: 0, width: UX.AddressLabel.width, height: UX.AddressLabel.height)
+        return label
+    }()
+    
     ///UIImageView
     private lazy var qrImageView: UIImageView = {
         let imageView = UIImageView()
@@ -120,7 +130,7 @@ class ReceiveViewController: UIViewController {
     ///UIStackView
     lazy var contentStackView: UIStackView = {
         let spacer = UIView()
-        let stackView = UIStackView(arrangedSubviews: [titleLabel,addressLabel, dummyLabel,spacer])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel,addressLabel,copyToClipboardLabel, dummyLabel,spacer])
         stackView.alignment = .center
         stackView.axis = .vertical
         stackView.spacing = UX.ContainerView.spacing
@@ -142,7 +152,8 @@ class ReceiveViewController: UIViewController {
     var single: Single<Account?>?
     var data: [ConnectWalletModel] = []
     var address = ""
-    
+    var themeManager: ThemeManager?
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -164,7 +175,6 @@ class ReceiveViewController: UIViewController {
     // MARK: - UI Methods
     func applyTheme() {
         view.backgroundColor = .clear
-        let themeManager :  ThemeManager?
         themeManager =  AppContainer.shared.resolve()
         let theme = themeManager?.currentTheme
         containerView.backgroundColor = theme?.colors.layer1
@@ -232,6 +242,9 @@ class ReceiveViewController: UIViewController {
         containerViewBottomConstraint = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: defaultHeight)
         containerViewHeightConstraint?.isActive = true
         containerViewBottomConstraint?.isActive = true
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(clipToClipboardTapped))
+        contentStackView.addGestureRecognizer(tapRecognizer)
     }
     
     // MARK: - Objc Methodss
@@ -239,6 +252,11 @@ class ReceiveViewController: UIViewController {
         animateDismissView()
     }
     
+    @objc private func clipToClipboardTapped() {
+        UIPasteboard.general.string = self.address
+        SimpleToast().showAlertWithText("Copied!", bottomContainer: view, theme: themeManager!.currentTheme)
+    }
+
     
     // MARK: - Helper Methods - Generate QR code
     func generateQRcode(value:String) -> UIImage?{
