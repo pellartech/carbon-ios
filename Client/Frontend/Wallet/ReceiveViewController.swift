@@ -138,7 +138,6 @@ class ReceiveViewController: UIViewController {
     let maximumContainerHeight: CGFloat = UIScreen.main.bounds.height - 64
     var currentContainerHeight: CGFloat = 400
     
-    var delegate : ConnectProtocol?
     let bag = DisposeBag()
     var single: Single<Account?>?
     var data: [ConnectWalletModel] = []

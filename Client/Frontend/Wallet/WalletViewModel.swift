@@ -66,6 +66,7 @@ public class WalletViewModel {
         }.disposed(by: bag)
     }
     
+    /// This method will send the native tokens  to  user account
     func sendNativeEVM(amountString: String,sender:String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
         let sende = ParticleAuthService.getAddress()
@@ -84,7 +85,8 @@ public class WalletViewModel {
         }.disposed(by: bag)
     
     }
-
+    
+    /// This method will send the ERC20 tokens  to  user account
     func sendERC20Token(amountString: String,sender:String,receiver: String,filterToken: TokenModel,completed : @escaping (Result<String, Error>) -> Void) {
         let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
         let contractParams = ContractParams.erc20Transfer(contractAddress: filterToken.address, to: receiver, amount: amount)
@@ -103,5 +105,17 @@ public class WalletViewModel {
             }
         }.disposed(by: bag)
     
+    }
+    func logout(completed : @escaping (Result<String, Error>) -> Void){
+        WalletManager.shared.removeAllWallet()
+        ParticleAuthService.logout().subscribe {result in
+            switch result {
+            case .failure(let error):
+                print(error)
+                completed(.failure(error))
+            case .success(let logout):
+                completed(.success(logout))
+            }
+        }.disposed(by: bag)
     }
 }

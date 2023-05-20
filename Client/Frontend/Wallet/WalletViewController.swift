@@ -796,6 +796,15 @@ extension WalletViewController : ConnectProtocol{
         getLocalUserData()
         setUIAndFetchData(address: address)
     }
+    func logout() {
+        data = []
+        accountModel[0].isConnected  = false
+        accountModel[1].isConnected  = false
+        self.tableView.reloadData()
+        welcomeView.isHidden =  false
+        contentView.isHidden = true
+        userTokensView.isHidden = true
+    }
 }
 
 class TokensTVCell: UITableViewCell {

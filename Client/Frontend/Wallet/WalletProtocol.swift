@@ -7,4 +7,5 @@
 import Foundation
 protocol ConnectProtocol{
     func accountPublicAddress(address: String)
+    func logout()
 }

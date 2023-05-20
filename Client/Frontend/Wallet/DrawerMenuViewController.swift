@@ -17,6 +17,7 @@ import ConnectCommon
 import SDWebImage
 import Common
 import Shared
+import SVProgressHUD
 
 class DrawerMenuViewController: UIViewController{
     
@@ -28,6 +29,13 @@ class DrawerMenuViewController: UIViewController{
         }
         struct TableView {
             static let top: CGFloat = 100
+        }
+        struct ButtonView {
+            static let top: CGFloat = -100
+            static let height: CGFloat = 50
+            static let width: CGFloat = 100
+            static let font: CGFloat = 14
+            static let corner: CGFloat = 15
         }
     }
 
@@ -59,13 +67,31 @@ class DrawerMenuViewController: UIViewController{
         return tableView
     }()
     
+    ///UIButton
+    private lazy var logoutButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("Logout", for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(self.sendBtnTapped), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
+        button.isUserInteractionEnabled = true
+        button.layer.borderColor = Utilities().hexStringToUIColor(hex: "#FF581A").cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 25
+        return button
+    }()
+    
+    
     // MARK: - UI Properties
     var selectedIndexes = [IndexPath(row: 0, section: 0)]
     let transitionManager = DrawerTransitionManager()
     let bag = DisposeBag()
     var delegate : ConnectProtocol?
     var data: [ConnectWalletModel] = []
-    
+    let viewModel = WalletViewModel()
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +125,7 @@ class DrawerMenuViewController: UIViewController{
     func setUpView() {
         view.addSubview(networkLabel)
         view.addSubview(tableView)
-        
+        view.addSubview(logoutButton)
     }
     
     func setUpViewConstraint() {
@@ -114,10 +140,21 @@ class DrawerMenuViewController: UIViewController{
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            ///UIButton
+            logoutButton.topAnchor.constraint(equalTo: view.bottomAnchor,constant: UX.ButtonView.top),
+            logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoutButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            logoutButton.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
+            
         ])
     }
-   
-    func getLocalUserData(){
+    
+    // MARK: - Objc Methods
+    @objc func sendBtnTapped (){
+        logout()
+    }
+     func getLocalUserData(){
         data = WalletManager.shared.getWallets().filter { connectWalletModel in
             let adapters = ParticleConnect.getAdapterByAddress(publicAddress: connectWalletModel.publicAddress).filter {
                 $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
@@ -126,6 +163,23 @@ class DrawerMenuViewController: UIViewController{
         }
         tableView.reloadData()
     }
+    func logout(){
+        SVProgressHUD.show()
+        viewModel.logout { result in
+            switch result {
+            case .success(let logout):
+                print(logout)
+                SVProgressHUD.dismiss()
+                self.dismiss(animated: true,completion: {
+                    self.delegate?.logout()
+                })
+            case .failure(let error):
+                print(error)
+                SVProgressHUD.dismiss()
+            }
+        }
+    }
+    
 }
 // MARK: - Extension - UITableViewDataSource
 extension DrawerMenuViewController : UITableViewDataSource{

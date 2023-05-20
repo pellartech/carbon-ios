@@ -35,4 +35,7 @@ class WalletManager {
             $0 == model
         }
     }
+    func removeAllWallet() {
+        Defaults.connectedWallets.removeAll()
+    }
 }
