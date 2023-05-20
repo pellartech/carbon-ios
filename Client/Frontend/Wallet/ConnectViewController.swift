@@ -219,9 +219,9 @@ class ConnectViewController: UIViewController{
     }
     
     func settingUpUI(){
-        var filterParticle = data.filter{$0.walletType == .particle}
+        let filterParticle = data.filter{$0.walletType == .particle}
         accountModel[0].isConnected = filterParticle.count > 0 ? true : false
-        var filterMeta = data.filter{$0.walletType == .metaMask}
+        let filterMeta = data.filter{$0.walletType == .metaMask}
         accountModel[1].isConnected = filterMeta.count > 0 ? true : false
     }
     

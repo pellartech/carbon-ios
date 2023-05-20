@@ -793,6 +793,7 @@ extension WalletViewController : UITableViewDelegate, UITableViewDataSource{
 // MARK: - Extension - ConnectProtocol
 extension WalletViewController : ConnectProtocol{
     func accountPublicAddress(address: String) {
+        getLocalUserData()
         setUIAndFetchData(address: address)
     }
 }
