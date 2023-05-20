@@ -228,7 +228,7 @@ class HomeLogoHeaderCell: UICollectionViewCell, ReusableCell,UICollectionViewDat
     private  var dataModel = [DataModel(title: "Data Saved", value: "0B"),DataModel(title: "Tracker & Ads Blocked", value: "0"),DataModel(title: "Searches", value: "0")]
     
     private var statsModel = [
-        FeatureModel(title: "Wallet", icon:"ic_wallet",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),
+        FeatureModel(title: "Wallet", icon:"ic_wallet",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "wallet"),
         FeatureModel(title: "Staking", icon:"ic_stacking",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: "https://stake.carbon.website/"),
         FeatureModel(title: "Swap", icon:"ic_swap",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),
         FeatureModel(title: "Bridge", icon:"ic_bridge",color: UIColor(red: 0, green: 0, blue: 0, alpha: 1),url: ""),

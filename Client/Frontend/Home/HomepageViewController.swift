@@ -501,8 +501,15 @@ private extension HomepageViewController {
                 let site = Site(url: data.url ?? "", title: data.title ?? "")
                 self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites,isFeature: true)
             }else{
-                guard let url = data.url!.asURL else { return }
-                self.showSiteWithURLHandler(url, isGoogleTopSite: false)
+                if (data.title == "Wallet"){
+                    let rootViewController = WalletViewController()
+                    rootViewController.shownFromAppMenu = true
+                    let navController = ThemedNavigationController(rootViewController: rootViewController)
+                    self.presentWithModalDismissIfNeeded(navController, animated: true)
+                }else{
+                    guard let url = data.url!.asURL else { return }
+                    self.showSiteWithURLHandler(url, isGoogleTopSite: false)
+                }
             }
         }
 
