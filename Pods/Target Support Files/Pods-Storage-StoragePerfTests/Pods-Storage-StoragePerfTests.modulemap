@@ -1,6 +1,0 @@
-framework module Pods_Storage_StoragePerfTests {
-  umbrella header "Pods-Storage-StoragePerfTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
