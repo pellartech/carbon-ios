@@ -9,6 +9,7 @@ import Shared
 import UserNotifications
 import MozillaAppServices
 import Common
+import ParticleAuthService
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -43,6 +44,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
 
         self.window = window
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window = self.window
 
         var themeManager: ThemeManager = AppContainer.shared.resolve()
         themeManager.window = window
@@ -82,25 +86,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         _ scene: UIScene,
         openURLContexts URLContexts: Set<UIOpenURLContext>
     ) {
-        guard let url = URLContexts.first?.url,
-              let routerPath = NavigationPath(url: url) else { return }
-
-        if profile.prefs.boolForKey(PrefsKeys.AppExtensionTelemetryOpenUrl) != nil {
-            profile.prefs.removeObjectForKey(PrefsKeys.AppExtensionTelemetryOpenUrl)
-
-            var object = TelemetryWrapper.EventObject.url
-            if case .text = routerPath {
-                object = .searchText
+        if let url = URLContexts.first?.url, let routerPath = NavigationPath(url: url) {
+            if profile.prefs.boolForKey(PrefsKeys.AppExtensionTelemetryOpenUrl) != nil {
+                profile.prefs.removeObjectForKey(PrefsKeys.AppExtensionTelemetryOpenUrl)
+                
+                var object = TelemetryWrapper.EventObject.url
+                if case .text = routerPath {
+                    object = .searchText
+                }
+                
+                TelemetryWrapper.recordEvent(category: .appExtensionAction, method: .applicationOpenUrl, object: object)
             }
-
-            TelemetryWrapper.recordEvent(category: .appExtensionAction, method: .applicationOpenUrl, object: object)
+            
+            DispatchQueue.main.async {
+                NavigationPath.handle(nav: routerPath, with: self.browserViewController)
+            }
+            
+            sessionManager.launchSessionProvider.openedFromExternalSource = true
+        }else{
+            if let url = URLContexts.first?.url{
+                _ = ParticleAuthService.handleUrl(url)
+            }
         }
-
-        DispatchQueue.main.async {
-            NavigationPath.handle(nav: routerPath, with: self.browserViewController)
-        }
-
-        sessionManager.launchSessionProvider.openedFromExternalSource = true
     }
 
     // MARK: - Continuing User Activities

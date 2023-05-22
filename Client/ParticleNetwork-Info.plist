@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   ParticleNetwork-Info.plist
+   Client
+
+   Created by Ashok on 16/05/23.
+   Copyright (c) 2023 Mozilla. All rights reserved.
+-->
+<plist version="1.0">
+    <dict>
+        <key>PROJECT_UUID</key>
+        <string>a52b741f-14f7-4271-81ae-65f07a8e9b8a</string>
+        <key>PROJECT_CLIENT_KEY</key>
+        <string>cgUslRH0vmgkYO1i9556666ybg4e31UMxMqA0Kf0</string>
+        <key>PROJECT_APP_UUID</key>
+        <string>fce2eace-74d3-4063-96c2-4cdaff925527</string>
+    </dict>
+</plist>

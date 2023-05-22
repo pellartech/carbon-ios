@@ -586,7 +586,7 @@ class GradientView: UIView {
             let colors = [topColor.cgColor, bottomColor.cgColor]
             guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
             context.cgContext.drawLinearGradient(gradient,
-                                                 start: CGPoint(x: bounds.minX, y: bounds.midY),
+                                                 start: CGPoint(x: bounds.minX - 5.0, y: bounds.midY),
                                                  end: CGPoint(x: bounds.maxX, y: bounds.maxY),
                                                  options: [])
         }

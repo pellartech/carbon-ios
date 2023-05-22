@@ -224,6 +224,9 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
 
         let passwordsAction = getPasswordAction(navigationController: navigationController)
         append(to: &section, action: passwordsAction)
+        
+        let walletAction = getWalletAction(navigationController: navigationController)
+        append(to: &section, action: walletAction)
 
         if !isHomePage && !isFileURL {
             let reportSiteIssueAction = getReportSiteIssueAction()
@@ -482,7 +485,6 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
         }
     
         var iconURL: URL?
-        let str = ""
         let iconType: PhotonActionSheetIconType =  .Image
         let syncOption = SingleActionViewModel(title: "title",
                                                iconString: "iconString",
@@ -752,6 +754,23 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
                 let navController = ThemedNavigationController(rootViewController: rootViewController)
                 self.delegate?.showViewController(viewController: navController)
             }
+        }.items
+    }
+
+    private func getWalletAction(navigationController: UINavigationController?) -> PhotonRowActions? {
+        guard LoginListViewController.shouldShowAppMenuShortcut(forPrefs: profile.prefs)
+        else { return nil }
+        
+        return SingleActionViewModel(title: .AppMenu.AppMenuWallet,
+                                     iconString: ImageIdentifiers.wallet,
+                                     iconType: .Image,
+                                     iconAlignment: .left) { _ in
+            
+            let rootViewController = WalletViewController()
+            rootViewController.shownFromAppMenu = true
+            let navController = ThemedNavigationController(rootViewController: rootViewController)
+            self.delegate?.showViewController(viewController: navController)
+            
         }.items
     }
 
