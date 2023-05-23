@@ -31,7 +31,7 @@ class FXColors {
     static let DarkGrey30 = UIColor(rgb: 0x42414d)
     static let DarkGrey40 = UIColor(rgb: 0x3a3944)
     static let DarkGrey50 = UIColor(rgb: 0x32313c)
-    static let DarkGrey60 = UIColor(rgb: 0x2b2a33)
+    static let DarkGrey60 = UIColor(rgb: 0x1E1E1E)
     static let DarkGrey70 = UIColor(rgb: 0x23222b)
     static let DarkGrey80 = UIColor(rgb: 0x1c1b22)
     static let DarkGrey90 = UIColor(rgb: 0x15141a)

@@ -16,6 +16,8 @@ import ParticleNetworkBase
 import RxSwift
 import UIKit
 import SVProgressHUD
+import Common
+import Shared
 
 protocol AddWalletProtocol{
     func addWalletDelegate()
@@ -33,15 +35,23 @@ class AddWalletViewController: UITableViewController {
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        applyTheme()
         setUpView()
         loadData()
     }
     
     // MARK: - UI methods
+    
+    func applyTheme() {
+        navigationController?.isNavigationBarHidden = false
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
+        tableView.backgroundColor = theme?.colors.layer1
+        tableView.tintColor = Utilities().hexStringToUIColor(hex: "#1E1E1E")
+    }
     func setUpView(){
-        navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#1E1E1E")
-        tableView.backgroundColor = Utilities().hexStringToUIColor(hex: "#1E1E1E")
         tableView.register(AddWalletCell.self, forCellReuseIdentifier: NSStringFromClass(AddWalletCell.self))
         tableView.rowHeight = 62
         tableView.showsVerticalScrollIndicator = false

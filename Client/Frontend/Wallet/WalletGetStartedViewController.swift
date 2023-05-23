@@ -6,9 +6,8 @@
 
 import Foundation
 import UIKit
-import SVProgressHUD
-import iOSDropDown
-import RxSwift
+import Common
+import Shared
 
 class WalletGetStartedViewController: UIViewController {
     
@@ -195,8 +194,6 @@ class WalletGetStartedViewController: UIViewController {
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        button.isUserInteractionEnabled = false
-        button.isEnabled = false
         return button
     }()
     
@@ -235,13 +232,21 @@ class WalletGetStartedViewController: UIViewController {
         setUpView()
         setUpViewContraint()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        applyTheme()
+    }
     
+    func applyTheme() {
+        navigationController?.isNavigationBarHidden = true
+        let themeManager :  ThemeManager?
+        themeManager =  AppContainer.shared.resolve()
+        let theme = themeManager?.currentTheme
+        view.backgroundColor = theme?.colors.layer1
+    }
     
     // MARK: - UI Methods
-    func setUpView(){
-        navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#1E1E1E")
-        
+    func setUpView(){        
         view.addSubview(logoBackgroundView)
         view.addSubview(scrollView)
         
@@ -372,6 +377,7 @@ class WalletGetStartedViewController: UIViewController {
     
     // MARK: - Objc Methods
     @objc func btnCreateWalletTapped (){
+        self.dismiss(animated: true)
     }
     
     @objc func btnIhaveWalletsTapped (){
