@@ -14,6 +14,10 @@ import RxSwift
 import SVProgressHUD
 import ParticleAuthService
 import ParticleNetworkBase
+import ConnectEVMAdapter
+import ConnectPhantomAdapter
+import ConnectSolanaAdapter
+import ConnectWalletConnectAdapter
 
 public let tokenAddresses: [String] = ["0xb16f35c0ae2912430dac15764477e179d9b9ebea","0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f","0x969D499507B4f437953Db24A4980FdEEDa6Db8a1"]
 
@@ -24,15 +28,74 @@ public class WalletViewModel {
     let bag = DisposeBag()
     private var tokensModel = [TokenModel]()
     
-    /// This method will add the pre defined tokens to the user account
-    func addCustomTokenToUserAccount(address:String,completed : @escaping (Result<[TokenModel], Error>) -> Void) {
-        ParticleWalletAPI.getEvmService().addCustomTokens(address: address, tokenAddresses: tokenAddresses).subscribe { result in
+    ///Wallet Login
+    func walletLogin(vc: UIViewController, walletType: WalletType, completed : @escaping (Result<ConnectWalletModel, Error>) -> Void) {
+        let adapters = ParticleConnect.getAdapters(chainType: .solana) + ParticleConnect.getAdapters(chainType: .evm)
+        var single: Single<Account?>
+        var adapter: ConnectAdapter = adapters[0]
+        switch walletType {
+        case .metaMask:
+            adapter = adapters.first {$0.walletType == .metaMask}!
+        case .particle:
+            adapter = adapters.first {$0.walletType == .particle}!
+        case .rainbow:
+            adapter = adapters.first {$0.walletType == .rainbow}!
+        case .trust:
+            adapter = adapters.first {$0.walletType == .trust}!
+        case .imtoken:
+            adapter = adapters.first {$0.walletType == .imtoken}!
+        case .bitkeep:
+            adapter = adapters.first {$0.walletType == .bitkeep}!
+        case .phantom:
+            adapter = adapters.first {$0.walletType == .phantom}!
+        case .walletConnect:
+            adapter = adapters.first {$0.walletType == .walletConnect}!
+        case .gnosis:
+            adapter = adapters.first {$0.walletType == .gnosis}!
+        case .custom(let adapterInfo):
+            adapter = adapters.first {$0.walletType == .custom(info: adapterInfo)}!
+        default:
+            break
+        }
+        if adapter.readyState == .notDetected {
+            completed(.failure("Error - You haven't installed this wallet"))
+            return
+        }
+        if adapter.readyState == .unsupported {
+            completed(.failure("Error - The wallet is not support current chain"))
+            return
+        }
+        if walletType == .walletConnect {
+            single = (adapter as! WalletConnectAdapter).connectWithQrCode(from: vc)
+        } else if walletType == .particle {
+            single = adapter.connect(ParticleConnectConfig(loginType: .email))
+        } else {
+            single = adapter.connect(ConnectConfig.none)
+        }
+        
+        single.subscribe { result in
             switch result {
             case .failure(let error):
-                print(error)
+                completed(.failure(error))
+            case .success(let account):
+                if let account = account {
+                    let connectWalletModel = ConnectWalletModel(publicAddress: account.publicAddress, name: account.name, url: account.url, icons: account.icons, description: account.description, isSelected: false, walletType: account.walletType, chainId: ConnectManager.getChainId())
+                    WalletManager.shared.updateWallet(connectWalletModel)
+                    completed(.success(connectWalletModel))
+                }
+            }
+        }.disposed(by: bag)
+    }
+    
+    
+    /// This method will add the pre defined tokens to the user account
+    func addCustomTokenToUserAccount(address:String,completed : @escaping (Result<[TokenModel], Error>) -> Void) {
+        ParticleWalletAPI.getEvmService().addCustomTokens(address: address, tokenAddresses: tokenAddresses)//
+            .subscribe { result in
+            switch result {
+            case .failure(let error):
                 completed(.failure(error))
             case .success(let tokenModels):
-                print(tokenModels)
                 completed(.success(tokenModels))
             }
         }.disposed(by: bag)
@@ -40,10 +103,10 @@ public class WalletViewModel {
     
     /// This method will fetch the native tokens which belongs to user account
     func getUserTokenListsForNativeTokens(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: []).subscribe { result in
+        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: [])//
+            .subscribe { result in
             switch result {
             case .failure(let error):
-                print(error)
                 completed(.failure(error))
             case .success(let tokens):
                 let token = tokens.tokens as [TokenModel]
@@ -54,10 +117,10 @@ public class WalletViewModel {
     
     /// This method will fetch the ERC20 tokens which belongs to user account
     func getUserTokenListsForERC20Tokens(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: []).subscribe {result in
+        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: [])//
+            .subscribe {result in
             switch result {
             case .failure(let error):
-                print(error)
                 completed(.failure(error))
             case .success(let tokens):
                 let token = tokens.tokens as [TokenModel]
@@ -77,7 +140,6 @@ public class WalletViewModel {
         }.subscribe { result in
             switch result {
             case .failure(let error):
-                print(error)
                 completed(.failure(error))
             case .success(let signature):
                 completed(.success(signature))
@@ -92,26 +154,25 @@ public class WalletViewModel {
         let contractParams = ContractParams.erc20Transfer(contractAddress: filterToken.address, to: receiver, amount: amount)
         ParticleWalletAPI.getEvmService().createTransaction(from: sender,to: receiver,contractParams: contractParams).flatMap {
             transaction -> Single<String> in
-            print("transaction = \(transaction)")
             return ParticleAuthService.signAndSendTransaction(transaction)
         }.subscribe {result in
             switch result {
             case .failure(let error):
-                print(error)
                 completed(.failure(error))
-
             case .success(let signature):
                 completed(.success(signature))
             }
         }.disposed(by: bag)
     
     }
-    func logout(completed : @escaping (Result<String, Error>) -> Void){
+    
+    /// Wallet Logout
+    func walletLogout(completed : @escaping (Result<String, Error>) -> Void){
         WalletManager.shared.removeAllWallet()
-        ParticleAuthService.logout().subscribe {result in
+        ParticleAuthService.logout()//
+            .subscribe {result in
             switch result {
             case .failure(let error):
-                print(error)
                 completed(.failure(error))
             case .success(let logout):
                 completed(.success(logout))

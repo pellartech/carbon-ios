@@ -1189,6 +1189,7 @@
 		F8AAC1B429663619000BCDEC /* RustAutofill.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B329663618000BCDEC /* RustAutofill.swift */; };
 		F8AAC1B7296637CE000BCDEC /* RustAutofillTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AAC1B5296637B7000BCDEC /* RustAutofillTests.swift */; };
 		F91441C02A1C8A8A008BE25A /* WalletGetStartedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91441BF2A1C8A8A008BE25A /* WalletGetStartedViewController.swift */; };
+		F91441C42A1CA320008BE25A /* AddWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91441C32A1CA320008BE25A /* AddWalletViewController.swift */; };
 		F91ABA9829F11A0B0060105E /* RewardsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91ABA9729F11A0B0060105E /* RewardsViewController.swift */; };
 		F91ABA9A29F1A1130060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABA9C29F1A12B0060105E /* Fuzi in Frameworks */ = {isa = PBXBuildFile; productRef = F91ABA9B29F1A12B0060105E /* Fuzi */; };
@@ -5058,6 +5059,7 @@
 		F8EF4290ACE53B2692EA362F /* hr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hr; path = hr.lproj/LoginManager.strings; sourceTree = "<group>"; };
 		F90A1AE38815AED6A991D5AE /* Pods-CredentialProvider.firefoxbeta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CredentialProvider.firefoxbeta.xcconfig"; path = "Target Support Files/Pods-CredentialProvider/Pods-CredentialProvider.firefoxbeta.xcconfig"; sourceTree = "<group>"; };
 		F91441BF2A1C8A8A008BE25A /* WalletGetStartedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletGetStartedViewController.swift; sourceTree = "<group>"; };
+		F91441C32A1CA320008BE25A /* AddWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWalletViewController.swift; sourceTree = "<group>"; };
 		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
@@ -8120,6 +8122,7 @@
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
 				F99BEA9E2A13601C003F49B2 /* ConnectViewController.swift */,
 				F91441BF2A1C8A8A008BE25A /* WalletGetStartedViewController.swift */,
+				F91441C32A1CA320008BE25A /* AddWalletViewController.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -10330,6 +10333,7 @@
 				0BA02DB22942605600C92603 /* CreditCardHelper.swift in Sources */,
 				E68AEDB01B18F81A00133D99 /* SwipeAnimator.swift in Sources */,
 				3BF56D271CDBBE1F00AC4D75 /* SimpleToast.swift in Sources */,
+				F91441C42A1CA320008BE25A /* AddWalletViewController.swift in Sources */,
 				C8B0F5F6283B7CCE007AE65D /* PocketStory.swift in Sources */,
 				C81AC6B626160091007800C5 /* TabTrayViewModel.swift in Sources */,
 				EBB89504219398E500EB91A0 /* TrackingProtectionPageStats.swift in Sources */,

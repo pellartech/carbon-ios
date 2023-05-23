@@ -165,7 +165,7 @@ class DrawerMenuViewController: UIViewController{
     }
     func logout(){
         SVProgressHUD.show()
-        viewModel.logout { result in
+        viewModel.walletLogout { result in
             switch result {
             case .success(let logout):
                 print(logout)

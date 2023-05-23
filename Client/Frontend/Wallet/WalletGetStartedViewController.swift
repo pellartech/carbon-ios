@@ -21,14 +21,13 @@ class WalletGetStartedViewController: UIViewController {
             static let height: CGFloat = 46
             static let heightBg: CGFloat = 120
             static let top1: CGFloat = 0
-            static let imageHeight: CGFloat = 363
-            
+            static let imageHeight: CGFloat = 370
+            static let widthMiddle: CGFloat = 300
         }
         struct WalletLabel {
             static let font: CGFloat = 20
-            static let font1: CGFloat = 37
-            
-        }
+            static let font1: CGFloat = 28
+                    }
         struct Wallet {
             static let top: CGFloat = 15
             static let leading: CGFloat = 2
@@ -36,8 +35,8 @@ class WalletGetStartedViewController: UIViewController {
             static let height: CGFloat = 16
             static let width1: CGFloat = 120
             static let height1: CGFloat = 35
-            static let leading1: CGFloat = 7
-            static let top1: CGFloat = 5
+            static let leading1: CGFloat = 2
+            static let top1: CGFloat = 2
             
         }
         struct LogoImageView {
@@ -45,6 +44,8 @@ class WalletGetStartedViewController: UIViewController {
             static let width: CGFloat = 32
             static let height1: CGFloat = 60
             static let width1: CGFloat = 60
+            static let leading: CGFloat = -80
+            static let carbonLeading: CGFloat = 30
         }
         struct CarbonImageView {
             static let leading: CGFloat = 10
@@ -52,12 +53,12 @@ class WalletGetStartedViewController: UIViewController {
             static let height: CGFloat = 30
             static let top: CGFloat = -10
             static let leading1: CGFloat = 20
-            static let width1: CGFloat = 155
-            static let height1: CGFloat = 38
+            static let width1: CGFloat = 137
+            static let height1: CGFloat = 33
         }
         
         struct DescriptionLabel {
-            static let top: CGFloat = 50
+            static let top: CGFloat = 30
             static let font: CGFloat = 12
             static let width: CGFloat = 290
             static let height: CGFloat = 65
@@ -65,7 +66,7 @@ class WalletGetStartedViewController: UIViewController {
         }
         
         struct ButtonView {
-            static let top: CGFloat = 30
+            static let top: CGFloat = 50
             static let centerX: CGFloat = 90
             static let height: CGFloat = 50
             static let width: CGFloat = 163
@@ -314,11 +315,11 @@ class WalletGetStartedViewController: UIViewController {
             ///Middle LogoView
             middleLogoView.topAnchor.constraint(equalTo: walletImageView.bottomAnchor,constant: UX.LogoView.top1),
             middleLogoView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            middleLogoView.widthAnchor.constraint(equalToConstant: UX.LogoView.width),
+            middleLogoView.widthAnchor.constraint(equalToConstant: UX.LogoView.widthMiddle),
             middleLogoView.heightAnchor.constraint(equalToConstant: UX.LogoView.height),
             
-            middleLogoImageView.leadingAnchor.constraint(equalTo: middleLogoView.leadingAnchor),
             middleLogoImageView.topAnchor.constraint(equalTo: middleLogoView.topAnchor),
+            middleLogoImageView.centerXAnchor.constraint(equalTo: middleLogoView.centerXAnchor,constant: UX.LogoImageView.leading),
             middleLogoImageView.widthAnchor.constraint(equalToConstant: UX.LogoImageView.width1),
             middleLogoImageView.heightAnchor.constraint(equalToConstant: UX.LogoImageView.height1),
             
@@ -374,6 +375,15 @@ class WalletGetStartedViewController: UIViewController {
     }
     
     @objc func btnIhaveWalletsTapped (){
+        let addWalletVC = AddWalletViewController()
+        addWalletVC.delegate = self
+        self.navigationController?.pushViewController(addWalletVC, animated: true)
     }
-    
+}
+
+extension WalletGetStartedViewController : AddWalletProtocol{
+    func addWalletDelegate() {
+        let walletVC = WalletViewController()
+        self.navigationController?.pushViewController(walletVC, animated: true)
+    }
 }
