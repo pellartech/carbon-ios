@@ -137,6 +137,13 @@ class WalletViewController: UIViewController {
             static let widthC: CGFloat = 180
             static let heightC: CGFloat = 30
         }
+        struct CloseButton {
+            static let top: CGFloat = 55
+            static let leading: CGFloat = 20
+            static let height: CGFloat = 40
+            static let width: CGFloat = 40
+            static let corner: CGFloat = 20
+        }
     
     }
 // MARK: - UI Elements
@@ -397,6 +404,19 @@ class WalletViewController: UIViewController {
         return dropDown
     }()
     
+    private lazy var closeButton : UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(closeBtnTapped), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
+        button.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
+        button.isUserInteractionEnabled = true
+        return button
+    }()
+    
 // MARK: - UI Properties
     var shownFromAppMenu: Bool = false
     private var data: [ConnectWalletModel] = []
@@ -431,9 +451,7 @@ class WalletViewController: UIViewController {
     }
     
     func setUpView(){
-        navigationController?.isNavigationBarHidden = false
-        self.title = .Settings.Wallet.Title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+        navigationController?.isNavigationBarHidden = true
         receiveBtnView.alpha = 0
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
@@ -466,12 +484,19 @@ class WalletViewController: UIViewController {
         view.addSubview(logoBackgroundView)
         view.addSubview(welcomeView)
         view.addSubview(userTokensView)
+        view.addSubview(closeButton)
         
     }
     
     func setUpViewContraint(){
         NSLayoutConstraint.activate([
             
+            ///Close Button
+            closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant:UX.CloseButton.leading),
+            closeButton.topAnchor.constraint(equalTo: view.topAnchor,constant:UX.CloseButton.top),
+            closeButton.widthAnchor.constraint(equalToConstant: UX.CloseButton.width),
+            closeButton.heightAnchor.constraint(equalToConstant:UX.CloseButton.height),
+
             ///UIView
             logoView.topAnchor.constraint(equalTo: view.topAnchor,constant: UX.LogoView.top),
             logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -706,8 +731,8 @@ class WalletViewController: UIViewController {
     }
     
 // MARK: - Objc Methods
-    @objc func doneButtonTapped(_ sender: UIButton) {
-        dismiss(animated: true)
+    @objc func closeBtnTapped (){
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func connectIconTapped (){

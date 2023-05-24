@@ -13,7 +13,9 @@ class WalletGetStartedViewController: UIViewController {
     
     // MARK: - UI Constants
     private struct UX {
-        
+        struct ScrollView {
+            static let constant: CGFloat = 120
+        }
         struct LogoView {
             static let top: CGFloat = 60
             static let width: CGFloat = 220
@@ -72,6 +74,13 @@ class WalletGetStartedViewController: UIViewController {
             static let font: CGFloat = 14
             static let corner: CGFloat = 10
             static let leading: CGFloat = 30
+        }
+        struct CloseButton {
+            static let top: CGFloat = 55
+            static let leading: CGFloat = 20
+            static let height: CGFloat = 40
+            static let width: CGFloat = 40
+            static let corner: CGFloat = 20
         }
         
     }
@@ -190,6 +199,18 @@ class WalletGetStartedViewController: UIViewController {
         button.isUserInteractionEnabled = true
         return button
     }()
+    private lazy var closeButton : UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(closeBtnTapped), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
+        button.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
+        button.isUserInteractionEnabled = true
+        return button
+    }()
     
     ///UIScrollView
     private lazy var scrollView : UIScrollView = {
@@ -231,6 +252,7 @@ class WalletGetStartedViewController: UIViewController {
     func setUpView(){        
         view.addSubview(logoBackgroundView)
         view.addSubview(scrollView)
+        view.addSubview(closeButton)
         
         scrollView.addSubview(contentView)
         
@@ -253,10 +275,17 @@ class WalletGetStartedViewController: UIViewController {
     func setUpViewContraint(){
         NSLayoutConstraint.activate([
             
+            ///Close Button
+            closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant:UX.CloseButton.leading),
+            closeButton.topAnchor.constraint(equalTo: view.topAnchor,constant:UX.CloseButton.top),
+            closeButton.widthAnchor.constraint(equalToConstant: UX.CloseButton.width),
+            closeButton.heightAnchor.constraint(equalToConstant:UX.CloseButton.height),
+
+
             ///Scroll
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor,constant: 120),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor,constant: UX.ScrollView.constant),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             contentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
