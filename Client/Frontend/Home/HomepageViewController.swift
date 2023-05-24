@@ -502,8 +502,7 @@ private extension HomepageViewController {
                 self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites,isFeature: true)
             }else{
                 if (data.title == "Wallet"){
-                    let rootViewController = WalletViewController()
-                    rootViewController.shownFromAppMenu = true
+                    let rootViewController = WalletGetStartedViewController()
                     let navController = ThemedNavigationController(rootViewController: rootViewController)
                     self.presentWithModalDismissIfNeeded(navController, animated: true)
                 }else{
