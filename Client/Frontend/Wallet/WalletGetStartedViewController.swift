@@ -20,7 +20,7 @@ class WalletGetStartedViewController: UIViewController {
             static let height: CGFloat = 46
             static let heightBg: CGFloat = 120
             static let top1: CGFloat = 0
-            static let imageHeight: CGFloat = 370
+            static let imageHeight: CGFloat = 80
             static let widthMiddle: CGFloat = 300
         }
         struct WalletLabel {
@@ -71,6 +71,7 @@ class WalletGetStartedViewController: UIViewController {
             static let width: CGFloat = 163
             static let font: CGFloat = 14
             static let corner: CGFloat = 10
+            static let leading: CGFloat = 30
         }
         
     }
@@ -96,15 +97,8 @@ class WalletGetStartedViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    private lazy var createWalletBtnView: GradientView = {
-        let view = GradientView()
-        view.clipsToBounds = true
-        view.layer.cornerRadius = UX.ButtonView.corner
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    private lazy var iHaveWalletBtnView: GradientView = {
+
+    private lazy var startBtnView: GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
         view.layer.cornerRadius = UX.ButtonView.corner
@@ -178,28 +172,16 @@ class WalletGetStartedViewController: UIViewController {
         label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
         label.font = .systemFont(ofSize: UX.DescriptionLabel.font)
         label.textAlignment = .center
-        label.text = "Remember that you have to send only Carbon $CSIX (BEP29( on this address. Sending any other token can be a mistake and you can lose all your tokens that you send in this transaction bla bla..."
+        label.text = "Remember that you have to send only Carbon $CSIX (BEP29( on this address. Sending any other token can be a mistake and you can lose all your tokens that you send in this transaction"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 4
         return label
     }()
     
     ///UIButton
-    private lazy var createWalletButton : UIButton = {
+    private lazy var startButton : UIButton = {
         let button = UIButton()
-        button.setTitle("CREATE WALLET", for: .normal)
-        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(self.btnCreateWalletTapped), for: .touchUpInside)
-        button.clipsToBounds = true
-        button.layer.cornerRadius = UX.ButtonView.corner
-        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        return button
-    }()
-    
-    private lazy var iHaveWalletButton : UIButton = {
-        let button = UIButton()
-        button.setTitle("I HAVE A WALLET", for: .normal)
+        button.setTitle("START", for: .normal)
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.btnIhaveWalletsTapped), for: .touchUpInside)
@@ -263,10 +245,8 @@ class WalletGetStartedViewController: UIViewController {
         contentView.addSubview(walletImageView)
         contentView.addSubview(middleLogoView)
         contentView.addSubview(descriptionLabel)
-        contentView.addSubview(createWalletBtnView)
-        contentView.addSubview(iHaveWalletBtnView)
-        contentView.addSubview(createWalletButton)
-        contentView.addSubview(iHaveWalletButton)
+        contentView.addSubview(startBtnView)
+        contentView.addSubview(startButton)
         contentView.addSubview(walletImageView2)
     }
     
@@ -314,7 +294,7 @@ class WalletGetStartedViewController: UIViewController {
             walletImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             walletImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             walletImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            walletImageView.heightAnchor.constraint(equalToConstant: UX.LogoView.imageHeight),
+            walletImageView.heightAnchor.constraint(equalToConstant: (view.frame.size.height/2) - UX.LogoView.imageHeight),
             
             
             ///Middle LogoView
@@ -347,28 +327,20 @@ class WalletGetStartedViewController: UIViewController {
             
             
             ///Create button
-            createWalletBtnView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant:  UX.ButtonView.top),
-            createWalletBtnView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,constant: -UX.ButtonView.centerX),
-            createWalletBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
-            createWalletBtnView.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
-            
-            iHaveWalletBtnView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant:UX.ButtonView.top),
-            iHaveWalletBtnView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,constant:  UX.ButtonView.centerX),
-            iHaveWalletBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
-            iHaveWalletBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
-            
-            createWalletButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant: UX.ButtonView.top),
-            createWalletButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,constant: -UX.ButtonView.centerX),
-            createWalletButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
-            createWalletButton.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
-            
-            iHaveWalletButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant: UX.ButtonView.top),
-            iHaveWalletButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor,constant: UX.ButtonView.centerX),
-            iHaveWalletButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
-            iHaveWalletButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            startBtnView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant:UX.ButtonView.top),
+            startBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            startBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            startBtnView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:UX.ButtonView.leading),
+            startBtnView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant:-UX.ButtonView.leading),
+
+            startButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor,constant: UX.ButtonView.top),
+            startButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            startButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            startButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:UX.ButtonView.leading),
+            startButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant:-UX.ButtonView.leading),
             
             walletImageView2.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            walletImageView2.topAnchor.constraint(equalTo: createWalletBtnView.bottomAnchor),
+            walletImageView2.topAnchor.constraint(equalTo: startBtnView.bottomAnchor),
             walletImageView2.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             walletImageView2.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
@@ -376,7 +348,7 @@ class WalletGetStartedViewController: UIViewController {
     }
     
     // MARK: - Objc Methods
-    @objc func btnCreateWalletTapped (){
+    @objc func closeBtnTapped (){
         self.dismiss(animated: true)
     }
     
