@@ -431,8 +431,9 @@ class WalletViewController: UIViewController {
     }
     
     func setUpView(){
+        navigationController?.isNavigationBarHidden = false
         self.title = .Settings.Wallet.Title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(doneButtonTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
         receiveBtnView.alpha = 0
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
@@ -610,7 +611,9 @@ class WalletViewController: UIViewController {
             return !adapters.isEmpty
         }
         if(data.count > 0){
-            setUIAndFetchData(address: data.first?.publicAddress ?? "")
+            //TODO: -Need to replace with account preference values
+            let filterData = data.filter{$0.walletType == .particle}
+            setUIAndFetchData(address: filterData.first?.publicAddress ?? "")
         }else{
             welcomeView.isHidden =  false
             contentView.isHidden = true
