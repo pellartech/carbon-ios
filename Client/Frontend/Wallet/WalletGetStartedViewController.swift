@@ -228,10 +228,13 @@ class WalletGetStartedViewController: UIViewController {
         return contentView
     }()
     
+    // MARK: - UI Properties
+    weak var present = UIViewController()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        present  = self.presentingViewController
         setUpView()
         setUpViewContraint()
     }
@@ -390,7 +393,10 @@ class WalletGetStartedViewController: UIViewController {
 
 extension WalletGetStartedViewController : AddWalletProtocol{
     func addWalletDelegate() {
-        let walletVC = WalletViewController()
-        self.navigationController?.pushViewController(walletVC, animated: true)
+        self.dismiss(animated: true, completion: {
+            let walletVC = WalletViewController()
+            walletVC.modalPresentationStyle = .fullScreen
+            self.present?.present(walletVC, animated: true, completion: nil)
+        })
     }
 }

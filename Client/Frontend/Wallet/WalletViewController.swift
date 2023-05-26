@@ -731,7 +731,7 @@ class WalletViewController: UIViewController {
     
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
-        self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true)
     }
     
     @objc func settingsIconTapped (){

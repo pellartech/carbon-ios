@@ -8,6 +8,7 @@ import Storage
 import UIKit
 import SwiftUI
 import Common
+import ParticleConnect
 
 protocol ToolBarActionMenuDelegate: AnyObject {
     func updateToolbarState()
@@ -765,14 +766,27 @@ class MainMenuActionHelper: PhotonActionSheetProtocol,
                                      iconString: ImageIdentifiers.wallet,
                                      iconType: .Image,
                                      iconAlignment: .left) { _ in
-            
-            let rootViewController = WalletGetStartedViewController()
-            let navController = ThemedNavigationController(rootViewController: rootViewController)
-            self.delegate?.showViewController(viewController: navController)
+            if (self.isWalletAuthenticationDone()){
+                let rootViewController = WalletViewController()
+                let navController = ThemedNavigationController(rootViewController: rootViewController)
+                self.delegate?.showViewController(viewController: navController)
+            }else{
+                let rootViewController = WalletGetStartedViewController()
+                let navController = ThemedNavigationController(rootViewController: rootViewController)
+                self.delegate?.showViewController(viewController: navController)
+            }
             
         }.items
     }
-
+    func isWalletAuthenticationDone() -> Bool{
+        let data = WalletManager.shared.getWallets().filter { connectWalletModel in
+            let adapters = ParticleConnect.getAdapterByAddress(publicAddress: connectWalletModel.publicAddress).filter {
+                $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
+            }
+            return !adapters.isEmpty
+        }
+        return data.count > 0 ? true : false
+    }
     private func showLoginOnboarding(navigationHandler: @escaping NavigationHandlerType, navigationController: UINavigationController) {
         let loginOnboardingViewController = LoginOnboardingViewController(shownFromAppMenu: true)
         loginOnboardingViewController.doneHandler = {
