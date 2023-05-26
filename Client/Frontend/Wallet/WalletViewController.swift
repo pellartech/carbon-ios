@@ -246,11 +246,6 @@ class WalletViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-    private lazy var dummyImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
     
     ///UILabel
     private lazy var walletLabel: GradientLabel = {
@@ -391,7 +386,7 @@ class WalletViewController: UIViewController {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.register(TokensTVCell.self, forCellReuseIdentifier:"TokensTVCell")
         return tableView
@@ -476,7 +471,6 @@ class WalletViewController: UIViewController {
         userTokensView.addSubview(tableView)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(userTokensView)
-        scrollContentView.addSubview(dummyImageView)
         scrollContentView.addSubview(addTokenBtnView)
         scrollContentView.addSubview(addTokenButton)
         scrollContentView.addSubview(seeAllBtnView)
@@ -652,12 +646,7 @@ class WalletViewController: UIViewController {
             addTokenButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
-            
-            ///Dummy ImageView
-            dummyImageView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
-            dummyImageView.topAnchor.constraint(equalTo: userTokensView.bottomAnchor),
-            dummyImageView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
-            dummyImageView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
+            addTokenButton.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
         ])
         heightForTokenViewNoToken.isActive = true
     }
