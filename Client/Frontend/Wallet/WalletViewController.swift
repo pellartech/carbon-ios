@@ -312,6 +312,7 @@ class WalletViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.sendBtnTapped), for: .touchUpInside)
         button.clipsToBounds = true
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
         return button
@@ -739,17 +740,11 @@ class WalletViewController: UIViewController {
     }
     
     @objc func infoIconTapped (){
-        SimpleToast().showAlertWithText("Coming soon...",
-                                        bottomContainer: self.view,
-                                        theme: themeManager!.currentTheme)
+        showToast()
     }
 
     @objc func sendBtnTapped (){
-        receiveBtnView.alpha = 0
-        sendBtnView.alpha = 1
-        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        sendButton.backgroundColor = UIColor.clear
-        initiateSendVC()
+        showToast()
     }
     
     @objc func receiveBtnTapped (){
@@ -775,9 +770,7 @@ class WalletViewController: UIViewController {
     }
     
     @objc func addTokenBtnTapped (){
-        SimpleToast().showAlertWithText("Coming soon...",
-                                        bottomContainer: self.view,
-                                        theme: themeManager!.currentTheme)
+        showToast()
     }
     
 // MARK: - Helper Methods - Initiate view controller
@@ -809,6 +802,12 @@ class WalletViewController: UIViewController {
         }else{
             return Decimal()
         }
+    }
+    
+    func showToast(){
+        SimpleToast().showAlertWithText("Coming soon...",
+                                        bottomContainer: self.view,
+                                        theme: themeManager!.currentTheme)
     }
 }
 
