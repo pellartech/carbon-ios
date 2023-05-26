@@ -18,27 +18,24 @@ import SVProgressHUD
 import SDWebImage
 import Common
 import Shared
-import iOSDropDown
 
 typealias Chain = ParticleNetwork.ChainInfo
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 
-var accountModel = [
-    AccountModel(title: "Particle", image: "particle", isConnected: false,walletType: WalletType.particle),
-    AccountModel(title: "Metamask", image: "metamask",isConnected: false,walletType: WalletType.metaMask),
-]
-
 class WalletViewController: UIViewController {
     
 // MARK: - UI Constants
     private struct UX {
+        struct ScrollView {
+            static let constant: CGFloat = 120
+        }
         struct WelcomeView {
             static let heightGetStarted: CGFloat = 500
         }
         struct BalanceLabel{
             static let topValueCarbon: CGFloat = 10
-            static let topValue: CGFloat = 100
+            static let topValue: CGFloat = 0
             static let font: CGFloat = 45
             static let carbonFont: CGFloat = 12
             static let titleFont: CGFloat = 16
@@ -46,13 +43,13 @@ class WalletViewController: UIViewController {
             static let width: CGFloat = 300
         }
         struct LogoView {
-            static let top: CGFloat = 120
+            static let top: CGFloat = 50
             static let width: CGFloat = 220
             static let height: CGFloat = 46
             static let heightBg: CGFloat = 120
         }
         struct ContentView {
-            static let heightBackGround: CGFloat = 420
+            static let heightBackGround: CGFloat = 200
         }
         struct ActionView {
             static let heightActionBg: CGFloat = 25
@@ -61,38 +58,34 @@ class WalletViewController: UIViewController {
         struct UserTokenView {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 20
-            static let top: CGFloat = 40
+            static let top: CGFloat = 30
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
             static let widthWelcome: CGFloat = 250
             static let heightWelcome: CGFloat = 20
             static let heightGetStarted: CGFloat = 300
-            static let font: CGFloat = 20
+            static let font: CGFloat = 13
             static let descrpFont: CGFloat = 16
             static let descrpHeight: CGFloat = 200
             static let common: CGFloat = 20
             static let topValue: CGFloat = 75
-
         }
         struct LogoImageView {
             static let height: CGFloat = 32
             static let width: CGFloat = 32
         }
-        
         struct CarbonImageView {
             static let leading: CGFloat = 10
             static let width: CGFloat = 118
             static let height: CGFloat = 30
         }
-        
         struct Wallet {
             static let top: CGFloat = 15
             static let leading: CGFloat = 2
             static let width: CGFloat = 65
             static let height: CGFloat = 16
         }
-        
         struct ActionIcon {
             static let top: CGFloat = 20
             static let leading: CGFloat = 20
@@ -108,11 +101,18 @@ class WalletViewController: UIViewController {
         }
         struct ButtonView {
             static let top: CGFloat = -30
-            static let centerX: CGFloat = 90
+            static let centerX: CGFloat = 8
             static let height: CGFloat = 50
             static let width: CGFloat = 163
             static let font: CGFloat = 14
-            static let corner: CGFloat = 15
+            static let corner: CGFloat = 10
+            static let leading: CGFloat = 20
+            static let addTop: CGFloat = 20
+            static let seeAllheight: CGFloat = 24
+            static let seeAllwidth: CGFloat = 100
+            static let seeTop: CGFloat = -15
+            static let seeCorner: CGFloat = 12
+            static let seeFont: CGFloat = 10
         }
         struct TokenLabel{
             static let leading: CGFloat = 20
@@ -138,7 +138,7 @@ class WalletViewController: UIViewController {
             static let heightC: CGFloat = 30
         }
         struct CloseButton {
-            static let top: CGFloat = 55
+            static let top: CGFloat = 50
             static let leading: CGFloat = 20
             static let height: CGFloat = 40
             static let width: CGFloat = 40
@@ -147,49 +147,38 @@ class WalletViewController: UIViewController {
     
     }
 // MARK: - UI Elements
-
+    
     ///UIView
     private lazy var logoView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     private lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     private lazy var userTokensView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         view.layer.cornerRadius = UX.UserTokenView.cornerRadius
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         return view
     }()
-    
-    private lazy var welcomeView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     private lazy var logoBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     private lazy var actionsView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
     private lazy var sendBtnView: GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
@@ -204,19 +193,24 @@ class WalletViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    private lazy var getStartButtonView: GradientView = {
+    private lazy var seeAllBtnView: GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = UX.StartButtonView.corner
+        view.layer.cornerRadius = UX.ButtonView.seeCorner
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    private lazy var getStartGradientView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = UX.StartButtonView.corner
+    private lazy var buyBtnView: GradientView = {
+        let view = GradientView()
         view.clipsToBounds = true
+        view.layer.cornerRadius = UX.ButtonView.corner
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private lazy var addTokenBtnView: GradientView = {
+        let view = GradientView()
+        view.clipsToBounds = true
+        view.layer.cornerRadius = UX.ButtonView.corner
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -228,30 +222,33 @@ class WalletViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
     private lazy var carbonImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "ic_carbon_text")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
-    private lazy var connectIcon: UIImageView = {
+    private lazy var settingsIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_wallet_connect")
+        imageView.image = UIImage(named: "ic_wallet_settings")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.connectIconTapped))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.settingsIconTapped))
         imageView.addGestureRecognizer(tapGesture)
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-    private lazy var accountIcon: UIImageView = {
+    private lazy var infoIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_wallet_account")
+        imageView.image = UIImage(named: "ic_wallet_info")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.accountIconTapped))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.infoIconTapped))
         imageView.addGestureRecognizer(tapGesture)
         imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
+    private lazy var dummyImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -264,40 +261,34 @@ class WalletViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private lazy var getStartedLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor.white
-        label.font = .boldSystemFont(ofSize:  UX.WalletLabel.font)
-        label.textAlignment = .center
-        label.text = "Get started"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.getStartedTapped))
-        label.addGestureRecognizer(tapGesture)
-        label.isUserInteractionEnabled = true
-        return label
-    }()
-    
     private lazy var totalBalanceTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.white
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.titleFont)
         label.textAlignment = .center
-        label.text = "Total balance"
+        label.text = "TOTAL BALANCE"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+    private lazy var noTokenLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .white
+        label.font = .systemFont(ofSize: UX.WelcomeLabel.font)
+        label.textAlignment = .center
+        label.text = "You don’t have any tokes yet."
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        return label
+    }()
     private lazy var totalBalanceLabel: GradientLabel = {
         let label = GradientLabel()
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font)
         label.textAlignment = .center
-        label.text = "$0"
+        label.text = "$0.00"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    
     private lazy var carbonBalanceLabel: UILabel = {
         let label = UILabel()
         label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
@@ -305,28 +296,6 @@ class WalletViewController: UIViewController {
         label.textAlignment = .center
         label.text = "0 Carbon (CSIX)"
         label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var welcomeLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        label.font = .systemFont(ofSize: UX.WelcomeLabel.font)
-        label.textAlignment = .center
-        label.text = "What is a Wallet?"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 4
-        return label
-    }()
-    
-    private lazy var welcomeDescpLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        label.font = .systemFont(ofSize: UX.WelcomeLabel.descrpFont)
-        label.textAlignment = .center
-        label.text = "A Home for your Tokens and NFTs \n You can manage your digital assets, for example send, receive and display.\n \n \n A New Way to Log In \n You can log in through your social account, and a crypto wallet will be automatically generated, simple but secure."
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 100
         return label
     }()
     private lazy var tokenLabel : UILabel = {
@@ -352,58 +321,30 @@ class WalletViewController: UIViewController {
         button.isUserInteractionEnabled = true
         return button
     }()
-    
     private lazy var receiveButton : UIButton = {
         let button = UIButton()
         button.setTitle("RECEIVE", for: .normal)
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.receiveBtnTapped), for: .touchUpInside)
-        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
         return button
     }()
-    
-    
-    ///UITableView
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .clear
-        tableView.isUserInteractionEnabled = true
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.allowsSelection = false
-        tableView.isScrollEnabled = true
-        tableView.register(TokensTVCell.self, forCellReuseIdentifier:"TokensTVCell")
-        return tableView
+    private lazy var seeAllButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("SEE ALL", for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.seeFont)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(self.seeAllBtnTapped(sender:)), for: .touchUpInside)
+        button.backgroundColor = .clear
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.seeCorner
+        button.isUserInteractionEnabled = true
+        return button
     }()
-    
-    ///DropDown
-    var dropDown: DropDown = {
-        let dropDown = DropDown()
-        dropDown.backgroundColor = UIColor.clear
-        dropDown.rowBackgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
-        dropDown.textColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
-        dropDown.itemsColor = UIColor.white
-        dropDown.tintColor = Utilities().hexStringToUIColor(hex: "#FF581A")
-        dropDown.itemsTintColor =  Utilities().hexStringToUIColor(hex: "#FF581A")
-        dropDown.selectedRowColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
-        dropDown.borderColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
-        dropDown.arrowColor = UIColor.clear
-        dropDown.isSearchEnable = false
-        dropDown.translatesAutoresizingMaskIntoConstraints = false
-        dropDown.font = .boldSystemFont(ofSize:  UX.TokenLabel.font)
-        dropDown.frame = CGRect(x: 0, y: 0, width: UX.DropDown.width, height: UX.DropDown.height)
-        dropDown.textAlignment = .center
-        dropDown.borderWidth = 1
-        dropDown.layer.cornerRadius = 15
-        return dropDown
-    }()
-    
     private lazy var closeButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
@@ -416,6 +357,62 @@ class WalletViewController: UIViewController {
         button.isUserInteractionEnabled = true
         return button
     }()
+    private lazy var buyButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("BUY", for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(self.receiveBtnTapped), for: .touchUpInside)
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
+        button.isUserInteractionEnabled = true
+        return button
+    }()
+    private lazy var addTokenButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("ADD TOKEN", for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(self.addTokenBtnTapped), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
+        button.isUserInteractionEnabled = true
+        return button
+    }()
+    
+    ///UITableView
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.isUserInteractionEnabled = true
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.isScrollEnabled = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(TokensTVCell.self, forCellReuseIdentifier:"TokensTVCell")
+        return tableView
+    }()
+    
+    ///UIScrollView
+    private lazy var scrollView : UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
+    private lazy var scrollContentView : UIView = {
+        let contentView = UIView()
+        contentView.backgroundColor = .clear
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
+    }()
+    
     
 // MARK: - UI Properties
     var shownFromAppMenu: Bool = false
@@ -425,7 +422,9 @@ class WalletViewController: UIViewController {
     private var tokensModel = [TokenModel]()
     let viewModel = WalletViewModel()
     var networkData = [String]()
-
+    var heightForTokenViewNoToken =  NSLayoutConstraint()
+    var heightForTokenView =  NSLayoutConstraint()
+    
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -434,7 +433,6 @@ class WalletViewController: UIViewController {
         setUpNetwork()
         setUpViewContraint()
         getLocalUserData()
-        getNetworkList()
     }
     
 // MARK: - UI Methods
@@ -453,43 +451,54 @@ class WalletViewController: UIViewController {
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
         receiveBtnView.alpha = 0
+        self.tokenLabel.isHidden = true
+        heightForTokenViewNoToken = userTokensView.heightAnchor.constraint(equalToConstant: 130)
+        heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: 263)
+        
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
-        
-        actionsView.addSubview(connectIcon)
-        actionsView.addSubview(accountIcon)
+        actionsView.addSubview(settingsIcon)
+        actionsView.addSubview(infoIcon)
         actionsView.addSubview(totalBalanceTitleLabel)
-        
-        welcomeView.addSubview(welcomeLabel)
-        welcomeView.addSubview(welcomeDescpLabel)
-        welcomeView.addSubview(getStartButtonView)
-        welcomeView.addSubview(getStartGradientView)
-        welcomeView.addSubview(getStartedLabel)
-        
         contentView.addSubview(actionsView)
-        contentView.addSubview(dropDown)
         contentView.addSubview(totalBalanceLabel)
         contentView.addSubview(carbonBalanceLabel)
         contentView.addSubview(sendBtnView)
         contentView.addSubview(receiveBtnView)
+        contentView.addSubview(buyBtnView)
         contentView.addSubview(sendButton)
         contentView.addSubview(receiveButton)
-        
+        contentView.addSubview(buyButton)
         userTokensView.addSubview(tokenLabel)
+        userTokensView.addSubview(noTokenLabel)
         userTokensView.addSubview(tableView)
-        
-        view.addSubview(contentView)
+        scrollContentView.addSubview(contentView)
+        scrollContentView.addSubview(userTokensView)
+        scrollContentView.addSubview(dummyImageView)
+        scrollContentView.addSubview(addTokenBtnView)
+        scrollContentView.addSubview(addTokenButton)
+        scrollContentView.addSubview(seeAllBtnView)
+        scrollContentView.addSubview(seeAllButton)
+        scrollView.addSubview(scrollContentView)
+        view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
-        view.addSubview(welcomeView)
-        view.addSubview(userTokensView)
         view.addSubview(closeButton)
-        
     }
     
     func setUpViewContraint(){
         NSLayoutConstraint.activate([
+            ///Scroll
+            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor,constant: UX.ScrollView.constant),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            scrollContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            scrollContentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollContentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             ///Close Button
             closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant:UX.CloseButton.leading),
@@ -497,7 +506,7 @@ class WalletViewController: UIViewController {
             closeButton.widthAnchor.constraint(equalToConstant: UX.CloseButton.width),
             closeButton.heightAnchor.constraint(equalToConstant:UX.CloseButton.height),
 
-            ///UIView
+            ///Top Logo View
             logoView.topAnchor.constraint(equalTo: view.topAnchor,constant: UX.LogoView.top),
             logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoView.widthAnchor.constraint(equalToConstant: UX.LogoView.width),
@@ -508,124 +517,164 @@ class WalletViewController: UIViewController {
             logoBackgroundView.widthAnchor.constraint(equalTo: view.widthAnchor),
             logoBackgroundView.heightAnchor.constraint(equalToConstant: UX.LogoView.heightBg),
             
-            actionsView.topAnchor.constraint(equalTo: logoBackgroundView.bottomAnchor,constant: UX.ActionView.topActionBg),
-            actionsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            actionsView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            ///Content view
+            contentView.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
+            contentView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
+            contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
+           
+            ///Action View
+            actionsView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            actionsView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            actionsView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             actionsView.heightAnchor.constraint(equalToConstant: UX.ActionView.heightActionBg),
             
-            welcomeView.topAnchor.constraint(equalTo: logoBackgroundView.bottomAnchor),
-            welcomeView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            welcomeView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            welcomeView.heightAnchor.constraint(equalToConstant: UX.WelcomeView.heightGetStarted),
-            
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
-            
+            ///User Token List View
             userTokensView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.top),
-            userTokensView.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: UX.UserTokenView.common),
-            userTokensView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -UX.UserTokenView.common),
-            userTokensView.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: -UX.UserTokenView.common),
-            
-            sendBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant:  UX.ButtonView.top),
-            sendBtnView.centerXAnchor.constraint(equalTo: view.centerXAnchor,constant: -UX.ButtonView.centerX),
-            sendBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
-            sendBtnView.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
-            
+            userTokensView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
+            userTokensView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
+
+            ///Receive Button View
             receiveBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant:UX.ButtonView.top),
-            receiveBtnView.centerXAnchor.constraint(equalTo: view.centerXAnchor,constant:  UX.ButtonView.centerX),
-            receiveBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            receiveBtnView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            receiveBtnView.widthAnchor.constraint(equalToConstant:  (view.frame.size.width/3) - 20),
             receiveBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             
-            getStartButtonView.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
-            getStartButtonView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            getStartButtonView.widthAnchor.constraint(equalToConstant: UX.StartButtonView.width),
-            getStartButtonView.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
+            ///Send Button View
+            sendBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant:  UX.ButtonView.top),
+            sendBtnView.trailingAnchor.constraint(equalTo: receiveBtnView.leadingAnchor,constant: -UX.ButtonView.centerX),
+            sendBtnView.widthAnchor.constraint(equalToConstant:  (view.frame.size.width/3) - 20),
+            sendBtnView.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
+               
+            ///Buy Button View
+            buyBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant:UX.ButtonView.top),
+            buyBtnView.leadingAnchor.constraint(equalTo: receiveBtnView.trailingAnchor,constant: UX.ButtonView.centerX),
+            buyBtnView.widthAnchor.constraint(equalToConstant: (view.frame.size.width/3) - 20),
+            buyBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             
-            getStartGradientView.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
-            getStartGradientView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            getStartGradientView.widthAnchor.constraint(equalToConstant: UX.StartButtonView.width),
-            getStartGradientView.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
-            
-            ///UIImage View
+            ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
             logoImageView.topAnchor.constraint(equalTo: logoView.topAnchor),
             logoImageView.widthAnchor.constraint(equalToConstant: UX.LogoImageView.width),
             logoImageView.heightAnchor.constraint(equalToConstant: UX.LogoImageView.height),
             
+            ///Top header Logo Text ImageView
             carbonImageView.leadingAnchor.constraint(equalTo: logoImageView.trailingAnchor,constant: UX.CarbonImageView.leading),
             carbonImageView.topAnchor.constraint(equalTo: logoView.topAnchor),
             carbonImageView.widthAnchor.constraint(equalToConstant: UX.CarbonImageView.width),
             carbonImageView.heightAnchor.constraint(equalToConstant: UX.CarbonImageView.height),
             
-            connectIcon.leadingAnchor.constraint(equalTo: actionsView.leadingAnchor,constant: UX.ActionIcon.leading),
-            connectIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
-            connectIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
-            connectIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
+            ///ActionView settings ImageView
+            settingsIcon.leadingAnchor.constraint(equalTo: actionsView.leadingAnchor,constant: UX.ActionIcon.leading),
+            settingsIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
+            settingsIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
+            settingsIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
             
-            accountIcon.trailingAnchor.constraint(equalTo: actionsView.trailingAnchor,constant: UX.ActionIcon.trailing),
-            accountIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
-            accountIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
-            accountIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
+            ///ActionView info ImageView
+            infoIcon.trailingAnchor.constraint(equalTo: actionsView.trailingAnchor,constant: UX.ActionIcon.trailing),
+            infoIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
+            infoIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
+            infoIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
             
-            ///UILabel
+            ///Wallet Label
             walletLabel.leadingAnchor.constraint(equalTo: carbonImageView.trailingAnchor,constant: UX.Wallet.leading),
             walletLabel.topAnchor.constraint(equalTo: logoView.topAnchor,constant:  UX.Wallet.top),
             walletLabel.widthAnchor.constraint(equalToConstant: UX.Wallet.width),
             walletLabel.heightAnchor.constraint(equalToConstant: UX.Wallet.height),
             
-            dropDown.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
-            dropDown.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.DropDown.top),
-            dropDown.widthAnchor.constraint(equalToConstant: UX.DropDown.widthC),
-            dropDown.heightAnchor.constraint(equalToConstant: UX.DropDown.heightC),
-            
+            ///Wallet balance title Label
             totalBalanceTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
             totalBalanceTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
+            ///Wallet balance Label
             totalBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             totalBalanceLabel.topAnchor.constraint(equalTo: totalBalanceTitleLabel.bottomAnchor,constant: UX.BalanceLabel.top),
             totalBalanceLabel.widthAnchor.constraint(equalToConstant: UX.BalanceLabel.width),
 
+            ///Wallet carbon balance Label
             carbonBalanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             carbonBalanceLabel.topAnchor.constraint(equalTo: totalBalanceLabel.bottomAnchor,constant: UX.BalanceLabel.topValueCarbon),
             
-            welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            welcomeLabel.topAnchor.constraint(equalTo: welcomeView.topAnchor,constant: UX.WelcomeLabel.topValue),
-            welcomeLabel.widthAnchor.constraint(equalToConstant:  UX.WelcomeLabel.widthWelcome),
-            welcomeLabel.heightAnchor.constraint(equalToConstant:  UX.WelcomeLabel.heightWelcome),
-            
-            welcomeDescpLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            welcomeDescpLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor,constant: UX.WelcomeLabel.topValueCarbon),
-            welcomeDescpLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: UX.WelcomeLabel.common),
-            welcomeDescpLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -UX.WelcomeLabel.common),
-            welcomeDescpLabel.heightAnchor.constraint(equalToConstant:  UX.WelcomeLabel.descrpHeight),
-            
-            getStartedLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            getStartedLabel.bottomAnchor.constraint(equalTo: welcomeDescpLabel.bottomAnchor,constant: UX.StartButtonView.bottom),
-            getStartedLabel.heightAnchor.constraint(equalToConstant: UX.StartButtonView.height),
-            
+            ///UserTokenView token Label
             tokenLabel.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant: UX.TokenLabel.leading),
             tokenLabel.topAnchor.constraint(equalTo: userTokensView.topAnchor,constant: UX.TokenLabel.topValue),
             
-            ///UIButton
-            sendButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: UX.ButtonView.top),
-            sendButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,constant: -UX.ButtonView.centerX),
-            sendButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
-            sendButton.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
+            ///UserTokenView no token Label
+            noTokenLabel.centerXAnchor.constraint(equalTo: userTokensView.centerXAnchor),
+            noTokenLabel.centerYAnchor.constraint(equalTo: userTokensView.centerYAnchor),
             
+            ///Receive Button
             receiveButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: UX.ButtonView.top),
-            receiveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,constant: UX.ButtonView.centerX),
-            receiveButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            receiveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            receiveButton.widthAnchor.constraint(equalToConstant:(view.frame.size.width/3) - 20),
             receiveButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             
-            ///UITableView
-            tableView.topAnchor.constraint(equalTo: userTokensView.topAnchor,constant: UX.TableView.top),
-            tableView.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant:   UX.TableView.leading),
-            tableView.trailingAnchor.constraint(equalTo: userTokensView.trailingAnchor,constant: UX.TableView.trailing),
-            tableView.bottomAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant:  UX.TableView.bottom),
+            ///Send Button
+            sendButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: UX.ButtonView.top),
+            sendButton.trailingAnchor.constraint(equalTo: receiveButton.leadingAnchor,constant: -UX.ButtonView.centerX),
+            sendButton.widthAnchor.constraint(equalToConstant: (view.frame.size.width/3) - 20),
+            sendButton.heightAnchor.constraint(equalToConstant: UX.ButtonView.height),
+                
+            ///Buy Button
+            buyButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: UX.ButtonView.top),
+            buyButton.leadingAnchor.constraint(equalTo: receiveButton.trailingAnchor,constant: UX.ButtonView.centerX),
+            buyButton.widthAnchor.constraint(equalToConstant:(view.frame.size.width/3) - 20),
+            buyButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             
+            ///UserTokenView TableView
+            tableView.topAnchor.constraint(equalTo: userTokensView.topAnchor,constant: UX.TableView.top),
+            tableView.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant: UX.TableView.leading),
+            tableView.trailingAnchor.constraint(equalTo: userTokensView.trailingAnchor,constant: UX.TableView.trailing),
+            tableView.bottomAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant: UX.TableView.trailing),
+            
+            ///See all button view
+            seeAllBtnView.topAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant:UX.ButtonView.seeTop),
+            seeAllBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.seeAllwidth),
+            seeAllBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.seeAllheight),
+            seeAllBtnView.centerXAnchor.constraint(equalTo: userTokensView.centerXAnchor),
+            
+            ///See all button
+            seeAllButton.topAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant: UX.ButtonView.seeTop),
+            seeAllButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.seeAllwidth),
+            seeAllButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.seeAllheight),
+            seeAllButton.centerXAnchor.constraint(equalTo: userTokensView.centerXAnchor),
+
+            ///Add token button view
+            addTokenBtnView.topAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant:UX.ButtonView.addTop),
+            addTokenBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            addTokenBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            addTokenBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            addTokenBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+          
+            ///Add token button
+            addTokenButton.topAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant: UX.ButtonView.addTop),
+            addTokenButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            addTokenButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+            
+            ///Dummy ImageView
+            dummyImageView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            dummyImageView.topAnchor.constraint(equalTo: userTokensView.bottomAnchor),
+            dummyImageView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
+            dummyImageView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
         ])
+        heightForTokenViewNoToken.isActive = true
+    }
+    
+    func collapseTokenView(){
+        heightForTokenViewNoToken.isActive = true
+        heightForTokenView.isActive = false
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    func expandTokenView(){
+        heightForTokenViewNoToken.isActive = false
+        heightForTokenView.isActive = true
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
     
     func getLocalUserData(){
@@ -640,47 +689,6 @@ class WalletViewController: UIViewController {
             let filterData = data.filter{$0.walletType == .particle}
             setUIAndFetchData(address: filterData.first?.publicAddress ?? "")
         }else{
-            welcomeView.isHidden =  false
-            contentView.isHidden = true
-            userTokensView.isHidden = true
-        }
-    }
-    func getNetworkList(){
-        ///solana
-        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.mainnet.rawValue)
-        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.testnet.rawValue)
-        networkData.append(Chain.solana(.mainnet).uiName + "-" +  SolanaNetwork.devnet.rawValue)
-    
-        ///ethereum
-        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.mainnet.rawValue)
-        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.goerli.rawValue)
-        networkData.append(Chain.ethereum(.mainnet).uiName + "-" +  EthereumNetwork.sepolia.rawValue)
-        
-        setUpDropDownValue()
-    }
-    
-    func setUpDropDownValue(){
-        let name = ParticleNetwork.getChainInfo().name
-        let network = ParticleNetwork.getChainInfo().network
-        dropDown.optionArray = networkData
-        let selectedIndex = networkData.firstIndex(where: {$0 == name + "-" + network})
-        dropDown.selectedIndex = selectedIndex ?? 0
-        dropDown.text = networkData[selectedIndex ?? 0]
-        dropDown.didSelect{(selectedText , index ,id) in
-            let selectedValue = selectedText.components(separatedBy: "-")
-            let name = selectedValue[0]
-            let network = selectedValue[1]
-            var chainInfo: Chain?
-            switch name {
-            case Chain.solana(.mainnet).uiName:
-                chainInfo = .solana(SolanaNetwork(rawValue: network)!)
-            case Chain.ethereum(.mainnet).uiName:
-                chainInfo = .ethereum(EthereumNetwork(rawValue: network)!)
-            default:
-                chainInfo = .ethereum(.mainnet)
-            }
-            ParticleNetwork.setChainInfo(chainInfo!)
-            self.setUIAndFetchData(address: self.publicAddress)
         }
     }
     
@@ -688,11 +696,7 @@ class WalletViewController: UIViewController {
 // MARK: - View Model Methods - Network actions
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
-        welcomeView.isHidden =  false
-        contentView.isHidden = true
-        userTokensView.isHidden = true
         publicAddress = address
-        
         self.viewModel.addCustomTokenToUserAccount(address: publicAddress) {result in
             switch result {
             case .success(let tokens):
@@ -711,9 +715,9 @@ class WalletViewController: UIViewController {
                 self.tokensModel = tokens
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
-                        self.welcomeView.isHidden =  true
-                        self.contentView.isHidden = false
-                        self.userTokensView.isHidden = false
+                        self.tokenLabel.isHidden = false
+                        self.noTokenLabel.isHidden = true
+                        self.expandTokenView()
                         self.tableView.reloadData()
                         var total = Decimal()
                         for token in self.tokensModel{
@@ -725,7 +729,13 @@ class WalletViewController: UIViewController {
                 SVProgressHUD.dismiss()
             case .failure(let error):
                 print(error)
-                SVProgressHUD.dismiss()
+                DispatchQueue.global().async {
+                    DispatchQueue.main.async {
+                        self.tokenLabel.isHidden = true
+                        self.noTokenLabel.isHidden = false
+                        SVProgressHUD.dismiss()
+                    }
+                }
             }
         }
     }
@@ -735,21 +745,17 @@ class WalletViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    @objc func connectIconTapped (){
+    @objc func settingsIconTapped (){
         initiateDrawerVC()
     }
     
-    @objc func accountIconTapped (){
-        initiateConnetVC()
+    @objc func infoIconTapped (){
     }
-    @objc func getStartedTapped (){
-        initiateConnetVC()
-    }
-    
+
     @objc func sendBtnTapped (){
         receiveBtnView.alpha = 0
         sendBtnView.alpha = 1
-        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         sendButton.backgroundColor = UIColor.clear
         initiateSendVC()
     }
@@ -757,9 +763,27 @@ class WalletViewController: UIViewController {
     @objc func receiveBtnTapped (){
         receiveBtnView.alpha = 1
         sendBtnView.alpha = 0
-        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#5B5B65")
+        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         receiveButton.backgroundColor = UIColor.clear
         initiateReceiveVC()
+    }
+    
+    @objc func seeAllBtnTapped(sender:UIButton){
+        if (sender.tag == 0){
+            sender.tag = 1
+            collapseTokenView()
+            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: CGFloat(self.tokensModel.count * 85))
+            expandTokenView()
+        }else{
+            sender.tag = 0
+            collapseTokenView()
+            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: 263)
+            expandTokenView()
+        }
+    }
+    
+    @objc func addTokenBtnTapped (){
+
     }
     
 // MARK: - Helper Methods - Initiate view controller
@@ -777,20 +801,13 @@ class WalletViewController: UIViewController {
         present(drawerController, animated: true)
     }
     
-    func initiateConnetVC(){
-        let vc = ConnectViewController()
-        vc.modalPresentationStyle = .overCurrentContext
-        vc.delegate = self
-        vc.data = data
-        self.present(vc, animated: false)
-    }
-    
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
         vc.modalPresentationStyle = .overCurrentContext
         vc.address = publicAddress
         self.present(vc, animated: false)
     }
+    
     func toEther(wei: BInt) -> Decimal {
         let etherInWei = pow(Decimal(10), 18)
         if let decimalWei = Decimal(string: wei.description){
@@ -815,7 +832,7 @@ extension WalletViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
+        return 70
     }
 }
 
@@ -827,12 +844,7 @@ extension WalletViewController : ConnectProtocol{
     }
     func logout() {
         data = []
-        accountModel[0].isConnected  = false
-        accountModel[1].isConnected  = false
         self.tableView.reloadData()
-        welcomeView.isHidden =  false
-        contentView.isHidden = true
-        userTokensView.isHidden = true
     }
 }
 
