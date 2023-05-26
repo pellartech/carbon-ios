@@ -358,7 +358,7 @@ class WalletViewController: UIViewController {
         button.setTitle("BUY", for: .normal)
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(self.receiveBtnTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(self.buyBtnTapped), for: .touchUpInside)
         button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
@@ -748,11 +748,10 @@ class WalletViewController: UIViewController {
     }
     
     @objc func receiveBtnTapped (){
-        receiveBtnView.alpha = 1
-        sendBtnView.alpha = 0
-        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        receiveButton.backgroundColor = UIColor.clear
-        initiateReceiveVC()
+        showToast()
+    }
+    @objc func buyBtnTapped (){
+        showToast()
     }
     
     @objc func seeAllBtnTapped(sender:UIButton){
