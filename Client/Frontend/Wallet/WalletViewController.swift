@@ -279,7 +279,7 @@ class WalletViewController: UIViewController {
         let label = GradientLabel()
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font)
         label.textAlignment = .center
-        label.text = "$0.00"
+        label.text = "$0"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontSizeToFitWidth = true
         return label
@@ -419,6 +419,7 @@ class WalletViewController: UIViewController {
     var networkData = [String]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
+    var themeManager :  ThemeManager?
     
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -432,7 +433,6 @@ class WalletViewController: UIViewController {
     
 // MARK: - UI Methods
     func applyTheme() {
-        let themeManager :  ThemeManager?
         themeManager =  AppContainer.shared.resolve()
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
@@ -739,6 +739,9 @@ class WalletViewController: UIViewController {
     }
     
     @objc func infoIconTapped (){
+        SimpleToast().showAlertWithText("Coming soon...",
+                                        bottomContainer: self.view,
+                                        theme: themeManager!.currentTheme)
     }
 
     @objc func sendBtnTapped (){
@@ -772,7 +775,9 @@ class WalletViewController: UIViewController {
     }
     
     @objc func addTokenBtnTapped (){
-
+        SimpleToast().showAlertWithText("Coming soon...",
+                                        bottomContainer: self.view,
+                                        theme: themeManager!.currentTheme)
     }
     
 // MARK: - Helper Methods - Initiate view controller
@@ -832,8 +837,7 @@ extension WalletViewController : ConnectProtocol{
         setUIAndFetchData(address: address)
     }
     func logout() {
-        data = []
-        self.tableView.reloadData()
+        self.dismiss(animated: true)
     }
 }
 
