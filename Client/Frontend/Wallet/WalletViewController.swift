@@ -279,7 +279,7 @@ class WalletViewController: UIViewController {
         let label = GradientLabel()
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font)
         label.textAlignment = .center
-        label.text = "$0"
+        label.text = "$0.00"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontSizeToFitWidth = true
         return label
@@ -312,7 +312,6 @@ class WalletViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.sendBtnTapped), for: .touchUpInside)
         button.clipsToBounds = true
-        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
         return button
@@ -713,7 +712,7 @@ class WalletViewController: UIViewController {
                         for token in self.tokensModel{
                             total = total + self.toEther(wei: token.amount)
                         }
-                        self.totalBalanceLabel.text = "$\(total)"
+                        self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
                     }
                 }
                 SVProgressHUD.dismiss()
@@ -744,11 +743,19 @@ class WalletViewController: UIViewController {
     }
 
     @objc func sendBtnTapped (){
-        showToast()
+        receiveBtnView.alpha = 0
+        sendBtnView.alpha = 1
+        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        sendButton.backgroundColor = UIColor.clear
+        initiateSendVC()
     }
     
     @objc func receiveBtnTapped (){
-        showToast()
+        receiveBtnView.alpha = 1
+        sendBtnView.alpha = 0
+        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        receiveButton.backgroundColor = UIColor.clear
+        initiateReceiveVC()
     }
     @objc func buyBtnTapped (){
         showToast()
