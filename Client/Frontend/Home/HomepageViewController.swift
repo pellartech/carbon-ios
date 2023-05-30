@@ -7,6 +7,7 @@ import UIKit
 import Storage
 import MozillaAppServices
 import Common
+import ParticleConnect
 
 class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, Themeable {
     // MARK: - Typealiases
@@ -502,9 +503,15 @@ private extension HomepageViewController {
                 self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites,isFeature: true)
             }else{
                 if (data.title == "Wallet"){
-                    let rootViewController = WalletGetStartedViewController()
-                    let navController = ThemedNavigationController(rootViewController: rootViewController)
-                    self.presentWithModalDismissIfNeeded(navController, animated: true)
+                    if (self.isWalletAuthenticationDone()){
+                        let rootViewController = WalletViewController()
+                        let navController = ThemedNavigationController(rootViewController: rootViewController)
+                        self.presentWithModalDismissIfNeeded(navController, animated: true)
+                    }else{
+                        let rootViewController = WalletGetStartedViewController()
+                        let navController = ThemedNavigationController(rootViewController: rootViewController)
+                        self.presentWithModalDismissIfNeeded(navController, animated: true)
+                    }
                 }else{
                     guard let url = data.url!.asURL else { return }
                     self.showSiteWithURLHandler(url, isGoogleTopSite: false)
@@ -636,6 +643,15 @@ private extension HomepageViewController {
         return Site(url: itemURL, title: highlight.displayTitle)
     }
 
+    func isWalletAuthenticationDone() -> Bool{
+        let data = WalletManager.shared.getWallets().filter { connectWalletModel in
+            let adapters = ParticleConnect.getAdapterByAddress(publicAddress: connectWalletModel.publicAddress).filter {
+                $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
+            }
+            return !adapters.isEmpty
+        }
+        return data.count > 0 ? true : false
+    }
     func openTabTray(_ sender: UIButton) {
         homePanelDelegate?.homePanelDidRequestToOpenTabTray(withFocusedTab: nil)
 

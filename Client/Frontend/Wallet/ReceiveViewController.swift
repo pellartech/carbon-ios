@@ -201,12 +201,6 @@ class ReceiveViewController: UIViewController {
     }
     
     func settingUpUI(){
-        if let _ = data.first(where: { $0.walletType == .particle }) {
-            accountModel[0].isConnected = true
-        }
-        if let _ = data.first(where: { $0.walletType == .metaMask }) {
-            accountModel[1].isConnected = true
-        }
         qrImageView.image = generateQRcode(value: self.address)
         addressLabel.text = "Public address: \(self.address)"
     }
