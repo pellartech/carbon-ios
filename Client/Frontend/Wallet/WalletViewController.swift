@@ -428,6 +428,9 @@ class WalletViewController: UIViewController {
         setUpView()
         setUpNetwork()
         setUpViewContraint()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getLocalUserData()
     }
     
@@ -686,19 +689,11 @@ class WalletViewController: UIViewController {
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
         publicAddress = address
-        self.viewModel.addCustomTokenToUserAccount(address: publicAddress) {result in
-            switch result {
-            case .success(let tokens):
-                self.fetchUserTokens(tokens: tokens)
-            case .failure(let error):
-                print(error)
-                self.fetchUserTokens(tokens: [])
-            }
-        }
+        self.fetchUserTokens()
     }
     
-    func fetchUserTokens(tokens: [TokenModel]){
-        self.viewModel.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: tokens) { result in
+    func fetchUserTokens(){
+        self.viewModel.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: userTokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
@@ -765,7 +760,7 @@ class WalletViewController: UIViewController {
         if (sender.tag == 0){
             sender.tag = 1
             collapseTokenView()
-            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: CGFloat(self.tokensModel.count * 85))
+            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: CGFloat(self.tokensModel.count * 85) + 40)
             expandTokenView()
         }else{
             sender.tag = 0
@@ -776,7 +771,7 @@ class WalletViewController: UIViewController {
     }
     
     @objc func addTokenBtnTapped (){
-        showToast()
+        initiateAddTokenVC()
     }
     
 // MARK: - Helper Methods - Initiate view controller
@@ -801,6 +796,13 @@ class WalletViewController: UIViewController {
         self.present(vc, animated: false)
     }
     
+    func initiateAddTokenVC(){
+        let vc = AddTokenViewController()
+        vc.publicAddress = publicAddress
+        vc.tokensModel = self.tokensModel
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: false)
+    }
     func toEther(wei: BInt) -> Decimal {
         let etherInWei = pow(Decimal(10), 18)
         if let decimalWei = Decimal(string: wei.description){

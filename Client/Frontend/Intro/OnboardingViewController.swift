@@ -574,6 +574,22 @@ class GradientLabel: UILabel {
     }
 }
 
+class GradientSwitch: UISwitch {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateTextColor()
+    }
+    private func updateTextColor() {
+        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 50.0/255.0, blue: 10.0/255.0, alpha: 1.0)
+        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 145.0/255.0, blue: 51.0/255.0, alpha: 1.0)
+        let image = UIGraphicsImageRenderer(bounds: bounds).image { context in
+            let colors = [topColor.cgColor, bottomColor.cgColor]
+            guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
+            context.cgContext.drawLinearGradient(gradient, start: CGPoint(x: bounds.minX, y: bounds.midY), end: CGPoint(x: bounds.maxX, y: bounds.maxY),options: [])
+        }
+        backgroundColor = UIColor(patternImage: image)
+    }
+}
 class GradientView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()

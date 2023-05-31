@@ -80,3 +80,18 @@ struct ConnectWalletModel: Codable, Equatable, DefaultsSerializable {
         
     }
 }
+class Tokens {
+    var title: String?
+    var address: String?
+    var symbol: String?
+    var icon: UIImage?
+    var isAdded: Bool?
+
+    init(title: String?,address: String?,symbol : String?,icon: UIImage?,isAdded: Bool?){
+        self.title = title
+        self.address = address
+        self.symbol = symbol
+        self.icon = icon
+        self.isAdded = isAdded
+    }
+}
