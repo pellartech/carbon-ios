@@ -28,6 +28,7 @@ public class WalletViewModel {
     
     ///Wallet Login
     func walletLogin(vc: UIViewController, walletType: WalletType, completed : @escaping (Result<ConnectWalletModel, Error>) -> Void) {
+        print(ParticleNetwork.getChainInfo().name)
         let adapters = ParticleConnect.getAdapters(chainType: .solana) + ParticleConnect.getAdapters(chainType: .evm)
         var single: Single<Account?>
         var adapter: ConnectAdapter = adapters[0]
@@ -88,6 +89,7 @@ public class WalletViewModel {
     
     /// This method will add the pre defined tokens to the user account
     func addTokenToUserAccount(address:String,tokens:[String],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
+        print(ParticleNetwork.getChainInfo().name)
         ParticleWalletAPI.getEvmService().addCustomTokens(address: address, tokenAddresses: tokens)//
             .subscribe { result in
             switch result {
@@ -101,7 +103,12 @@ public class WalletViewModel {
     
     /// This method will fetch the native tokens which belongs to user account
     func getUserTokenListsForNativeTokens(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenArray)//
+        print(ParticleNetwork.getChainInfo().name)
+        var tokenAddress = [String]()
+        for each in tokenArray{
+            tokenAddress.append(each.address)
+        }
+        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenAddress)//
             .subscribe { result in
             switch result {
             case .failure(let error):

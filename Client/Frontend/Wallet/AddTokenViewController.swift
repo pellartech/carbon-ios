@@ -18,10 +18,7 @@ import SDWebImage
 import Common
 import Shared
 
-var tokens: [Tokens] = [
-    Tokens(title: "Wrapped Ether", address: "0xb16f35c0ae2912430dac15764477e179d9b9ebea", symbol: "WETH",icon:UIImage(named: "ic_weth"),isAdded: false),
-    Tokens(title: "USDC", address: "0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f", symbol: "USDC",icon:UIImage(named: "ic_usdc"),isAdded: false),
-Tokens(title: "USDT", address: "0x969D499507B4f437953Db24A4980FdEEDa6Db8a1", symbol: "USDT",icon:UIImage(named: "ic_usdt"),isAdded: false)]
+var tokens: [Tokens] = []
 var userTokens  = [TokenModel]()
 
 protocol AddTokenDelegate{

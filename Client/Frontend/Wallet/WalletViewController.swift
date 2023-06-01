@@ -442,7 +442,7 @@ class WalletViewController: UIViewController {
     }
     
     func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.mainnet.rawValue)!)
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
