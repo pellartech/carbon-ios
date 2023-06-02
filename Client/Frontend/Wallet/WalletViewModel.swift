@@ -30,7 +30,6 @@ public class WalletViewModel {
     private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
     private var tokensModel = [TokenModel]()
-    let session = URLSession.shared
     
     ///Wallet Login
     func walletLogin(vc: UIViewController, walletType: WalletType, completed : @escaping (Result<ConnectWalletModel, Error>) -> Void) {
@@ -94,37 +93,32 @@ public class WalletViewModel {
     
     /// This method will get the list of tokens from Coingecko server
     /// This is public API
-    func getTokenList(completed : @escaping (Result<[TokenDetails], Error>) -> Void) {
+    func getTokenList(completed : @escaping (Result<[TokenList], Error>) -> Void) {
         let url = URL(string: "\(GET_TOKEN_BASE_URL)/list")!
-        let dataTask = session.dataTask(with: url){data,response,error in
-            guard let jsonData = data else{
-                completed(.failure(error!))
-                return
-            }
-            do{
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            do {
+                guard let responseData = data else{return}
                 let decoder = JSONDecoder()
-                let result = try decoder.decode([TokenDetails].self,from:jsonData)
+                let result = try decoder.decode([TokenList].self,from:responseData)
                 completed(.success(result))
-            }
-            catch{
+            } catch {
                 completed(.failure(error))
             }
-        }
-        dataTask.resume()
+        }.resume()
     }
     
     /// This method will get the token details from Coingecko server by passind token ID
     /// This is public API
-    func getTokenDetails( tokenID:String, completed : @escaping (Result<[Tokens], Error>) -> Void) {
+    func getTokenDetails( tokenID:String, completed : @escaping (Result<[TokenList], Error>) -> Void) {
         let url = URL(string: "\(GET_TOKEN_BASE_URL)/\(tokenID)")!
         URLSession.shared.dataTask(with: url) { data, response, error in
-            let response = String (data: data!, encoding: String.Encoding.utf8)
-            print("response is \(String(describing: response))")
             do {
-                let response = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
-                print(response)
+                guard let responseData = data else{return}
+                let decoder = JSONDecoder()
+                let result = try decoder.decode([TokenList].self,from:responseData)
+                completed(.success(result))
             } catch {
-                print("error serializing JSON: \(error)")
+                completed(.failure(error))
             }
         }.resume()
     }

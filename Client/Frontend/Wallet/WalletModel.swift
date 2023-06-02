@@ -97,7 +97,7 @@ class Tokens {
         self.isAdded = isAdded
     }
 }
-struct TokenDetails : Decodable{
+struct TokenList : Decodable{
     var id : String
     var name : String
     var symbol : String
