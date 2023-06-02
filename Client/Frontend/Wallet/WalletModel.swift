@@ -102,3 +102,19 @@ struct TokenList : Decodable{
     var name : String
     var symbol : String
 }
+
+class TokensDetails {
+    var network: String?
+    var name: String?
+    var address: String?
+    var symbol: String?
+    var notes: String?
+
+    init(network: String?,name: String?,address: String?,symbol : String?,notes: String?){
+        self.network = network
+        self.name = name
+        self.address = address
+        self.symbol = symbol
+        self.notes = notes
+    }
+}

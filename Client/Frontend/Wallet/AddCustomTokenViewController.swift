@@ -36,6 +36,8 @@ class AddCustomTokenViewController: UIViewController {
             static let titleFont: CGFloat = 16
             static let top: CGFloat = 30
             static let width: CGFloat = 300
+            static let font1: CGFloat = 12
+
         }
         struct LogoView {
             static let top: CGFloat = 50
@@ -60,18 +62,31 @@ class AddCustomTokenViewController: UIViewController {
             static let detailHeight: CGFloat = 20
             static let height: CGFloat = 54
             static let top: CGFloat = 30
-            static let netWorkTop: CGFloat = 20
+            static let netWorkTop: CGFloat = 15
             static let leading: CGFloat = 10
             static let corner: CGFloat = 10
+            static let font: CGFloat = 15
         }
         struct ActionView {
             static let heightActionBg: CGFloat = 25
             static let topActionBg: CGFloat = 10
         }
-        struct UserTokenView {
+        struct DetailsView {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 10
-            static let top: CGFloat = 30
+            static let top: CGFloat = 40
+            static let height: CGFloat = 155
+        }
+        struct ScamAlertView {
+            static let cornerRadius: CGFloat = 20
+            static let common: CGFloat = 10
+            static let top: CGFloat = 20
+            static let height: CGFloat = 110
+            static let icWidth: CGFloat = 22
+            static let icheight: CGFloat = 19
+            static let heightConstant: CGFloat = 100
+            static let widthConstant: CGFloat = 150
+            static let top1: CGFloat = 40
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -133,11 +148,7 @@ class AddCustomTokenViewController: UIViewController {
             static let font: CGFloat = 13
         }
         struct TableView{
-            static let leading: CGFloat = 10
-            static let top: CGFloat = 35
-            static let trailing: CGFloat = -10
-            static let bottom: CGFloat = -30
-
+            static let common: CGFloat = 15
         }
         struct WalletLabel {
             static let font: CGFloat = 18
@@ -156,6 +167,25 @@ class AddCustomTokenViewController: UIViewController {
             static let height: CGFloat = 40
             static let width: CGFloat = 40
             static let corner: CGFloat = 20
+        }
+        struct Title {
+            static let font: CGFloat = 14
+            static let top: CGFloat = 20
+            static let leading: CGFloat = 20
+            static let height: CGFloat = 30
+        }
+        struct Value {
+            static let font: CGFloat = 15
+            static let fontAt: CGFloat = 12
+            static let top: CGFloat = 10
+            static let topAt: CGFloat = 0
+            static let trailing: CGFloat = -20
+            static let height: CGFloat = 20
+            static let width: CGFloat = 50
+            static let valueWidth: CGFloat = 150
+            static let valueHeight: CGFloat = 30
+            static let chevronWidth: CGFloat = 12
+            static let chevronHeight: CGFloat = 8
         }
     }
     
@@ -203,11 +233,22 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
+    
+    private lazy var scamAlertView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#351B1B")
+        view.layer.cornerRadius = UX.NetworkView.corner
+        view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
     private lazy var detailsView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        view.layer.cornerRadius = UX.UserTokenView.cornerRadius
+        view.layer.cornerRadius = UX.DetailsView.cornerRadius
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         return view
@@ -235,7 +276,6 @@ class AddCustomTokenViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
-//    infoIcon
     private lazy var infoIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "ic_wallet_info")
@@ -243,6 +283,19 @@ class AddCustomTokenViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.infoIconTapped))
         imageView.addGestureRecognizer(tapGesture)
         imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
+    private lazy var alertImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_scam_alert")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var chevronImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_chevron")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -262,7 +315,7 @@ class AddCustomTokenViewController: UIViewController {
         let textField = UITextField()
         textField.attributedPlaceholder =
         NSAttributedString(
-            string: "Search token name",
+            string: "Search by token name",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray,NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UX.SearchView.font)]
         )
         textField.backgroundColor = .clear
@@ -294,14 +347,55 @@ class AddCustomTokenViewController: UIViewController {
     }()
     private lazy var detailsLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.white
-        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.titleFont)
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
         label.textAlignment = .center
         label.text = "DETAILS:"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
+    private lazy var tokenNetworktitleLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Token Network"
+        return label
+    }()
+    private lazy var tokenNetworkValueLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 3
+        label.text = "BCD80"
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private lazy var scamTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.titleFont)
+        label.textAlignment = .center
+        label.text = "SCAM ALERT"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var scamDescriptionLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font1)
+        label.textAlignment = .left
+        label.text = "Make sure that token address that you provide is right, because a lot of projects posted on internet can be a scam projects. Check it before adding to your wallet."
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 10
+        return label
+    }()
+ 
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -312,6 +406,17 @@ class AddCustomTokenViewController: UIViewController {
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
+        button.isUserInteractionEnabled = true
+        return button
+    }()
+    private lazy var addTokenButton : UIButton = {
+        let button = UIButton()
+        button.setTitle("ADD NEW TOKEN", for: .normal)
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(self.addTokenBtnTapped), for: .touchUpInside)
+        button.clipsToBounds = true
+        button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
         return button
     }()
@@ -350,25 +455,18 @@ class AddCustomTokenViewController: UIViewController {
     
     
 // MARK: - UI Properties
-    var shownFromAppMenu: Bool = false
-    private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
     var publicAddress = String()
-    var tokensModel = [TokenModel]()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var isFiltered = false
-    var searchResult = [Tokens]()
-    var searchText = [Tokens]()
+    var tokenDetails = TokensDetails(network: "BBC30", name: "USDC", address: "JFSDHJFXFBDKNSLCXNCZXZSADVCC", symbol: "USDC", notes: "JDSVHBBDNKL;SCXK JBHJBNKLC")
     
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
         applyTheme()
         setUpView()
-        setUpNetwork()
         setUpViewContraint()
-        checkAddedToken()
     }
     
 // MARK: - UI Methods
@@ -376,11 +474,6 @@ class AddCustomTokenViewController: UIViewController {
         themeManager =  AppContainer.shared.resolve()
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
-    }
-    
-    func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-        ParticleNetwork.setChainInfo(chainInfo)
     }
     
     func setUpView(){
@@ -398,10 +491,17 @@ class AddCustomTokenViewController: UIViewController {
         searchView.addSubview(searchTextField)
         contentView.addSubview(searchView)
         contentView.addSubview(detailsLabel)
+        networkView.addSubview(tokenNetworktitleLabel)
+        networkView.addSubview(tokenNetworkValueLabel)
+        networkView.addSubview(chevronImageView)
         contentView.addSubview(networkView)
         detailsView.addSubview(tableView)
+        scamAlertView.addSubview(alertImageView)
+        scamAlertView.addSubview(scamTitleLabel)
+        scamAlertView.addSubview(scamDescriptionLabel)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(detailsView)
+        scrollContentView.addSubview(scamAlertView)
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
@@ -445,10 +545,10 @@ class AddCustomTokenViewController: UIViewController {
             contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
             
             ///User Token List View
-            detailsView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.top),
-            detailsView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
-            detailsView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
-            detailsView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
+            detailsView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.DetailsView.top),
+            detailsView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.DetailsView.common),
+            detailsView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.DetailsView.common),
+            detailsView.heightAnchor.constraint(equalToConstant: UX.DetailsView.height),
 
             ///Action View
             actionsView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -520,23 +620,48 @@ class AddCustomTokenViewController: UIViewController {
             addTokenTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
             addTokenTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
+            tokenNetworktitleLabel.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
+            tokenNetworktitleLabel.leadingAnchor.constraint(equalTo: networkView.leadingAnchor,constant: UX.Title.leading),
+            tokenNetworktitleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
+            
+            chevronImageView.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
+            chevronImageView.trailingAnchor.constraint(equalTo: networkView.trailingAnchor,constant: UX.Value.trailing),
+
+            
+            tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
+            tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor,constant: UX.Value.trailing),
+            tokenNetworkValueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            tokenNetworkValueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
+                        
             ///UserTokenView TableView
-            tableView.topAnchor.constraint(equalTo: detailsView.topAnchor,constant: UX.TableView.top),
-            tableView.leadingAnchor.constraint(equalTo: detailsView.leadingAnchor,constant: UX.TableView.leading),
-            tableView.trailingAnchor.constraint(equalTo: detailsView.trailingAnchor,constant: UX.TableView.trailing),
-            tableView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor,constant: UX.TableView.trailing),
-            tableView.heightAnchor.constraint(equalToConstant: view.frame.height - 200),
+            tableView.topAnchor.constraint(equalTo: detailsView.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: detailsView.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: detailsView.trailingAnchor,constant: -UX.TableView.common),
+            tableView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor),
+
+            //Scam Alert View
+            scamAlertView.topAnchor.constraint(equalTo: detailsView.bottomAnchor ,constant: UX.ScamAlertView.top),
+            scamAlertView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.ScamAlertView.common),
+            scamAlertView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.ScamAlertView.common),
+            scamAlertView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.height),
+            scamAlertView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
+
+            alertImageView.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.common),
+            alertImageView.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.common),
+            alertImageView.widthAnchor.constraint(equalToConstant: UX.ScamAlertView.icWidth),
+            alertImageView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.icheight),
+            
+            scamTitleLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.common),
+            scamTitleLabel.leadingAnchor.constraint(equalTo: alertImageView.trailingAnchor,constant: UX.ScamAlertView.common),
+            
+            scamDescriptionLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top1),
+            scamDescriptionLabel.centerYAnchor.constraint(equalTo: scamAlertView.centerYAnchor),
+            scamDescriptionLabel.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.common),
+            scamDescriptionLabel.trailingAnchor.constraint(equalTo: scamAlertView.trailingAnchor,constant: -UX.ScamAlertView.common),
+            scamDescriptionLabel.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.heightConstant),
+            scamDescriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.width - UX.ScamAlertView.widthConstant),
 
         ])
-    }
-    
-    func checkAddedToken(){
-        for token in self.tokensModel{
-            if let filterToken = tokens.enumerated().first(where: {$0.element.address == token.address}) {
-                tokens[filterToken.offset].isAdded = true
-            }
-        }
-        self.tableView.reloadData()
     }
         
 // MARK: - View Model Methods - Network actions
@@ -572,28 +697,17 @@ class AddCustomTokenViewController: UIViewController {
     @objc func infoIconTapped (){
         showToast(message: "Coming soon...")
     }
+    @objc func addTokenBtnTapped (){
+        showToast(message: "Coming soon...")
+    }
     
     
 // MARK: - Helper Methods - Initiate view controller
-    func initiateSendVC(){
-        let vc = SendViewController()
-        vc.publicAddress = publicAddress
-        vc.tokens = self.tokensModel
-        vc.modalPresentationStyle = .overCurrentContext
-        self.present(vc, animated: true)
-    }
-    
+   
     func initiateDrawerVC(){
         let drawerController = DrawerMenuViewController()
         drawerController.delegate = self
-        present(drawerController, animated: true)
-    }
-    
-    func initiateReceiveVC(){
-        let vc = ReceiveViewController()
-        vc.modalPresentationStyle = .overCurrentContext
-        vc.address = publicAddress
-        self.present(vc, animated: false)
+        self.present(drawerController, animated: true)
     }
 
     func showToast(message: String){
@@ -608,11 +722,11 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
         let searchText  = textField.text! + string
         if searchText.count >= 3 {
             tableView.isHidden = false
-            searchResult = tokens.filter({(($0.address!).localizedCaseInsensitiveContains(searchText))})
+//            searchResult = tokens.filter({(($0.address!).localizedCaseInsensitiveContains(searchText))})
             tableView.reloadData()
         }
         else{
-            searchResult = []
+//            searchResult = []
         }
         return true
     }
@@ -621,16 +735,17 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tokens.count
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
+        cell.setUI(token: self.tokenDetails, index: indexPath.row)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 45
     }
 }
 
@@ -677,7 +792,7 @@ class TokenDetailsTVCell: UITableViewCell {
         struct Value {
             static let font: CGFloat = 15
             static let fontAt: CGFloat = 12
-            static let top: CGFloat = 20
+            static let top: CGFloat = 10
             static let topAt: CGFloat = 0
             static let trailing: CGFloat = -10
             static let height: CGFloat = 20
@@ -713,7 +828,7 @@ class TokenDetailsTVCell: UITableViewCell {
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 3
-        label.adjustsFontSizeToFitWidth = true
+        label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
 
@@ -731,7 +846,7 @@ class TokenDetailsTVCell: UITableViewCell {
         NSLayoutConstraint.activate([
             
             ///UILabel
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Title.top),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Value.top),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
             titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
@@ -753,7 +868,21 @@ class TokenDetailsTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUI(token : TokenModel){
+    func setUI(token : TokensDetails,index: Int){
+        switch index{
+        case 0:
+            self.titleLabel.text = "Address:"
+            self.valueGradiantLabel.text = token.address
+            self.valueLabel.text = ""
+        case 1:
+            self.titleLabel.text = "Token Name:"
+            self.valueLabel.text = token.name
+            self.valueGradiantLabel.text = ""
+        default:
+            self.titleLabel.text = "Notes:"
+            self.valueLabel.text = token.notes
+            self.valueGradiantLabel.text = ""
+        }
         
     }
     

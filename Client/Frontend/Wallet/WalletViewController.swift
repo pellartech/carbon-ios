@@ -796,9 +796,9 @@ class WalletViewController: UIViewController {
     }
     
     func initiateAddTokenVC(){
-        let vc = AddTokenViewController()
-        vc.publicAddress = publicAddress
-        vc.tokensModel = self.tokensModel
+        let vc = AddCustomTokenViewController()
+//        vc.publicAddress = publicAddress
+//        vc.tokensModel = self.tokensModel
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: false)
     }
