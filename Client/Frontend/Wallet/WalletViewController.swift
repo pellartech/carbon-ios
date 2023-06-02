@@ -415,7 +415,6 @@ class WalletViewController: UIViewController {
     let bag = DisposeBag()
     private var publicAddress = String()
     private var tokensModel = [TokenModel]()
-    let viewModel = WalletViewModel()
     var networkData = [String]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
@@ -693,7 +692,7 @@ class WalletViewController: UIViewController {
     }
     
     func fetchUserTokens(){
-        self.viewModel.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: userTokens) { result in
+        WalletViewModel.shared.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: userTokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens

@@ -331,7 +331,6 @@ class AddTokenViewController: UIViewController {
     let bag = DisposeBag()
     var publicAddress = String()
     var tokensModel = [TokenModel]()
-    let viewModel = WalletViewModel()
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var isFiltered = false
@@ -346,6 +345,7 @@ class AddTokenViewController: UIViewController {
         setUpNetwork()
         setUpViewContraint()
         checkAddedToken()
+         fetchTokens()
     }
     
 // MARK: - UI Methods
@@ -504,9 +504,28 @@ class AddTokenViewController: UIViewController {
     }
         
 // MARK: - View Model Methods - Network actions
+    
+    func fetchTokens() {
+        SVProgressHUD.show()
+    WalletViewModel.shared.getTokenList{result in
+            switch result {
+            case .success(let tokens):
+                SVProgressHUD.dismiss()
+                if (tokens.count > 0){
+                    self.showToast(message: "Added")
+                }else{
+                    self.showToast(message: "Something went wrong! Please try again")
+                }
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+                self.showToast(message: "Error occurred! Please try again after sometimes")
+            }
+        }
+    }
     func addToken(tokens : [String]){
         SVProgressHUD.show()
-        self.viewModel.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
             switch result {
             case .success(let tokens):
                 SVProgressHUD.dismiss()
@@ -785,7 +804,7 @@ class AddTokensTVCell: UITableViewCell {
     
     func setUI(token : Tokens){
         self.tokenAddress = token.address ?? ""
-        titleLabel.text = "\(token.title!) (\(token.symbol!))"
+        titleLabel.text = "\(token.name!) (\(token.symbol!))"
         symbolLabel.text = token.symbol ?? ""
         iconImageView.image = token.icon!
         switchButton.status = token.isAdded ?? false

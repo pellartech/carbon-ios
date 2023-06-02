@@ -355,13 +355,12 @@ class AddCustomTokenViewController: UIViewController {
     let bag = DisposeBag()
     var publicAddress = String()
     var tokensModel = [TokenModel]()
-    let viewModel = WalletViewModel()
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var isFiltered = false
     var searchResult = [Tokens]()
     var searchText = [Tokens]()
-
+    
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -479,7 +478,6 @@ class AddCustomTokenViewController: UIViewController {
             ///Details Label
             detailsLabel.topAnchor.constraint(equalTo: searchView.bottomAnchor,constant:  UX.NetworkView.top),
             detailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
-            detailsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.NetworkView.leading),
             detailsLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
             ///Network View
@@ -544,7 +542,7 @@ class AddCustomTokenViewController: UIViewController {
 // MARK: - View Model Methods - Network actions
     func addToken(tokens : [String]){
         SVProgressHUD.show()
-        self.viewModel.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
             switch result {
             case .success(let tokens):
                 SVProgressHUD.dismiss()
@@ -760,5 +758,3 @@ class TokenDetailsTVCell: UITableViewCell {
     }
     
 }
-
-

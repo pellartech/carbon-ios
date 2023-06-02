@@ -19,12 +19,18 @@ import ConnectPhantomAdapter
 import ConnectSolanaAdapter
 import ConnectWalletConnectAdapter
 
+let GET_TOKEN_BASE_URL = "https://api.coingecko.com/api/v3/coins/"
+enum TokenError:Error{
+    case NoDataAvailable
+    case CanNotProcessData
+}
 public class WalletViewModel {
     
     public static var shared = WalletViewModel()
     private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
     private var tokensModel = [TokenModel]()
+    let session = URLSession.shared
     
     ///Wallet Login
     func walletLogin(vc: UIViewController, walletType: WalletType, completed : @escaping (Result<ConnectWalletModel, Error>) -> Void) {
@@ -86,19 +92,55 @@ public class WalletViewModel {
         }.disposed(by: bag)
     }
     
+    /// This method will get the list of tokens from Coingecko server
+    /// This is public API
+    func getTokenList(completed : @escaping (Result<[TokenDetails], Error>) -> Void) {
+        let url = URL(string: "\(GET_TOKEN_BASE_URL)/list")!
+        let dataTask = session.dataTask(with: url){data,response,error in
+            guard let jsonData = data else{
+                completed(.failure(error!))
+                return
+            }
+            do{
+                let decoder = JSONDecoder()
+                let result = try decoder.decode([TokenDetails].self,from:jsonData)
+                completed(.success(result))
+            }
+            catch{
+                completed(.failure(error))
+            }
+        }
+        dataTask.resume()
+    }
+    
+    /// This method will get the token details from Coingecko server by passind token ID
+    /// This is public API
+    func getTokenDetails( tokenID:String, completed : @escaping (Result<[Tokens], Error>) -> Void) {
+        let url = URL(string: "\(GET_TOKEN_BASE_URL)/\(tokenID)")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            let response = String (data: data!, encoding: String.Encoding.utf8)
+            print("response is \(String(describing: response))")
+            do {
+                let response = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
+                print(response)
+            } catch {
+                print("error serializing JSON: \(error)")
+            }
+        }.resume()
+    }
     
     /// This method will add the pre defined tokens to the user account
     func addTokenToUserAccount(address:String,tokens:[String],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
         print(ParticleNetwork.getChainInfo().name)
         ParticleWalletAPI.getEvmService().addCustomTokens(address: address, tokenAddresses: tokens)//
             .subscribe { result in
-            switch result {
-            case .failure(let error):
-                completed(.failure(error))
-            case .success(let tokenModels):
-                completed(.success(tokenModels))
-            }
-        }.disposed(by: bag)
+                switch result {
+                case .failure(let error):
+                    completed(.failure(error))
+                case .success(let tokenModels):
+                    completed(.success(tokenModels))
+                }
+            }.disposed(by: bag)
     }
     
     /// This method will fetch the native tokens which belongs to user account
@@ -110,29 +152,16 @@ public class WalletViewModel {
         }
         ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenAddress)//
             .subscribe { result in
-            switch result {
-            case .failure(let error):
-                completed(.failure(error))
-            case .success(let tokens):
-                let token = tokens.tokens as [TokenModel]
-                completed(.success(token + tokenArray))
-            }
-        }.disposed(by: bag)
+                switch result {
+                case .failure(let error):
+                    completed(.failure(error))
+                case .success(let tokens):
+                    let token = tokens.tokens as [TokenModel]
+                    completed(.success(token + tokenArray))
+                }
+            }.disposed(by: bag)
     }
     
-    /// This method will fetch the ERC20 tokens which belongs to user account
-    func getUserTokenListsForERC20Tokens(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: [])//
-            .subscribe {result in
-            switch result {
-            case .failure(let error):
-                completed(.failure(error))
-            case .success(let tokens):
-                let token = tokens.tokens as [TokenModel]
-                completed(.success(token + tokenArray))
-            }
-        }.disposed(by: bag)
-    }
     
     /// This method will send the native tokens  to  user account
     func sendNativeEVM(amountString: String,sender:String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
@@ -150,25 +179,6 @@ public class WalletViewModel {
                 completed(.success(signature))
             }
         }.disposed(by: bag)
-    
-    }
-    
-    /// This method will send the ERC20 tokens  to  user account
-    func sendERC20Token(amountString: String,sender:String,receiver: String,filterToken: TokenModel,completed : @escaping (Result<String, Error>) -> Void) {
-        let amount = BDouble((Double(amountString) ?? 0.0) * pow(10, 18)).rounded()
-        let contractParams = ContractParams.erc20Transfer(contractAddress: filterToken.address, to: receiver, amount: amount)
-        ParticleWalletAPI.getEvmService().createTransaction(from: sender,to: receiver,contractParams: contractParams).flatMap {
-            transaction -> Single<String> in
-            return ParticleAuthService.signAndSendTransaction(transaction)
-        }.subscribe {result in
-            switch result {
-            case .failure(let error):
-                completed(.failure(error))
-            case .success(let signature):
-                completed(.success(signature))
-            }
-        }.disposed(by: bag)
-    
     }
     
     /// Wallet Logout
@@ -176,12 +186,12 @@ public class WalletViewModel {
         WalletManager.shared.removeAllWallet()
         ParticleAuthService.logout()//
             .subscribe {result in
-            switch result {
-            case .failure(let error):
-                completed(.failure(error))
-            case .success(let logout):
-                completed(.success(logout))
-            }
-        }.disposed(by: bag)
+                switch result {
+                case .failure(let error):
+                    completed(.failure(error))
+                case .success(let logout):
+                    completed(.success(logout))
+                }
+            }.disposed(by: bag)
     }
 }
