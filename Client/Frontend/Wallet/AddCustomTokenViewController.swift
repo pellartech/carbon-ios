@@ -628,10 +628,6 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
-        cell.setUI(token: tokens[indexPath.row])
-        cell.selectionStyle = .none
-        cell.delegate = self
-        cell.switchButton.tag = indexPath.row
         return cell
     }
     
