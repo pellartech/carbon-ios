@@ -81,11 +81,12 @@ class AddCustomTokenViewController: UIViewController {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 10
             static let top: CGFloat = 20
+            static let top2: CGFloat = 15
             static let height: CGFloat = 110
             static let icWidth: CGFloat = 22
             static let icheight: CGFloat = 19
-            static let heightConstant: CGFloat = 100
-            static let widthConstant: CGFloat = 150
+            static let heightConstant: CGFloat = 50
+            static let widthConstant: CGFloat = 180
             static let top1: CGFloat = 40
         }
         struct WelcomeLabel {
@@ -253,6 +254,14 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
+    private lazy var addTokenBtnView: GradientView = {
+        let view = GradientView()
+        view.clipsToBounds = true
+        view.layer.cornerRadius = UX.ButtonView.corner
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     
     ///UIImageView
     private lazy var logoImageView: UIImageView = {
@@ -501,6 +510,8 @@ class AddCustomTokenViewController: UIViewController {
         scamAlertView.addSubview(scamDescriptionLabel)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(detailsView)
+        scrollContentView.addSubview(addTokenBtnView)
+        scrollContentView.addSubview(addTokenButton)
         scrollContentView.addSubview(scamAlertView)
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
@@ -639,27 +650,43 @@ class AddCustomTokenViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: detailsView.trailingAnchor,constant: -UX.TableView.common),
             tableView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor),
 
+            ///Add token button view
+            addTokenBtnView.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant:UX.ButtonView.addTop),
+            addTokenBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            addTokenBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            addTokenBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            addTokenBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+          
+            ///Add token button
+            addTokenButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant: UX.ButtonView.addTop),
+            addTokenButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            addTokenButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+            
             //Scam Alert View
-            scamAlertView.topAnchor.constraint(equalTo: detailsView.bottomAnchor ,constant: UX.ScamAlertView.top),
+            scamAlertView.topAnchor.constraint(equalTo: addTokenBtnView.bottomAnchor ,constant: UX.ScamAlertView.top),
             scamAlertView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.ScamAlertView.common),
             scamAlertView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.ScamAlertView.common),
             scamAlertView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.height),
             scamAlertView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
 
-            alertImageView.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.common),
-            alertImageView.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.common),
+            alertImageView.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top2),
+            alertImageView.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.top2),
             alertImageView.widthAnchor.constraint(equalToConstant: UX.ScamAlertView.icWidth),
             alertImageView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.icheight),
             
-            scamTitleLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.common),
+            scamTitleLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top2),
             scamTitleLabel.leadingAnchor.constraint(equalTo: alertImageView.trailingAnchor,constant: UX.ScamAlertView.common),
             
             scamDescriptionLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top1),
-            scamDescriptionLabel.centerYAnchor.constraint(equalTo: scamAlertView.centerYAnchor),
-            scamDescriptionLabel.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.common),
-            scamDescriptionLabel.trailingAnchor.constraint(equalTo: scamAlertView.trailingAnchor,constant: -UX.ScamAlertView.common),
+            scamDescriptionLabel.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.top2),
+            scamDescriptionLabel.trailingAnchor.constraint(equalTo: scamAlertView.trailingAnchor,constant: -UX.ScamAlertView.top2),
             scamDescriptionLabel.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.heightConstant),
             scamDescriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.width - UX.ScamAlertView.widthConstant),
+            
+            
+
 
         ])
     }
@@ -846,16 +873,16 @@ class TokenDetailsTVCell: UITableViewCell {
         NSLayoutConstraint.activate([
             
             ///UILabel
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Value.top),
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
             titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
-            valueLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Value.top),
+            valueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             valueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
             valueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
             valueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
 
-            valueGradiantLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Value.top),
+            valueGradiantLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             valueGradiantLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
             valueGradiantLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
             valueGradiantLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
