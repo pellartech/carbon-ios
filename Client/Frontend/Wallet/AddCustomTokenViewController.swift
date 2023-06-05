@@ -150,11 +150,19 @@ class AddCustomTokenViewController: UIViewController {
         }
         struct TableView{
             static let common: CGFloat = 15
+            static let leading: CGFloat = 10
+            static let top: CGFloat = 35
+            static let trailing: CGFloat = -10
+            static let bottom: CGFloat = -30
         }
         struct WalletLabel {
             static let font: CGFloat = 18
         }
-        
+        struct UserTokenView {
+            static let cornerRadius: CGFloat = 20
+            static let common: CGFloat = 0
+            static let top: CGFloat = 30
+        }
         struct DropDown {
             static let width: CGFloat = 180
             static let height: CGFloat = 400
@@ -244,7 +252,15 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
-    
+    private lazy var userTokensView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = UX.UserTokenView.cornerRadius
+        view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
     private lazy var detailsView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -445,6 +461,20 @@ class AddCustomTokenViewController: UIViewController {
         tableView.register(TokenDetailsTVCell.self, forCellReuseIdentifier:"TokenDetailsTVCell")
         return tableView
     }()
+    private lazy var tokensTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.isUserInteractionEnabled = true
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.isScrollEnabled = true
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(AddTokensTVCell.self, forCellReuseIdentifier:"AddTokensTVCell")
+        return tableView
+    }()
     
     ///UIScrollView
     private lazy var scrollView : UIScrollView = {
@@ -469,6 +499,7 @@ class AddCustomTokenViewController: UIViewController {
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var tokenDetails = TokensDetails(network: "BBC30", name: "USDC", address: "JFSDHJFXFBDKNSLCXNCZXZSADVCC", symbol: "USDC", notes: "JDSVHBBDNKL;SCXK JBHJBNKLC")
+    var tokens = [TokenList]()
     
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -476,6 +507,8 @@ class AddCustomTokenViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
+        fetchTokens()
+
     }
     
 // MARK: - UI Methods
@@ -508,11 +541,13 @@ class AddCustomTokenViewController: UIViewController {
         scamAlertView.addSubview(alertImageView)
         scamAlertView.addSubview(scamTitleLabel)
         scamAlertView.addSubview(scamDescriptionLabel)
+        userTokensView.addSubview(tokensTableView)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(detailsView)
         scrollContentView.addSubview(addTokenBtnView)
         scrollContentView.addSubview(addTokenButton)
         scrollContentView.addSubview(scamAlertView)
+        scrollContentView.addSubview(userTokensView)        
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
@@ -669,7 +704,7 @@ class AddCustomTokenViewController: UIViewController {
             scamAlertView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.ScamAlertView.common),
             scamAlertView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.ScamAlertView.common),
             scamAlertView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.height),
-            scamAlertView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
+//            scamAlertView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
 
             alertImageView.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top2),
             alertImageView.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.top2),
@@ -685,12 +720,40 @@ class AddCustomTokenViewController: UIViewController {
             scamDescriptionLabel.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.heightConstant),
             scamDescriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.width - UX.ScamAlertView.widthConstant),
             
+            userTokensView.topAnchor.constraint(equalTo: scamAlertView.bottomAnchor ,constant: UX.UserTokenView.top),
+            userTokensView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
+            userTokensView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
+            userTokensView.heightAnchor.constraint(equalToConstant: 300),
+            userTokensView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
             
-
+            tokensTableView.topAnchor.constraint(equalTo: userTokensView.topAnchor,constant: UX.TableView.top),
+            tokensTableView.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant: UX.TableView.leading),
+            tokensTableView.trailingAnchor.constraint(equalTo: userTokensView.trailingAnchor,constant: UX.TableView.trailing),
+            tokensTableView.bottomAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant: UX.TableView.trailing),
+            tokensTableView.heightAnchor.constraint(equalToConstant:300),
 
         ])
     }
         
+    func fetchTokens() {
+        SVProgressHUD.show()
+    WalletViewModel.shared.getTokenList{result in
+            switch result {
+            case .success(let tokens):
+                SVProgressHUD.dismiss()
+                if (tokens.count > 0){
+                    self.showToast(message: "Added")
+                }else{
+                    self.showToast(message: "Something went wrong! Please try again")
+                }
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+                self.showToast(message: "Error occurred! Please try again after sometimes")
+            }
+        }
+    }
+    
 // MARK: - View Model Methods - Network actions
     func addToken(tokens : [String]){
         SVProgressHUD.show()
@@ -704,6 +767,7 @@ class AddCustomTokenViewController: UIViewController {
                 }else{
                     self.showToast(message: "Something went wrong! Please try again")
                 }
+                self.tokensTableView.reloadData()
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
@@ -762,17 +826,26 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return  tableView == self.tokensTableView ? self.tokens.count : tokens.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
-        cell.setUI(token: self.tokenDetails, index: indexPath.row)
-        return cell
+        if (tableView == self.tokensTableView){
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddTokensTVCell", for: indexPath) as! AddTokensTVCell
+            cell.setUITokens(token: tokens[indexPath.row])
+            cell.selectionStyle = .none
+            cell.delegate = self
+            cell.switchButton.tag = indexPath.row
+            return cell
+        }else{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
+            cell.setUI(token: self.tokenDetails, index: indexPath.row)
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 45
+        return tableView == self.tokensTableView ? 70 : 45
     }
 }
 
@@ -788,12 +861,7 @@ extension AddCustomTokenViewController : ConnectProtocol{
 
 extension AddCustomTokenViewController: AddTokenDelegate{
     func initiateAddToken() {
-        var selectedToken = [String]()
-        let tokensArray = tokens.filter{$0.isAdded == true}
-        for eachToken in tokensArray{
-            selectedToken.append(eachToken.address ?? "")
-        }
-        self.addToken(tokens: selectedToken)
+     
     }
 }
 

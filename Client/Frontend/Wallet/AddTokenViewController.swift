@@ -345,7 +345,6 @@ class AddTokenViewController: UIViewController {
         setUpNetwork()
         setUpViewContraint()
         checkAddedToken()
-         fetchTokens()
     }
     
 // MARK: - UI Methods
@@ -809,7 +808,11 @@ class AddTokensTVCell: UITableViewCell {
         iconImageView.image = token.icon!
         switchButton.status = token.isAdded ?? false
     }
-    
+    func setUITokens(token : TokenList){
+        titleLabel.text = "\(token.name) (\(token.symbol))"
+        symbolLabel.text = token.symbol
+        iconImageView.isHidden = true
+    }
 }
 
 extension AddTokensTVCell : SwitchDelegate{
