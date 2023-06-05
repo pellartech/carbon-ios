@@ -104,28 +104,29 @@ struct TokenList : Decodable{
 }
 
 struct TokenInfo : Decodable{
-    var id : String
-    var name : String
-    var symbol : String
-    var contract_address : String
-    var image : TokenImages
-    var description : TokenDescrip
-    var platforms : TokenPlatform
+    var id : String?
+    var name : String?
+    var symbol : String?
+    var contract_address : String?
+    var image : TokenImages?
+    var description : TokenDescrip?
+    var asset_platform_id: String?
+    var platforms : TokenPlatform?
 }
 
 struct TokenImages : Decodable{
-    var large : String
-    var small : String
-    var thumb : String
+    var large : String?
+    var small : String?
+    var thumb : String?
 }
 
 struct TokenDescrip : Decodable{
-    var en : String
+    var en : String?
 }
 
 struct TokenPlatform: Decodable {
 
-    var platform: String
+    var platform: String?
 
     private struct DynamicKeys: CodingKey {
         var stringValue: String

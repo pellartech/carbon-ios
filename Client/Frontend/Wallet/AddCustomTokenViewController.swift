@@ -421,7 +421,7 @@ class AddCustomTokenViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .singleLine
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.register(CustomTokensTVCell.self, forCellReuseIdentifier:"CustomTokensTVCell")
@@ -452,6 +452,7 @@ class AddCustomTokenViewController: UIViewController {
     var themeManager :  ThemeManager?
     var tokens = [TokenList]()
     var tokenInfo : TokenInfo?
+    var selectedIndexes = [IndexPath.init(row: 0, section: 0)]
 
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -727,7 +728,7 @@ class AddCustomTokenViewController: UIViewController {
     }
     func fetchTokenInfo(token : TokenList){
         SVProgressHUD.show()
-        WalletViewModel.shared.getTokenDetails(tokenID: token.name) {result in
+        WalletViewModel.shared.getTokenDetails(tokenID: token.id) {result in
             switch result {
             case .success(let token):
                 SVProgressHUD.dismiss()
@@ -763,17 +764,20 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  tableView == self.tokensTableView ? self.tokens.count : tokens.count
+        return  tableView == self.tokensTableView ? self.tokens.count : 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (tableView == self.tokensTableView){
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
             cell.setUI(token: tokens[indexPath.row])
+            cell.selectionStyle = .none
+            let selectedIndexes = self.selectedIndexes
+            cell.accessoryType = selectedIndexes.contains(indexPath) ? .checkmark : .none
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
-            cell.setUI(token: self.tokenInfo!, index: indexPath.row)
+            cell.setUI(token: self.tokenInfo , index: indexPath.row)
             return cell
         }
     }
@@ -784,14 +788,12 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == self.tokensTableView){
-            tableView.deselectRow(at: indexPath, animated: true)
-            if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
-                if cell.accessoryType == .checkmark {
-                    cell.accessoryType = .none
-                } else {
-                    cell.accessoryType = .checkmark
-                    self.fetchTokenInfo(token: tokens[indexPath.row])
-                }
+            let cell = tableView.cellForRow(at: indexPath)
+            if !self.selectedIndexes.contains(indexPath) {
+                cell?.accessoryType = .checkmark
+                self.selectedIndexes.removeAll()
+                self.selectedIndexes.append(indexPath)
+                tableView.reloadData()
             }
         }
     }
@@ -861,7 +863,7 @@ class TokenDetailsTVCell: UITableViewCell {
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 3
-        label.adjustsFontSizeToFitWidth = true
+        label.lineBreakMode = .byTruncatingTail
         return label
     }()
     
@@ -911,19 +913,19 @@ class TokenDetailsTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUI(token : TokenInfo,index: Int){
+    func setUI(token : TokenInfo?,index: Int){
         switch index{
         case 0:
             self.titleLabel.text = "Address:"
-            self.valueGradiantLabel.text = token.contract_address
+            self.valueGradiantLabel.text = token?.contract_address ?? "-"
             self.valueLabel.text = ""
         case 1:
             self.titleLabel.text = "Token Name:"
-            self.valueLabel.text = token.name
+            self.valueLabel.text = token?.name ?? "-"
             self.valueGradiantLabel.text = ""
         default:
             self.titleLabel.text = "Notes:"
-            self.valueLabel.text = token.description.en
+            self.valueLabel.text = token?.description?.en ?? "-"
             self.valueGradiantLabel.text = ""
         }
         
