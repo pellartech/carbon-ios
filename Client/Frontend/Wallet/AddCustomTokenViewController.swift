@@ -772,8 +772,11 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
             cell.setUI(token: tokens[indexPath.row])
             cell.selectionStyle = .none
-            let selectedIndexes = self.selectedIndexes
-            cell.accessoryType = selectedIndexes.contains(indexPath) ? .checkmark : .none
+            if (self.selectedIndexes.contains(indexPath)){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
@@ -793,7 +796,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
                 cell?.accessoryType = .checkmark
                 self.selectedIndexes.removeAll()
                 self.selectedIndexes.append(indexPath)
-                tableView.reloadData()
+                self.fetchTokenInfo(token: tokens[indexPath.row])
             }
         }
     }
