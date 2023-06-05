@@ -77,18 +77,6 @@ class AddCustomTokenViewController: UIViewController {
             static let top: CGFloat = 40
             static let height: CGFloat = 155
         }
-        struct ScamAlertView {
-            static let cornerRadius: CGFloat = 20
-            static let common: CGFloat = 10
-            static let top: CGFloat = 20
-            static let top2: CGFloat = 15
-            static let height: CGFloat = 110
-            static let icWidth: CGFloat = 22
-            static let icheight: CGFloat = 19
-            static let heightConstant: CGFloat = 50
-            static let widthConstant: CGFloat = 180
-            static let top1: CGFloat = 40
-        }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
             static let widthWelcome: CGFloat = 250
@@ -242,16 +230,6 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
-    
-    private lazy var scamAlertView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#351B1B")
-        view.layer.cornerRadius = UX.NetworkView.corner
-        view.clipsToBounds = true
-        view.isUserInteractionEnabled = true
-        return view
-    }()
     private lazy var userTokensView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -308,12 +286,6 @@ class AddCustomTokenViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.infoIconTapped))
         imageView.addGestureRecognizer(tapGesture)
         imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
-    private lazy var alertImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_scam_alert")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -400,27 +372,7 @@ class AddCustomTokenViewController: UIViewController {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    
-    private lazy var scamTitleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor.white
-        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.titleFont)
-        label.textAlignment = .center
-        label.text = "SCAM ALERT"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    private lazy var scamDescriptionLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font1)
-        label.textAlignment = .left
-        label.text = "Make sure that token address that you provide is right, because a lot of projects posted on internet can be a scam projects. Check it before adding to your wallet."
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 10
-        return label
-    }()
-    
+
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -538,15 +490,11 @@ class AddCustomTokenViewController: UIViewController {
         networkView.addSubview(chevronImageView)
         contentView.addSubview(networkView)
         detailsView.addSubview(tableView)
-        scamAlertView.addSubview(alertImageView)
-        scamAlertView.addSubview(scamTitleLabel)
-        scamAlertView.addSubview(scamDescriptionLabel)
         userTokensView.addSubview(tokensTableView)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(detailsView)
         scrollContentView.addSubview(addTokenBtnView)
         scrollContentView.addSubview(addTokenButton)
-        scrollContentView.addSubview(scamAlertView)
         scrollContentView.addSubview(userTokensView)
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
@@ -699,28 +647,7 @@ class AddCustomTokenViewController: UIViewController {
             addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
             
-            //Scam Alert View
-            scamAlertView.topAnchor.constraint(equalTo: addTokenBtnView.bottomAnchor ,constant: UX.ScamAlertView.top),
-            scamAlertView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.ScamAlertView.common),
-            scamAlertView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.ScamAlertView.common),
-            scamAlertView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.height),
-            //            scamAlertView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
-            
-            alertImageView.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top2),
-            alertImageView.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.top2),
-            alertImageView.widthAnchor.constraint(equalToConstant: UX.ScamAlertView.icWidth),
-            alertImageView.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.icheight),
-            
-            scamTitleLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top2),
-            scamTitleLabel.leadingAnchor.constraint(equalTo: alertImageView.trailingAnchor,constant: UX.ScamAlertView.common),
-            
-            scamDescriptionLabel.topAnchor.constraint(equalTo: scamAlertView.topAnchor,constant: UX.ScamAlertView.top1),
-            scamDescriptionLabel.leadingAnchor.constraint(equalTo: scamAlertView.leadingAnchor,constant: UX.ScamAlertView.top2),
-            scamDescriptionLabel.trailingAnchor.constraint(equalTo: scamAlertView.trailingAnchor,constant: -UX.ScamAlertView.top2),
-            scamDescriptionLabel.heightAnchor.constraint(equalToConstant: UX.ScamAlertView.heightConstant),
-            scamDescriptionLabel.widthAnchor.constraint(equalToConstant: view.frame.width - UX.ScamAlertView.widthConstant),
-            
-            userTokensView.topAnchor.constraint(equalTo: scamAlertView.bottomAnchor ,constant: UX.UserTokenView.top),
+            userTokensView.topAnchor.constraint(equalTo: addTokenBtnView.bottomAnchor ,constant: UX.UserTokenView.top),
             userTokensView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
             userTokensView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
             userTokensView.heightAnchor.constraint(equalToConstant: 300),
