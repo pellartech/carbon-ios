@@ -139,17 +139,17 @@ class AddCustomTokenViewController: UIViewController {
         struct TableView{
             static let common: CGFloat = 15
             static let leading: CGFloat = 10
-            static let top: CGFloat = 35
+            static let top: CGFloat = 15
             static let trailing: CGFloat = -10
             static let bottom: CGFloat = -30
+            static let height: CGFloat = 500
         }
         struct WalletLabel {
             static let font: CGFloat = 18
         }
-        struct UserTokenView {
-            static let cornerRadius: CGFloat = 20
-            static let common: CGFloat = 0
-            static let top: CGFloat = 30
+        struct Divider {
+            static let common: CGFloat = 15
+            static let height: CGFloat = 2
         }
         struct DropDown {
             static let width: CGFloat = 180
@@ -200,6 +200,15 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
+    
+    private lazy var dividerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
     private lazy var logoBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -226,15 +235,6 @@ class AddCustomTokenViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         view.layer.cornerRadius = UX.NetworkView.corner
-        view.clipsToBounds = true
-        view.isUserInteractionEnabled = true
-        return view
-    }()
-    private lazy var userTokensView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .clear
-        view.layer.cornerRadius = UX.UserTokenView.cornerRadius
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         return view
@@ -420,7 +420,7 @@ class AddCustomTokenViewController: UIViewController {
         tableView.isUserInteractionEnabled = true
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorStyle = .none
+        tableView.separatorStyle = .singleLine
         tableView.allowsSelection = false
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
@@ -450,9 +450,9 @@ class AddCustomTokenViewController: UIViewController {
     var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokenDetails = TokensDetails(network: "BBC30", name: "USDC", address: "JFSDHJFXFBDKNSLCXNCZXZSADVCC", symbol: "USDC", notes: "JDSVHBBDNKL;SCXK JBHJBNKLC")
     var tokens = [TokenList]()
-    
+    var tokenInfo : TokenInfo?
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -490,12 +490,12 @@ class AddCustomTokenViewController: UIViewController {
         networkView.addSubview(chevronImageView)
         contentView.addSubview(networkView)
         detailsView.addSubview(tableView)
-        userTokensView.addSubview(tokensTableView)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(detailsView)
         scrollContentView.addSubview(addTokenBtnView)
         scrollContentView.addSubview(addTokenButton)
-        scrollContentView.addSubview(userTokensView)
+        scrollContentView.addSubview(dividerView)
+        scrollContentView.addSubview(tokensTableView)
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
@@ -647,18 +647,17 @@ class AddCustomTokenViewController: UIViewController {
             addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
             
-            userTokensView.topAnchor.constraint(equalTo: addTokenBtnView.bottomAnchor ,constant: UX.UserTokenView.top),
-            userTokensView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
-            userTokensView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
-            userTokensView.heightAnchor.constraint(equalToConstant: 300),
-            userTokensView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
+            dividerView.topAnchor.constraint(equalTo: addTokenBtnView.bottomAnchor ,constant: UX.Divider.common),
+            dividerView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.Divider.common),
+            dividerView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.Divider.common),
+            dividerView.heightAnchor.constraint(equalToConstant: UX.Divider.height),
             
-            tokensTableView.topAnchor.constraint(equalTo: userTokensView.topAnchor,constant: UX.TableView.top),
-            tokensTableView.leadingAnchor.constraint(equalTo: userTokensView.leadingAnchor,constant: UX.TableView.leading),
-            tokensTableView.trailingAnchor.constraint(equalTo: userTokensView.trailingAnchor,constant: UX.TableView.trailing),
-            tokensTableView.bottomAnchor.constraint(equalTo: userTokensView.bottomAnchor,constant: UX.TableView.trailing),
-            tokensTableView.heightAnchor.constraint(equalToConstant:300),
-            
+            tokensTableView.topAnchor.constraint(equalTo: dividerView.bottomAnchor,constant: UX.TableView.top),
+            tokensTableView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.TableView.leading),
+            tokensTableView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: UX.TableView.trailing),
+            tokensTableView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor,constant: UX.TableView.trailing),
+            tokensTableView.heightAnchor.constraint(equalToConstant: UX.TableView.height),
+            tokensTableView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
         ])
     }
     
@@ -726,6 +725,24 @@ class AddCustomTokenViewController: UIViewController {
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
     }
+    func fetchTokenInfo(token : TokenList){
+        SVProgressHUD.show()
+        WalletViewModel.shared.getTokenDetails(tokenID: token.name) {result in
+            switch result {
+            case .success(let token):
+                SVProgressHUD.dismiss()
+                self.tokenInfo = token
+                DispatchQueue.global().async {
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+            }
+        }
+    }
 }
 extension AddCustomTokenViewController: UITextFieldDelegate{
     
@@ -756,13 +773,27 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
-            cell.setUI(token: self.tokenDetails, index: indexPath.row)
+            cell.setUI(token: self.tokenInfo!, index: indexPath.row)
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView == self.tokensTableView ? 70 : 45
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (tableView == self.tokensTableView){
+            tableView.deselectRow(at: indexPath, animated: true)
+            if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
+                if cell.accessoryType == .checkmark {
+                    cell.accessoryType = .none
+                } else {
+                    cell.accessoryType = .checkmark
+                    self.fetchTokenInfo(token: tokens[indexPath.row])
+                }
+            }
+        }
     }
 }
 
@@ -880,11 +911,11 @@ class TokenDetailsTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUI(token : TokensDetails,index: Int){
+    func setUI(token : TokenInfo,index: Int){
         switch index{
         case 0:
             self.titleLabel.text = "Address:"
-            self.valueGradiantLabel.text = token.address
+            self.valueGradiantLabel.text = token.contract_address
             self.valueLabel.text = ""
         case 1:
             self.titleLabel.text = "Token Name:"
@@ -892,7 +923,7 @@ class TokenDetailsTVCell: UITableViewCell {
             self.valueGradiantLabel.text = ""
         default:
             self.titleLabel.text = "Notes:"
-            self.valueLabel.text = token.notes
+            self.valueLabel.text = token.description.en
             self.valueGradiantLabel.text = ""
         }
         

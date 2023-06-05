@@ -103,18 +103,47 @@ struct TokenList : Decodable{
     var symbol : String
 }
 
-class TokensDetails {
-    var network: String?
-    var name: String?
-    var address: String?
-    var symbol: String?
-    var notes: String?
+struct TokenInfo : Decodable{
+    var id : String
+    var name : String
+    var symbol : String
+    var contract_address : String
+    var image : TokenImages
+    var description : TokenDescrip
+    var platforms : TokenPlatform
+}
 
-    init(network: String?,name: String?,address: String?,symbol : String?,notes: String?){
-        self.network = network
-        self.name = name
-        self.address = address
-        self.symbol = symbol
-        self.notes = notes
+struct TokenImages : Decodable{
+    var large : String
+    var small : String
+    var thumb : String
+}
+
+struct TokenDescrip : Decodable{
+    var en : String
+}
+
+struct TokenPlatform: Decodable {
+
+    var platform: String
+
+    private struct DynamicKeys: CodingKey {
+        var stringValue: String
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        var intValue: Int?
+        init?(intValue: Int) {
+            return nil
+        }
+    }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: DynamicKeys.self)
+        var tempArray = String()
+        for key in container.allKeys {
+            let decodedObject = try container.decode(String.self, forKey: DynamicKeys(stringValue: key.stringValue)!)
+            tempArray = decodedObject
+        }
+        platform = tempArray
     }
 }
