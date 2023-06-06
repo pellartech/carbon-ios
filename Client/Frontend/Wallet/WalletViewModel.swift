@@ -94,7 +94,7 @@ public class WalletViewModel {
     /// This method will get the list of tokens from Coingecko server
     /// This is public API
     func getTokenList(completed : @escaping (Result<[TokenList], Error>) -> Void) {
-        let url = URL(string: "\(GET_TOKEN_BASE_URL)list")!
+        guard let url = URL(string: "\(GET_TOKEN_BASE_URL)list") else {return}
         URLSession.shared.dataTask(with: url) { data, response, error in
             do {
                 guard let responseData = data else{return}
@@ -110,7 +110,7 @@ public class WalletViewModel {
     /// This method will get the token details from Coingecko server by passind token ID
     /// This is public API
     func getTokenDetails( tokenID:String, completed : @escaping (Result<TokenInfo, Error>) -> Void) {
-        let url = URL(string: "\(GET_TOKEN_BASE_URL)\(tokenID)")!
+        guard  let url = URL(string: "\(GET_TOKEN_BASE_URL)\(tokenID)") else {return}
         URLSession.shared.dataTask(with: url) { data, response, error in
             do {
                 guard let responseData = data else{return}

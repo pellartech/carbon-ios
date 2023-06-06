@@ -755,6 +755,9 @@ class AddCustomTokenViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.tokenNetworkValueLabel.text = self.tokenInfo?.asset_platform_id
                         self.tableView.reloadData()
+                        UIView.animate(withDuration: 0.3) {
+                            self.scrollView.scrollsToTop = true
+                        }
                     }
                 }
             case .failure(let error):
@@ -791,6 +794,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
             cell.setUI(token: tokens[indexPath.row])
             cell.selectionStyle = .none
+            cell.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
             if (self.selectedIndexes == indexPath) {
                 cell.accessoryType = .checkmark
             }
