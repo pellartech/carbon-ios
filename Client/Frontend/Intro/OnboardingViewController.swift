@@ -646,3 +646,21 @@ extension UIView{
         self.layer.insertSublayer(gradientLayer, at:0)
     }
 }
+
+extension UIView {
+    func addGradient(with layer: CAGradientLayer, gradientFrame: CGRect? = nil, colorSet: [UIColor],
+                     locations: [Double], startEndPoints: (CGPoint, CGPoint)? = nil) {
+        layer.frame = gradientFrame ?? self.bounds
+        layer.frame.origin = .zero
+
+        let layerColorSet = colorSet.map { $0.cgColor }
+        let layerLocations = locations.map { $0 as NSNumber }
+
+        layer.colors = layerColorSet
+        layer.locations = layerLocations
+
+        layer.startPoint = CGPointMake(0.0, 0.7);
+        layer.endPoint = CGPointMake(1.0, 0.7);
+        self.layer.insertSublayer(layer, above: self.layer)
+    }
+}

@@ -237,8 +237,6 @@ class AddCustomTokenViewController: UIViewController {
         view.layer.cornerRadius = UX.NetworkView.corner
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
-        view.addGestureRecognizer(tapRecognizer)
         return view
     }()
     private lazy var detailsView: UIView = {
@@ -363,7 +361,7 @@ class AddCustomTokenViewController: UIViewController {
         label.text = "Token Network"
         label.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
-        view.addGestureRecognizer(tapRecognizer)
+        label.addGestureRecognizer(tapRecognizer)
         return label
     }()
     private lazy var tokenNetworkValueLabel : UILabel = {
@@ -373,11 +371,11 @@ class AddCustomTokenViewController: UIViewController {
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 3
-        label.text = "BCD80"
+        label.text = "-"
         label.adjustsFontSizeToFitWidth = true
         label.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
-        view.addGestureRecognizer(tapRecognizer)
+        label.addGestureRecognizer(tapRecognizer)
         return label
     }()
     
@@ -460,7 +458,7 @@ class AddCustomTokenViewController: UIViewController {
     var themeManager :  ThemeManager?
     var tokens = [TokenList]()
     var tokenInfo : TokenInfo?
-    var selectedIndexes = IndexPath.init(row: 0, section: 0)
+    var selectedIndexes = IndexPath()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -713,7 +711,7 @@ class AddCustomTokenViewController: UIViewController {
         initiateDrawerVC()
     }
     
-    @objc private func networkViewTapped() {
+    @objc func networkViewTapped() {
         initiateChangeNetworkVC()
     }
     
@@ -734,8 +732,10 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     func initiateChangeNetworkVC(){
-        let changeNetworkViewController = ChangeNetworkViewController()
-        self.present(changeNetworkViewController, animated: true)
+        let changeNetworkVC = ChangeNetworkViewController()
+        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.tokenInfo = self.tokenInfo
+        self.present(changeNetworkVC, animated: true)
     }
     
     func showToast(message: String){
@@ -752,6 +752,7 @@ class AddCustomTokenViewController: UIViewController {
                 self.tokenInfo = token
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
+                        self.tokenNetworkValueLabel.text = self.tokenInfo?.asset_platform_id
                         self.tableView.reloadData()
                     }
                 }

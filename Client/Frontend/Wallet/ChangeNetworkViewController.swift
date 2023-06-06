@@ -50,7 +50,8 @@ class ChangeNetworkViewController: UIViewController {
             static let heightBg: CGFloat = 120
         }
         struct ContentView {
-            static let heightBackGround: CGFloat = 200
+            static let top: CGFloat = 0
+            static let heightBackGround: CGFloat = 100
         }
         struct SearchView {
             static let height: CGFloat = 50
@@ -314,7 +315,7 @@ class ChangeNetworkViewController: UIViewController {
     var tokenInfo : TokenInfo?
     var selectedIndexes = IndexPath.init(row: 0, section: 0)
     var delegate :  ChangeNetwork?
-
+    
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -367,7 +368,7 @@ class ChangeNetworkViewController: UIViewController {
             logoBackgroundView.heightAnchor.constraint(equalToConstant: UX.LogoView.heightBg),
             
             ///Content view
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.topAnchor.constraint(equalTo: logoBackgroundView.bottomAnchor,constant: UX.ContentView.top),
             contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
             contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
@@ -419,13 +420,13 @@ class ChangeNetworkViewController: UIViewController {
             addTokenTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
             ///UserTokenView TableView
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -UX.TableView.common),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
-        
+    
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -493,11 +494,10 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 54
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
         self.selectedIndexes = indexPath
         tableView.reloadData()
         delegate?.changeNetworkDelegate()
@@ -526,10 +526,9 @@ class NetworkTVCell: UITableViewCell {
         struct Icon {
             static let font: CGFloat = 10
             static let top: CGFloat = 12
-            static let leading: CGFloat = 10
-            static let height: CGFloat = 53
-            static let width: CGFloat = 53
-            static let corner: CGFloat = 15
+            static let leading: CGFloat = 20
+            static let height: CGFloat = 25
+            static let width: CGFloat = 25
             
         }
         struct Title {
@@ -540,14 +539,16 @@ class NetworkTVCell: UITableViewCell {
         }
         struct GradientView {
             static let corner: CGFloat = 10
+            static let common: CGFloat = 10
+
         }
     }
     ///UIView
-     lazy var iconView: UIView = {
+    lazy var iconView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = UX.Icon.corner
         view.clipsToBounds = true
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -580,37 +581,37 @@ class NetworkTVCell: UITableViewCell {
     }()
     var delegate : AddTokenDelegate?
     var tokenAddress = String()
-    
+
     //    private var wallpaperManager =  WallpaperManager()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         iconView.addSubview(iconImageView)
-        contentView.addSubview(iconView)
         contentView.addSubview(gradientView)
+        contentView.addSubview(iconView)
         contentView.addSubview(titleLabel)
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         NSLayoutConstraint.activate([
             //Gradient view
             gradientView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            gradientView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            gradientView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.GradientView.common),
+            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.GradientView.common),
             gradientView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             ///UILabel
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Title.top),
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
             titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
             ///UIView
             iconView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            iconView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Icon.leading),
+            iconView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant:-UX.Icon.leading),
             iconView.widthAnchor.constraint(equalToConstant: UX.Icon.width),
             iconView.heightAnchor.constraint(equalToConstant: UX.Icon.height),
             
             ///UIImageView
             iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            iconImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Icon.leading),
+            iconImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.Icon.leading),
             iconImageView.widthAnchor.constraint(equalToConstant: UX.Icon.width),
             iconImageView.heightAnchor.constraint(equalToConstant: UX.Icon.height),
         ]
