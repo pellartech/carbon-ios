@@ -101,6 +101,7 @@ struct TokenList : Decodable{
     var id : String
     var name : String
     var symbol : String
+    var isSelected = false
 }
 
 struct TokenInfo : Decodable{

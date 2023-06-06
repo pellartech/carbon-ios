@@ -372,7 +372,7 @@ class AddCustomTokenViewController: UIViewController {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-
+    
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -452,8 +452,8 @@ class AddCustomTokenViewController: UIViewController {
     var themeManager :  ThemeManager?
     var tokens = [TokenList]()
     var tokenInfo : TokenInfo?
-    var selectedIndexes = [IndexPath.init(row: 0, section: 0)]
-
+    var selectedIndexes = IndexPath.init(row: 0, section: 0)
+    
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -772,7 +772,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
             cell.setUI(token: tokens[indexPath.row])
             cell.selectionStyle = .none
-            if (self.selectedIndexes.contains(indexPath)){
+            if tokens[indexPath.row].isSelected{
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -791,13 +791,8 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == self.tokensTableView){
-            let cell = tableView.cellForRow(at: indexPath)
-            if !self.selectedIndexes.contains(indexPath) {
-                cell?.accessoryType = .checkmark
-                self.selectedIndexes.removeAll()
-                self.selectedIndexes.append(indexPath)
-                self.fetchTokenInfo(token: tokens[indexPath.row])
-            }
+            tokens[indexPath.row].isSelected = true
+            self.fetchTokenInfo(token: tokens[indexPath.row])
         }
     }
 }
@@ -1012,10 +1007,8 @@ class CustomTokensTVCell: UITableViewCell {
             
             symbolLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,constant: UX.Value.topAt),
             symbolLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Value.leading),
-            
         ]
-                                    
-        )
+)
     }
     
     required init?(coder aDecoder: NSCoder) {
