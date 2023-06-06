@@ -1211,6 +1211,7 @@
 		F99BEAA32A138F16003F49B2 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99BEAA22A138F16003F49B2 /* SDWebImage.framework */; };
 		F9AB00392A26571000775628 /* AddTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AB00382A26571000775628 /* AddTokenViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
+		F9FC4C932A2EEC03000FA4C8 /* ChangeNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */; };
 		F9FE70242A28F3270006A379 /* AddCustomTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5083,6 +5084,7 @@
 		F9CC376029C217CB00165415 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		F9F7412B87BA08E6FB185446 /* uz */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uz; path = uz.lproj/ErrorPages.strings; sourceTree = "<group>"; };
 		F9F94CED8452BC964CABDEE2 /* sk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sk; path = sk.lproj/3DTouchActions.strings; sourceTree = "<group>"; };
+		F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNetworkViewController.swift; sourceTree = "<group>"; };
 		F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTokenViewController.swift; sourceTree = "<group>"; };
 		FA6B2AC11D41F02D00429414 /* String+Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Punycode.swift"; sourceTree = "<group>"; };
 		FA9293D31D6580E100AC8D33 /* QRCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
@@ -8126,6 +8128,7 @@
 				F91441C32A1CA320008BE25A /* AddWalletViewController.swift */,
 				F9AB00382A26571000775628 /* AddTokenViewController.swift */,
 				F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */,
+				F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -10348,6 +10351,7 @@
 				96EB6C4027DBEE9800A9D159 /* SearchGroupedItemsViewController.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,
 				E1442FD5294782D9003680B0 /* UIView+SnapKit.swift in Sources */,
+				F9FC4C932A2EEC03000FA4C8 /* ChangeNetworkViewController.swift in Sources */,
 				2816F0001B33E05400522243 /* UIConstants.swift in Sources */,
 				21E78A7228F9A93100F8D687 /* UIDeviceInterface.swift in Sources */,
 				EBB89508219398E500EB91A0 /* ContentBlocker+Safelist.swift in Sources */,

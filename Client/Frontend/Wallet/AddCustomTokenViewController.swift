@@ -237,6 +237,8 @@ class AddCustomTokenViewController: UIViewController {
         view.layer.cornerRadius = UX.NetworkView.corner
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
+        view.addGestureRecognizer(tapRecognizer)
         return view
     }()
     private lazy var detailsView: UIView = {
@@ -359,6 +361,9 @@ class AddCustomTokenViewController: UIViewController {
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Token Network"
+        label.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
+        view.addGestureRecognizer(tapRecognizer)
         return label
     }()
     private lazy var tokenNetworkValueLabel : UILabel = {
@@ -370,6 +375,9 @@ class AddCustomTokenViewController: UIViewController {
         label.numberOfLines = 3
         label.text = "BCD80"
         label.adjustsFontSizeToFitWidth = true
+        label.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
+        view.addGestureRecognizer(tapRecognizer)
         return label
     }()
     
@@ -705,6 +713,10 @@ class AddCustomTokenViewController: UIViewController {
         initiateDrawerVC()
     }
     
+    @objc private func networkViewTapped() {
+        initiateChangeNetworkVC()
+    }
+    
     @objc func infoIconTapped (){
         showToast(message: "Coming soon...")
     }
@@ -719,6 +731,11 @@ class AddCustomTokenViewController: UIViewController {
         let drawerController = DrawerMenuViewController()
         drawerController.delegate = self
         self.present(drawerController, animated: true)
+    }
+    
+    func initiateChangeNetworkVC(){
+        let changeNetworkViewController = ChangeNetworkViewController()
+        self.present(changeNetworkViewController, animated: true)
     }
     
     func showToast(message: String){
@@ -772,11 +789,13 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
             cell.setUI(token: tokens[indexPath.row])
             cell.selectionStyle = .none
-            if tokens[indexPath.row].isSelected{
+            if (self.selectedIndexes == indexPath) {
                 cell.accessoryType = .checkmark
-            }else{
+            }
+            else {
                 cell.accessoryType = .none
             }
+            
             return cell
         }else{
             let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
@@ -791,7 +810,10 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == self.tokensTableView){
-            tokens[indexPath.row].isSelected = true
+            let cell = tableView.cellForRow(at: indexPath)
+            cell?.accessoryType = .checkmark
+            self.selectedIndexes = indexPath
+            tableView.reloadData()
             self.fetchTokenInfo(token: tokens[indexPath.row])
         }
     }
@@ -1008,7 +1030,7 @@ class CustomTokensTVCell: UITableViewCell {
             symbolLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,constant: UX.Value.topAt),
             symbolLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Value.leading),
         ]
-)
+        )
     }
     
     required init?(coder aDecoder: NSCoder) {
