@@ -457,9 +457,10 @@ class AddCustomTokenViewController: UIViewController {
     var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokens = [TokenList]()
+    var tokens = [TokensData]()
     var tokenInfo : TokenInfo?
     var selectedIndexes = IndexPath()
+    private var coreDataManager =  CoreDataManager.shared
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -467,7 +468,7 @@ class AddCustomTokenViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
-        fetchTokens()
+        checkCoreDataValue()
         
     }
     
@@ -668,19 +669,31 @@ class AddCustomTokenViewController: UIViewController {
             tokensTableView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
         ])
     }
+    func checkCoreDataValue() {
+        SVProgressHUD.show()
+        self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        if(self.tokens.count == 0){
+            self.fetchTokens()
+        }else{
+            SVProgressHUD.dismiss()
+            self.tokensTableView.reloadData()
+        }
+    }
     
     func fetchTokens() {
-        SVProgressHUD.show()
         WalletViewModel.shared.getTokenList{result in
             switch result {
             case .success(let tokensList):
                 SVProgressHUD.dismiss()
                 self.tokens = tokensList
+                self.coreDataManager.saveDataToCoreData(tokensData: tokensList)
+                self.tokens = self.coreDataManager.fetchDataFromCoreData()
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
                         self.tokensTableView.reloadData()
                     }
                 }
+           
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
@@ -744,9 +757,9 @@ class AddCustomTokenViewController: UIViewController {
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
     }
-    func fetchTokenInfo(token : TokenList){
+    func fetchTokenInfo(token : TokensData){
         SVProgressHUD.show()
-        WalletViewModel.shared.getTokenDetails(tokenID: token.id) {result in
+        WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
             switch result {
             case .success(let token):
                 SVProgressHUD.dismiss()
@@ -1052,7 +1065,7 @@ class CustomTokensTVCell: UITableViewCell {
             print("UISwitch state is now Off")
         }
     }
-    func setUI(token : TokenList){
+    func setUI(token : TokensData){
         titleLabel.text = token.name
         symbolLabel.text = token.symbol
     }

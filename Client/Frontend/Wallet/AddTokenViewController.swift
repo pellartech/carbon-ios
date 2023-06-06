@@ -18,7 +18,7 @@ import SDWebImage
 import Common
 import Shared
 
-var tokens: [Tokens] = []
+var tokens: [Token] = []
 var userTokens  = [TokenModel]()
 
 protocol AddTokenDelegate{
@@ -334,8 +334,8 @@ class AddTokenViewController: UIViewController {
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var isFiltered = false
-    var searchResult = [Tokens]()
-    var searchText = [Tokens]()
+    var searchResult = [Token]()
+    var searchText = [Token]()
 
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -801,7 +801,7 @@ class AddTokensTVCell: UITableViewCell {
            }
        }
     
-    func setUI(token : Tokens){
+    func setUI(token : Token){
         self.tokenAddress = token.address ?? ""
         titleLabel.text = "\(token.name!) (\(token.symbol!))"
         symbolLabel.text = token.symbol ?? ""

@@ -80,7 +80,7 @@ struct ConnectWalletModel: Codable, Equatable, DefaultsSerializable {
         
     }
 }
-class Tokens {
+class Token {
     var id: String?
     var name: String?
     var address: String?

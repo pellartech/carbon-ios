@@ -93,13 +93,13 @@ public class WalletViewModel {
     
     /// This method will get the list of tokens from Coingecko server
     /// This is public API
-    func getTokenList(completed : @escaping (Result<[TokenList], Error>) -> Void) {
+    func getTokenList(completed : @escaping (Result<[TokensData], Error>) -> Void) {
         guard let url = URL(string: "\(GET_TOKEN_BASE_URL)list") else {return}
         URLSession.shared.dataTask(with: url) { data, response, error in
             do {
                 guard let responseData = data else{return}
                 let decoder = JSONDecoder()
-                let result = try decoder.decode([TokenList].self,from:responseData)
+                let result = try decoder.decode([TokensData].self,from:responseData)
                 completed(.success(result))
             } catch {
                 completed(.failure(error))
