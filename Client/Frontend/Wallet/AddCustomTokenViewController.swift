@@ -416,6 +416,7 @@ class AddCustomTokenViewController: UIViewController {
         tableView.allowsSelection = false
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
+        tableView.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
         tableView.register(TokenDetailsTVCell.self, forCellReuseIdentifier:"TokenDetailsTVCell")
         return tableView
     }()

@@ -68,7 +68,7 @@ class ChangeNetworkViewController: UIViewController {
             static let height: CGFloat = 54
             static let top: CGFloat = 30
             static let netWorkTop: CGFloat = 15
-            static let leading: CGFloat = 10
+            static let leading: CGFloat = 20
             static let corner: CGFloat = 10
             static let font: CGFloat = 15
         }
@@ -81,17 +81,6 @@ class ChangeNetworkViewController: UIViewController {
             static let common: CGFloat = 10
             static let top: CGFloat = 40
             static let height: CGFloat = 155
-        }
-        struct WelcomeLabel {
-            static let topValueCarbon: CGFloat = 25
-            static let widthWelcome: CGFloat = 250
-            static let heightWelcome: CGFloat = 20
-            static let heightGetStarted: CGFloat = 300
-            static let font: CGFloat = 13
-            static let descrpFont: CGFloat = 16
-            static let descrpHeight: CGFloat = 200
-            static let common: CGFloat = 20
-            static let topValue: CGFloat = 75
         }
         struct LogoImageView {
             static let height: CGFloat = 32
@@ -115,31 +104,9 @@ class ChangeNetworkViewController: UIViewController {
             static let width: CGFloat = 20
             static let height: CGFloat = 20
         }
-        struct StartButtonView {
-            static let bottom: CGFloat = 100
-            static let width: CGFloat = 150
-            static let height: CGFloat = 50
-            static let corner: CGFloat = 25
-        }
         struct ButtonView {
-            static let top: CGFloat = -30
-            static let centerX: CGFloat = 8
-            static let height: CGFloat = 50
-            static let width: CGFloat = 163
             static let font: CGFloat = 14
             static let corner: CGFloat = 10
-            static let leading: CGFloat = 20
-            static let addTop: CGFloat = 20
-            static let seeAllheight: CGFloat = 24
-            static let seeAllwidth: CGFloat = 100
-            static let seeTop: CGFloat = -15
-            static let seeCorner: CGFloat = 12
-            static let seeFont: CGFloat = 10
-        }
-        struct TokenLabel{
-            static let leading: CGFloat = 20
-            static let topValue: CGFloat = 10
-            static let font: CGFloat = 13
         }
         struct TableView{
             static let common: CGFloat = 15
