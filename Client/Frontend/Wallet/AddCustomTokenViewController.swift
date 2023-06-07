@@ -755,6 +755,7 @@ class AddCustomTokenViewController: UIViewController {
             switch result {
             case .success(let token):
                 SVProgressHUD.dismiss()
+                self.platforms = []
                 self.tokenInfo = token
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
@@ -780,6 +781,8 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
         var searchText  = textField.text! + string
         if searchText.count >= 3 {
+            self.searchTokenList = []
+            self.tokensTableView.reloadData()
             searchText = String(searchText.dropLast(range.length))
             for each in  self.tokens{
                 if (each.name?.hasPrefix(searchText) ?? false){
@@ -864,7 +867,6 @@ extension AddCustomTokenViewController: AddTokenDelegate{
 }
 extension AddCustomTokenViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
-        var dtlPlatforms = [String  : DetailsPlatforms]()
         guard let detailPlatforms = self.tokenInfo?.detail_platforms else {return}
         for (platform, value) in detailPlatforms {
             if (platform == platforms.name){
