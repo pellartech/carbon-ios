@@ -19,7 +19,6 @@ import Common
 import Shared
 
 var tokens: [Token] = []
-var userTokens  = [TokenModel]()
 
 protocol AddTokenDelegate{
     func initiateAddToken()
@@ -522,25 +521,6 @@ class AddTokenViewController: UIViewController {
             }
         }
     }
-    func addToken(tokens : [String]){
-        SVProgressHUD.show()
-        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
-            switch result {
-            case .success(let tokens):
-                SVProgressHUD.dismiss()
-                userTokens = tokens
-                if (tokens.count > 0){
-                    self.showToast(message: "Added")
-                }else{
-                    self.showToast(message: "Something went wrong! Please try again")
-                }
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-                self.showToast(message: "Error occurred! Please try again after sometimes")
-            }
-        }
-    }
         
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
@@ -615,7 +595,6 @@ extension AddTokenViewController : UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "AddTokensTVCell", for: indexPath) as! AddTokensTVCell
         cell.setUI(token: tokens[indexPath.row])
         cell.selectionStyle = .none
-        cell.delegate = self
         cell.switchButton.tag = indexPath.row
         return cell
     }
@@ -632,17 +611,6 @@ extension AddTokenViewController : ConnectProtocol{
     }
     func logout() {
         self.dismiss(animated: true)
-    }
-}
-
-extension AddTokenViewController: AddTokenDelegate{
-    func initiateAddToken() {
-        var selectedToken = [String]()
-        let tokensArray = tokens.filter{$0.isAdded == true}
-        for eachToken in tokensArray{
-            selectedToken.append(eachToken.address ?? "")
-        }
-        self.addToken(tokens: selectedToken)
     }
 }
 

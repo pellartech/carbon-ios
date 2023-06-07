@@ -448,14 +448,14 @@ class AddCustomTokenViewController: UIViewController {
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var tokens = [TokensData]()
-    var tokenInfo : TokenInfo?
+    var tokenInfo : TokensInfo?
     var selectedIndexes = IndexPath()
     private var coreDataManager =  CoreDataManager.shared
     var searchTokenList = [TokensData]()
     var platforms = [Platforms]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
-    
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -663,6 +663,7 @@ class AddCustomTokenViewController: UIViewController {
     func checkCoreDataValue() {
         SVProgressHUD.show()
         self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        self.tokens = self.tokens.filter{$0.isUserToken == false}
         if(self.tokens.count == 0){
             self.fetchTokens()
         }else{
@@ -699,6 +700,11 @@ class AddCustomTokenViewController: UIViewController {
             switch result {
             case .success(let result):
                 print(result)
+                guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
+                self.tokens[index].isUserToken = true
+                self.tokens[index].address = self.tokenInfo?.contract_address
+                self.tokens[index].imageUrl = self.tokenInfo?.image?.thumb
+                self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
                 SVProgressHUD.dismiss()
                 self.dismissVC()
             case .failure(let error):
@@ -727,11 +733,6 @@ class AddCustomTokenViewController: UIViewController {
     }
     @objc func addTokenBtnTapped (){
         SVProgressHUD.show()
-        guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
-        self.tokens[index].isUserToken = true
-        self.tokens[index].address = self.tokenInfo?.contract_address
-        self.tokens[index].imageUrl = self.tokenInfo?.image?.thumb
-        self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
         let contractAddress = self.tokenInfo?.contract_address ?? ""
         self.addToken(tokens: [contractAddress])
     }
@@ -985,7 +986,7 @@ class TokenDetailsTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUI(token : TokenInfo?,index: Int){
+    func setUI(token : TokensInfo?,index: Int){
         switch index{
         case 0:
             self.titleLabel.text = "Address:"

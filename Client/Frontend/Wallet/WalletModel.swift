@@ -103,7 +103,7 @@ struct TokenList : Decodable{
     var symbol : String
 }
 
-struct TokenInfo : Decodable{
+struct TokensInfo : Decodable{
     var id : String?
     var name : String?
     var symbol : String?

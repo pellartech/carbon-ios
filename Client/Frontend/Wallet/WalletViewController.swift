@@ -419,7 +419,9 @@ class WalletViewController: UIViewController {
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
     var themeManager :  ThemeManager?
-    
+    private var coreDataManager =  CoreDataManager.shared
+    var tokens = [TokensData]()
+
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -688,11 +690,19 @@ class WalletViewController: UIViewController {
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
         publicAddress = address
-        self.fetchUserTokens()
+        self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        self.tokens = self.tokens.filter{$0.isUserToken == true}
+        var tokenAddress = [TokenModel]()
+        for eachToken in self.tokens{
+            let tokenInfo = TokenInfo(chainName: "", chainId: 0, mintAddress: "", symbol: eachToken.symbol ?? "", name:eachToken.name ?? "", decimals: 0, logoURI:eachToken.imageUrl ?? "")
+            let model = TokenModel(address: eachToken.address ?? "", chainName: "", chainId: 0, amount: 0, decimals: 0, tokenInfo: tokenInfo, mintAddress: "")
+            tokenAddress.append(model)
+        }
+        self.fetchUserTokens(tokens: tokenAddress)
     }
     
-    func fetchUserTokens(){
-        WalletViewModel.shared.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: userTokens) { result in
+    func fetchUserTokens(tokens: [TokenModel]){
+        WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
