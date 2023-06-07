@@ -461,7 +461,8 @@ class AddCustomTokenViewController: UIViewController {
     var tokenInfo : TokenInfo?
     var selectedIndexes = IndexPath()
     private var coreDataManager =  CoreDataManager.shared
-    
+    var searchTokenList = [TokensData]()
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -783,14 +784,18 @@ class AddCustomTokenViewController: UIViewController {
 extension AddCustomTokenViewController: UITextFieldDelegate{
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
-        let searchText  = textField.text! + string
+        var searchText  = textField.text! + string
         if searchText.count >= 3 {
-            tableView.isHidden = false
-            //            searchResult = tokens.filter({(($0.address!).localizedCaseInsensitiveContains(searchText))})
-            tableView.reloadData()
-        }
-        else{
-            //            searchResult = []
+            searchText = String(searchText.dropLast(range.length))
+            for each in  self.tokens{
+                if (each.name?.hasPrefix(searchText) ?? false){
+                    self.searchTokenList.append(each)
+                }
+            }
+            self.tokensTableView.reloadData()
+        }else{
+            self.searchTokenList = []
+            self.tokensTableView.reloadData()
         }
         return true
     }
@@ -799,13 +804,13 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  tableView == self.tokensTableView ? self.tokens.count : 3
+        return  tableView == self.tokensTableView  ? self.searchTokenList.count : 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (tableView == self.tokensTableView){
             let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
-            cell.setUI(token: tokens[indexPath.row])
+            cell.setUI(token: self.searchTokenList[indexPath.row])
             cell.selectionStyle = .none
             cell.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
             if (self.selectedIndexes == indexPath) {
@@ -833,7 +838,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
             cell?.accessoryType = .checkmark
             self.selectedIndexes = indexPath
             tableView.reloadData()
-            self.fetchTokenInfo(token: tokens[indexPath.row])
+            self.fetchTokenInfo(token: self.searchTokenList[indexPath.row])
         }
     }
 }
@@ -1066,6 +1071,7 @@ class CustomTokensTVCell: UITableViewCell {
         }
     }
     func setUI(token : TokensData){
+        print(token.name)
         titleLabel.text = token.name
         symbolLabel.text = token.symbol
     }
