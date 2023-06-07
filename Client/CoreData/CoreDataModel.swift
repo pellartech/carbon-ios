@@ -11,7 +11,10 @@ struct TokensData: Codable {
     var symbol: String?
     var created_time: Int64?
     var expiry_time : Int64?
-    
+    var isUserToken: Bool?
+    var address: String?
+    var imageUrl: String?
+
     // MARK: - Helper method: Convert managed objects to objects
     func toManagedObject(in context: NSManagedObjectContext) -> Tokens? {
         let entity = Tokens.entity()
@@ -19,6 +22,9 @@ struct TokensData: Codable {
         tokens.id = id
         tokens.name = name
         tokens.symbol = symbol
+        tokens.address = address
+        tokens.imageUrl = imageUrl
+        tokens.isUserToken = isUserToken ?? false
         tokens.created_time = created_time ?? 0
         tokens.expiry_time = expiry_time ?? 0
         return tokens

@@ -48,7 +48,7 @@ class CoreDataManager {
     
     //MARK: - Helper Method: convert coredate properties to model objects
     func toModel(tokens: Tokens) -> TokensData {
-        return TokensData(id: tokens.id, name: tokens.name, symbol: tokens.symbol, created_time: tokens.created_time, expiry_time: tokens.expiry_time)
+        return TokensData(id: tokens.id, name: tokens.name, symbol: tokens.symbol, created_time: tokens.created_time, expiry_time: tokens.expiry_time,isUserToken: tokens.isUserToken, address: tokens.address,imageUrl: tokens.imageUrl)
     }
     
     //MARK: - Method: save all changes into core data

@@ -542,7 +542,7 @@ class AddCustomTokenViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
             contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 100),
             contentView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
-
+            
             ///User Token List View
             detailsView.topAnchor.constraint(equalTo: networkView.bottomAnchor ,constant: UX.DetailsView.top),
             detailsView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.DetailsView.common),
@@ -649,7 +649,7 @@ class AddCustomTokenViewController: UIViewController {
             addTokenBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
             addTokenBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             addTokenBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
-
+            
             ///Add token button
             addTokenButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant: UX.ButtonView.addTop),
             addTokenButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
@@ -658,7 +658,7 @@ class AddCustomTokenViewController: UIViewController {
             addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
         ])
         heightForTokenViewNoToken.isActive = true
-
+        
     }
     func checkCoreDataValue() {
         SVProgressHUD.show()
@@ -684,7 +684,7 @@ class AddCustomTokenViewController: UIViewController {
                         self.tokensTableView.reloadData()
                     }
                 }
-           
+                
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
@@ -695,14 +695,16 @@ class AddCustomTokenViewController: UIViewController {
     
     // MARK: - View Model Methods - Network actions
     func addToken(tokens : [String]){
-        SVProgressHUD.show()
         WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
             switch result {
-            case .success(_):
+            case .success(let result):
+                print(result)
                 SVProgressHUD.dismiss()
+                self.dismissVC()
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
+                self.showToast(message: error.localizedDescription)
             }
         }
     }
@@ -724,7 +726,14 @@ class AddCustomTokenViewController: UIViewController {
         showToast(message: "Coming soon...")
     }
     @objc func addTokenBtnTapped (){
-        showToast(message: "Coming soon...")
+        SVProgressHUD.show()
+        guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
+        self.tokens[index].isUserToken = true
+        self.tokens[index].address = self.tokenInfo?.contract_address
+        self.tokens[index].imageUrl = self.tokenInfo?.image?.thumb
+        self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
+        let contractAddress = self.tokenInfo?.contract_address ?? ""
+        self.addToken(tokens: [contractAddress])
     }
     
     
