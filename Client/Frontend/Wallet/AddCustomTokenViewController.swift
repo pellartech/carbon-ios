@@ -703,7 +703,7 @@ class AddCustomTokenViewController: UIViewController {
                 guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
                 self.tokens[index].isUserToken = true
                 self.tokens[index].address = self.tokenInfo?.contract_address
-                self.tokens[index].imageUrl = self.tokenInfo?.image?.thumb
+                self.tokens[index].imageUrl = self.tokenInfo?.image?.large
                 self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
                 SVProgressHUD.dismiss()
                 self.dismissVC()
