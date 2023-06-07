@@ -19,7 +19,7 @@ import Common
 import Shared
 
 protocol ChangeNetwork {
-    func changeNetworkDelegate()
+    func changeNetworkDelegate(platforms: Platforms)
 }
 
 class ChangeNetworkViewController: UIViewController {
@@ -267,7 +267,7 @@ class ChangeNetworkViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .singleLine
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.register(NetworkTVCell.self, forCellReuseIdentifier:"NetworkTVCell")
@@ -279,9 +279,9 @@ class ChangeNetworkViewController: UIViewController {
     var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokenInfo : TokenInfo?
     var selectedIndexes = IndexPath.init(row: 0, section: 0)
     var delegate :  ChangeNetwork?
+    var platforms = [Platforms]()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -425,37 +425,24 @@ class ChangeNetworkViewController: UIViewController {
                                         theme: themeManager!.currentTheme)
     }
 }
-extension ChangeNetworkViewController: UITextFieldDelegate{
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
-        let searchText  = textField.text! + string
-        if searchText.count >= 3 {
-            tableView.isHidden = false
-            //            searchResult = tokens.filter({(($0.address!).localizedCaseInsensitiveContains(searchText))})
-            tableView.reloadData()
-        }
-        else{
-            //            searchResult = []
-        }
-        return true
-    }
-}
 
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  1
+        return  self.platforms.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NetworkTVCell", for: indexPath) as! NetworkTVCell
-        cell.setUI(token: self.tokenInfo)
+        cell.setUI(platforms:self.platforms[indexPath.row])
         cell.selectionStyle = .none
         if (self.selectedIndexes == indexPath) {
             cell.iconView.isHidden = false
+            cell.gradientView.isHidden = false
         }
         else {
             cell.iconView.isHidden = true
+            cell.gradientView.isHidden = true
         }
         return cell
     }
@@ -467,7 +454,7 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexes = indexPath
         tableView.reloadData()
-        delegate?.changeNetworkDelegate()
+        self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
     }
 }
 
@@ -529,7 +516,7 @@ class NetworkTVCell: UITableViewCell {
         return label
     }()
     
-    private lazy var gradientView : GradientView = {
+    lazy var gradientView : GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
         view.layer.cornerRadius = UX.GradientView.corner
@@ -598,7 +585,7 @@ class NetworkTVCell: UITableViewCell {
             print("UISwitch state is now Off")
         }
     }
-    func setUI(token : TokenInfo?){
-        titleLabel.text = token?.asset_platform_id ?? ""
+    func setUI(platforms : Platforms){
+        titleLabel.text = platforms.name
     }
 }

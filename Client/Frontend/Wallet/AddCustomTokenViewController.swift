@@ -237,6 +237,8 @@ class AddCustomTokenViewController: UIViewController {
         view.layer.cornerRadius = UX.NetworkView.corner
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
+        view.addGestureRecognizer(tapRecognizer)
         return view
     }()
     private lazy var detailsView: UIView = {
@@ -462,6 +464,7 @@ class AddCustomTokenViewController: UIViewController {
     var selectedIndexes = IndexPath()
     private var coreDataManager =  CoreDataManager.shared
     var searchTokenList = [TokensData]()
+    var platforms = [Platforms]()
 
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -749,7 +752,8 @@ class AddCustomTokenViewController: UIViewController {
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
-        changeNetworkVC.tokenInfo = self.tokenInfo
+        changeNetworkVC.platforms = self.platforms
+        changeNetworkVC.delegate = self
         self.present(changeNetworkVC, animated: true)
     }
     
@@ -767,7 +771,10 @@ class AddCustomTokenViewController: UIViewController {
                 self.tokenInfo = token
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
-                        self.tokenNetworkValueLabel.text = self.tokenInfo?.asset_platform_id
+                        for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
+                            self.platforms.append(Platforms(name: key, address: value))
+                        }
+                        self.tokenNetworkValueLabel.text = self.platforms.first?.name
                         self.tableView.reloadData()
                         UIView.animate(withDuration: 0.3) {
                             self.scrollView.scrollsToTop = true
@@ -858,7 +865,20 @@ extension AddCustomTokenViewController: AddTokenDelegate{
         
     }
 }
-
+extension AddCustomTokenViewController :  ChangeNetwork{
+    func changeNetworkDelegate(platforms: Platforms) {
+        var dtlPlatforms = [String  : DetailsPlatforms]()
+        guard let detailPlatforms = self.tokenInfo?.detail_platforms else {return}
+        for (platform, value) in detailPlatforms {
+            if (platform == platforms.name){
+                self.tokenNetworkValueLabel.text = platform
+                self.tokenInfo?.contract_address = value.contract_address
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+}
 
 class TokenDetailsTVCell: UITableViewCell {
     
@@ -1071,7 +1091,6 @@ class CustomTokensTVCell: UITableViewCell {
         }
     }
     func setUI(token : TokensData){
-        print(token.name)
         titleLabel.text = token.name
         symbolLabel.text = token.symbol
     }
