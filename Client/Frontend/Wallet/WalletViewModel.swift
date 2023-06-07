@@ -20,6 +20,10 @@ import ConnectSolanaAdapter
 import ConnectWalletConnectAdapter
 
 let GET_TOKEN_BASE_URL = "https://api.coingecko.com/api/v3/coins/"
+let IF_NONE_MATCH : String = "If-None-Match"
+let ETAG : String  = "Etag"
+let CODE = 200
+
 enum TokenError:Error{
     case NoDataAvailable
     case CanNotProcessData
@@ -90,17 +94,39 @@ public class WalletViewModel {
             }
         }.disposed(by: bag)
     }
-    
+
+
     /// This method will get the list of tokens from Coingecko server
     /// This is public API
     func getTokenList(completed : @escaping (Result<[TokensData], Error>) -> Void) {
-        guard let url = URL(string: "\(GET_TOKEN_BASE_URL)list") else {return}
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        var urlString = "\(GET_TOKEN_BASE_URL)list"
+        guard let url = URL(string: urlString) else {return}
+        var request = URLRequest(url:url, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60);
+        if let etag = UserDefaults.standard.object(forKey: urlString) as? String{
+            request.addValue(etag, forHTTPHeaderField: IF_NONE_MATCH)
+        }
+        URLSession.shared.dataTask(with: request) { data, response, error in
             do {
-                guard let responseData = data else{return}
-                let decoder = JSONDecoder()
-                let result = try decoder.decode([TokensData].self,from:responseData)
-                completed(.success(result))
+                if (response != nil) {
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if let urlString = httpResponse.url?.absoluteString {
+                            if let etag = httpResponse.allHeaderFields[ETAG] as? String {
+                                UserDefaults.standard.set(etag, forKey: urlString)
+                                UserDefaults.standard.synchronize()
+                            }
+                        }
+                    }
+                    if let httpResponse = response as? HTTPURLResponse ,(httpResponse.statusCode == CODE && error == nil && data != nil) {
+                            let decoder = JSONDecoder()
+                            let result = try decoder.decode([TokensData].self,from:data!)
+                            completed(.success(result))
+                            return
+                    }else{
+                        completed(.failure(error!))
+                    }
+                }else{
+                    completed(.failure(error!))
+                }
             } catch {
                 completed(.failure(error))
             }
@@ -110,18 +136,20 @@ public class WalletViewModel {
     /// This method will get the token details from Coingecko server by passind token ID
     /// This is public API
     func getTokenDetails( tokenID:String, completed : @escaping (Result<TokenInfo, Error>) -> Void) {
-        guard  let url = URL(string: "\(GET_TOKEN_BASE_URL)\(tokenID)") else {return}
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            do {
-                guard let responseData = data else{return}
-                let decoder = JSONDecoder()
-                let result = try decoder.decode(TokenInfo.self,from:responseData)
-                completed(.success(result))
-            } catch {
-                completed(.failure(error))
-            }
-        }.resume()
-    }
+            var urlString = "\(GET_TOKEN_BASE_URL)\(tokenID)"
+            guard let url = URL(string: urlString) else {return}
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                do {
+                    guard let responseData = data else{return}
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(TokenInfo.self,from:responseData)
+                    completed(.success(result))
+                } catch {
+                    completed(.failure(error))
+                }
+            }.resume()
+        }
+        
     
     /// This method will add the pre defined tokens to the user account
     func addTokenToUserAccount(address:String,tokens:[String],completed : @escaping (Result<[TokenModel], Error>) -> Void) {

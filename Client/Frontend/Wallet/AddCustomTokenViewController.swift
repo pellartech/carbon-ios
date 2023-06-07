@@ -362,7 +362,6 @@ class AddCustomTokenViewController: UIViewController {
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 3
-        label.text = "-"
         label.adjustsFontSizeToFitWidth = true
         label.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
@@ -979,15 +978,15 @@ class TokenDetailsTVCell: UITableViewCell {
         switch index{
         case 0:
             self.titleLabel.text = "Address:"
-            self.valueGradiantLabel.text = token?.contract_address ?? "-"
+            self.valueGradiantLabel.text = token?.contract_address ?? ""
             self.valueLabel.text = ""
         case 1:
             self.titleLabel.text = "Token Name:"
-            self.valueLabel.text = token?.name ?? "-"
+            self.valueLabel.text = token?.name ?? ""
             self.valueGradiantLabel.text = ""
         default:
             self.titleLabel.text = "Notes:"
-            self.valueLabel.text = token?.description?.en ?? "-"
+            self.valueLabel.text = token?.description?.en ?? ""
             self.valueGradiantLabel.text = ""
         }
         
