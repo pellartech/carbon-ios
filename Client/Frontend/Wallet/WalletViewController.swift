@@ -681,7 +681,6 @@ class WalletViewController: UIViewController {
             //TODO: -Need to replace with account preference values
             let filterData = data.filter{$0.walletType == .particle}
             setUIAndFetchData(address: filterData.first?.publicAddress ?? "")
-        }else{
         }
     }
     
@@ -807,6 +806,7 @@ class WalletViewController: UIViewController {
     
     func initiateAddTokenVC(){
         let vc = AddCustomTokenViewController()
+        vc.delegate = self
         vc.publicAddress = publicAddress
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: false)
@@ -849,7 +849,6 @@ extension WalletViewController : UITableViewDelegate, UITableViewDataSource{
 extension WalletViewController : ConnectProtocol{
     func accountPublicAddress(address: String) {
         getLocalUserData()
-        setUIAndFetchData(address: address)
     }
     func logout() {
         self.dismiss(animated: true)

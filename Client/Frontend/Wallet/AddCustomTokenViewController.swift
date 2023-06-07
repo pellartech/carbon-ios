@@ -455,7 +455,8 @@ class AddCustomTokenViewController: UIViewController {
     var platforms = [Platforms]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
-
+    var delegate : ConnectProtocol?
+    
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -706,6 +707,7 @@ class AddCustomTokenViewController: UIViewController {
                 self.tokens[index].imageUrl = self.tokenInfo?.image?.large
                 self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
                 SVProgressHUD.dismiss()
+                self.delegate?.accountPublicAddress(address: "")
                 self.dismissVC()
             case .failure(let error):
                 SVProgressHUD.dismiss()
