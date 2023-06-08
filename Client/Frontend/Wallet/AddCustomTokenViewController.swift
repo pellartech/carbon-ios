@@ -34,6 +34,7 @@ class AddCustomTokenViewController: UIViewController {
             static let top: CGFloat = 30
             static let width: CGFloat = 300
             static let font1: CGFloat = 12
+            static let tokenFont: CGFloat = 11
             
         }
         struct LogoView {
@@ -140,6 +141,8 @@ class AddCustomTokenViewController: UIViewController {
             static let trailing: CGFloat = -10
             static let bottom: CGFloat = -30
             static let height: CGFloat = 120
+            static let tokenInfoTop: CGFloat = 10
+            
         }
         struct WalletLabel {
             static let font: CGFloat = 18
@@ -368,6 +371,14 @@ class AddCustomTokenViewController: UIViewController {
         label.addGestureRecognizer(tapRecognizer)
         return label
     }()
+    private lazy var tokenInfoLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.tokenFont)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     ///UIButton
     private lazy var closeButton : UIButton = {
@@ -455,6 +466,8 @@ class AddCustomTokenViewController: UIViewController {
     var platforms = [Platforms]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
+    var trailingForNoChevron =  NSLayoutConstraint()
+    var trailingForChevron =  NSLayoutConstraint()
     var delegate : ConnectProtocol?
     
     // MARK: - View Lifecycles
@@ -478,7 +491,8 @@ class AddCustomTokenViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
         heightForTokenViewNoToken = tokensTableView.heightAnchor.constraint(equalToConstant: 0)
         heightForTokenView = tokensTableView.heightAnchor.constraint(equalToConstant: 120)
-        
+        trailingForNoChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: 0)
+        trailingForChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -20)
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
@@ -491,6 +505,7 @@ class AddCustomTokenViewController: UIViewController {
         searchView.addSubview(searchTextField)
         contentView.addSubview(searchView)
         contentView.addSubview(tokensTableView)
+        contentView.addSubview(tokenInfoLabel)
         contentView.addSubview(detailsLabel)
         networkView.addSubview(tokenNetworktitleLabel)
         networkView.addSubview(tokenNetworkValueLabel)
@@ -508,6 +523,8 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     func setUpViewContraint(){
+        heightForTokenViewNoToken.isActive = true
+        trailingForNoChevron.isActive = true
         NSLayoutConstraint.activate([
             ///Scroll
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -580,6 +597,10 @@ class AddCustomTokenViewController: UIViewController {
             tokensTableView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.TableView.leading),
             tokensTableView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: UX.TableView.trailing),
             
+            ///Token info Label
+            tokenInfoLabel.topAnchor.constraint(equalTo: tokensTableView.bottomAnchor,constant: UX.TableView.tokenInfoTop),
+            tokenInfoLabel.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            
             ///Details Label
             detailsLabel.topAnchor.constraint(equalTo: tokensTableView.bottomAnchor,constant:  UX.NetworkView.top),
             detailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
@@ -634,7 +655,6 @@ class AddCustomTokenViewController: UIViewController {
             
             
             tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
-            tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor,constant: UX.Value.trailing),
             tokenNetworkValueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
             tokenNetworkValueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
             
@@ -658,9 +678,9 @@ class AddCustomTokenViewController: UIViewController {
             addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
         ])
-        heightForTokenViewNoToken.isActive = true
         
     }
+    // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
         SVProgressHUD.show()
         self.tokens = self.coreDataManager.fetchDataFromCoreData()
@@ -670,28 +690,6 @@ class AddCustomTokenViewController: UIViewController {
         }else{
             SVProgressHUD.dismiss()
             self.tokensTableView.reloadData()
-        }
-    }
-    
-    func fetchTokens() {
-        WalletViewModel.shared.getTokenList{result in
-            switch result {
-            case .success(let tokensList):
-                SVProgressHUD.dismiss()
-                self.tokens = tokensList
-                self.coreDataManager.saveDataToCoreData(tokensData: tokensList)
-                self.tokens = self.coreDataManager.fetchDataFromCoreData()
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.tokensTableView.reloadData()
-                    }
-                }
-                
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-                //                self.showToast(message: "Error occurred! Please try again after sometimes")
-            }
         }
     }
     
@@ -705,6 +703,8 @@ class AddCustomTokenViewController: UIViewController {
                 self.tokens[index].isUserToken = true
                 self.tokens[index].address = self.tokenInfo?.contract_address
                 self.tokens[index].imageUrl = self.tokenInfo?.image?.large
+                self.tokens[index].network = self.tokenInfo?.network
+                self.coreDataManager.clearDataFromCoreData()
                 self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
                 SVProgressHUD.dismiss()
                 self.delegate?.accountPublicAddress(address: "")
@@ -717,6 +717,69 @@ class AddCustomTokenViewController: UIViewController {
         }
     }
     
+    func fetchTokens() {
+        WalletViewModel.shared.getTokenList{result in
+            switch result {
+            case .success(let tokensList):
+                SVProgressHUD.dismiss()
+                self.tokens = tokensList
+                self.coreDataManager.clearDataFromCoreData()
+                self.coreDataManager.saveDataToCoreData(tokensData: tokensList)
+                self.tokens = self.coreDataManager.fetchDataFromCoreData()
+                DispatchQueue.global().async {
+                    DispatchQueue.main.async {
+                        self.tokensTableView.reloadData()
+                    }
+                }
+                
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+            }
+        }
+    }
+    func fetchTokenInfo(token : TokensData){
+        SVProgressHUD.show()
+        WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
+            switch result {
+            case .success(let token):
+                SVProgressHUD.dismiss()
+                self.platforms = []
+                self.tokenInfo = token
+                DispatchQueue.global().async {
+                    DispatchQueue.main.async {
+                        self.setUpData()
+                    }
+                }
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+            }
+        }
+    }
+    
+    func setUpData(){
+        for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
+            self.platforms.append(Platforms(name: key, address: value))
+        }
+        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.Solana.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
+        if (self.platforms.count > 1 ){
+            self.chevronImageView.isHidden = false
+            self.trailingForChevron.isActive = true
+            self.trailingForNoChevron.isActive = false
+        }else{
+            self.chevronImageView.isHidden = true
+            self.trailingForChevron.isActive = false
+            self.trailingForNoChevron.isActive = true
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+        self.tokenNetworkValueLabel.text = self.platforms.first?.name?.capitalized
+        self.tableView.reloadData()
+    }
+    
+    
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -727,7 +790,9 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     @objc func networkViewTapped() {
-        initiateChangeNetworkVC()
+        if self.platforms.count > 1{
+            initiateChangeNetworkVC()
+        }
     }
     
     @objc func infoIconTapped (){
@@ -761,62 +826,48 @@ class AddCustomTokenViewController: UIViewController {
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
     }
-    func fetchTokenInfo(token : TokensData){
-        SVProgressHUD.show()
-        WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
-            switch result {
-            case .success(let token):
-                SVProgressHUD.dismiss()
-                self.platforms = []
-                self.tokenInfo = token
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
-                            self.platforms.append(Platforms(name: key, address: value))
-                        }
-                        self.tokenNetworkValueLabel.text = self.platforms.first?.name
-                        self.tableView.reloadData()
-                        UIView.animate(withDuration: 0.3) {
-                            self.scrollView.scrollsToTop = true
-                        }
-                    }
-                }
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-            }
-        }
-    }
 }
+// MARK: - Extension - UITextFieldDelegate
 extension AddCustomTokenViewController: UITextFieldDelegate{
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
         var searchText  = textField.text! + string
         if searchText.count >= 3 {
-            self.searchTokenList = []
-            self.tokensTableView.reloadData()
+            emptyList()
             searchText = String(searchText.dropLast(range.length))
             for each in  self.tokens{
                 if (each.name?.hasPrefix(searchText) ?? false){
                     self.searchTokenList.append(each)
                 }
             }
-            heightForTokenViewNoToken.isActive = false
-            heightForTokenView.isActive = true
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-            }
+            self.tokenInfoLabel.text =  self.searchTokenList.count > 4 ? "\(self.searchTokenList.count) results. Scroll to see more" :  self.searchTokenList.count == 0 ? "0 result" :"\(self.searchTokenList.count) results"
+            self.expandTableView()
             self.tokensTableView.reloadData()
         }else{
-            heightForTokenView.isActive = false
-            heightForTokenViewNoToken.isActive = true
-            UIView.animate(withDuration: 0.3) {
-                self.view.layoutIfNeeded()
-            }
-            self.searchTokenList = []
-            self.tokensTableView.reloadData()
+            self.emptyList()
+            self.collapseTableView()
         }
         return true
+    }
+    
+    func emptyList(){
+        self.tokenInfoLabel.text = "0 result"
+        self.searchTokenList = []
+        self.tokensTableView.reloadData()
+    }
+    func expandTableView(){
+        heightForTokenViewNoToken.isActive = false
+        heightForTokenView.isActive = true
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    func collapseTableView(){
+        heightForTokenView.isActive = false
+        heightForTokenViewNoToken.isActive = true
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
@@ -871,19 +922,31 @@ extension AddCustomTokenViewController : ConnectProtocol{
         self.dismiss(animated: true)
     }
 }
-
+// MARK: - Extension - AddTokenDelegate
 extension AddCustomTokenViewController: AddTokenDelegate{
     func initiateAddToken() {
         
     }
 }
+// MARK: - Extension - ChangeNetwork
 extension AddCustomTokenViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
         guard let detailPlatforms = self.tokenInfo?.detail_platforms else {return}
         for (platform, value) in detailPlatforms {
             if (platform == platforms.name){
-                self.tokenNetworkValueLabel.text = platform
+                var chainInfo : Chain?
+                switch platform.uppercased(){
+                case WalletNetworkEnum.Solana.rawValue.uppercased():
+                    chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+                case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
+                    chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+                default:
+                    chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+                }
+                ParticleNetwork.setChainInfo(chainInfo!)
+                self.tokenNetworkValueLabel.text = platform.capitalized
                 self.tokenInfo?.contract_address = value.contract_address
+                self.tokenInfo?.network = platform
                 self.tableView.reloadData()
             }
         }
@@ -892,7 +955,7 @@ extension AddCustomTokenViewController :  ChangeNetwork{
 }
 
 class TokenDetailsTVCell: UITableViewCell {
-    
+    // MARK: - UI Constants
     private struct UX {
         struct Icon {
             static let font: CGFloat = 10
@@ -917,8 +980,7 @@ class TokenDetailsTVCell: UITableViewCell {
             static let trailing: CGFloat = -10
             static let height: CGFloat = 20
             static let width: CGFloat = 50
-            static let valueWidth: CGFloat = 150
-            static let valueHeight: CGFloat = 30
+            static let valueHeight: CGFloat = 60
         }
     }
     
@@ -937,7 +999,7 @@ class TokenDetailsTVCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 3
+        label.numberOfLines = 2
         label.lineBreakMode = .byTruncatingTail
         return label
     }()
@@ -947,22 +1009,18 @@ class TokenDetailsTVCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 3
+        label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
-    
-    //    private var wallpaperManager =  WallpaperManager()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(titleLabel)
         contentView.addSubview(valueLabel)
         contentView.addSubview(valueGradiantLabel)
-        
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        
         NSLayoutConstraint.activate([
             
             ///UILabel
@@ -972,12 +1030,12 @@ class TokenDetailsTVCell: UITableViewCell {
             
             valueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             valueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            valueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            valueLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width/2),
             valueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
             
             valueGradiantLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             valueGradiantLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            valueGradiantLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            valueGradiantLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width/2),
             valueGradiantLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
         ]
         )
@@ -1027,7 +1085,6 @@ class CustomTokensTVCell: UITableViewCell {
         return label
     }()
     
-    //    private var wallpaperManager =  WallpaperManager()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(titleLabel)
@@ -1045,17 +1102,8 @@ class CustomTokensTVCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    @objc func switchStateDidChange(_ sender:UISwitch!)
-    {
-        if (sender.isOn == true){
-            print("UISwitch state is now ON")
-        }
-        else{
-            print("UISwitch state is now Off")
-        }
-    }
+
     func setUI(token : TokensData){
-        titleLabel.text = "\(token.name ?? "") (\(token.symbol ?? ""))"
+        titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
     }
 }

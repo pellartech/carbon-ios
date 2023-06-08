@@ -18,10 +18,6 @@ import SDWebImage
 import Common
 import Shared
 
-protocol ChangeNetwork {
-    func changeNetworkDelegate(platforms: Platforms)
-}
-
 class ChangeNetworkViewController: UIViewController {
     
     // MARK: - UI Constants
@@ -159,7 +155,6 @@ class ChangeNetworkViewController: UIViewController {
     }
     
     // MARK: - UI Elements
-    
     ///UIView
     private lazy var logoView : UIView = {
         let view = UIView()
@@ -217,6 +212,7 @@ class ChangeNetworkViewController: UIViewController {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
+    
     ///UILabel
     private lazy var walletLabel: GradientLabel = {
         let label = GradientLabel()
@@ -258,6 +254,7 @@ class ChangeNetworkViewController: UIViewController {
         button.isUserInteractionEnabled = true
         return button
     }()
+    
     ///UITableView
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -455,6 +452,7 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
         self.selectedIndexes = indexPath
         tableView.reloadData()
         self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
+        self.dismissVC()
     }
 }
 
@@ -467,7 +465,7 @@ extension ChangeNetworkViewController : ConnectProtocol{
         self.dismiss(animated: true)
     }
 }
-
+// MARK: - Extension - AddTokenDelegate
 extension ChangeNetworkViewController: AddTokenDelegate{
     func initiateAddToken() {
         
@@ -536,7 +534,6 @@ class NetworkTVCell: UITableViewCell {
     var delegate : AddTokenDelegate?
     var tokenAddress = String()
 
-    //    private var wallpaperManager =  WallpaperManager()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         iconView.addSubview(iconImageView)
@@ -569,7 +566,7 @@ class NetworkTVCell: UITableViewCell {
             iconImageView.widthAnchor.constraint(equalToConstant: UX.Icon.width),
             iconImageView.heightAnchor.constraint(equalToConstant: UX.Icon.height),
         ]
-    )
+     )
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -586,6 +583,6 @@ class NetworkTVCell: UITableViewCell {
         }
     }
     func setUI(platforms : Platforms){
-        titleLabel.text = platforms.name
+        titleLabel.text = platforms.name?.capitalized
     }
 }

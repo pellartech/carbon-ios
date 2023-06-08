@@ -19,10 +19,6 @@ import SVProgressHUD
 import Common
 import Shared
 
-protocol AddWalletProtocol{
-    func addWalletDelegate()
-}
-
 class AddWalletViewController: UITableViewController {
     
     // MARK: - UI Properties

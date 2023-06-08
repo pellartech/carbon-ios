@@ -22,6 +22,7 @@ import Shared
 typealias Chain = ParticleNetwork.ChainInfo
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
+typealias BscNetwork = ParticleNetwork.BscNetwork
 
 class WalletViewController: UIViewController {
     
@@ -983,7 +984,7 @@ class TokensTVCell: UITableViewCell {
     func setUI(token : TokenModel){
         let value = toEther(wei: token.amount)
         titleLabel.text = token.tokenInfo.name
-        valueLabel.text = "\(value) \(token.tokenInfo.symbol)"
+        valueLabel.text = "\(value) \(token.tokenInfo.symbol.uppercased())"
         if #available(iOS 15.0, *) {
             valueAtLabel.text = value.formatted(.currency(code: "USD"))
         }

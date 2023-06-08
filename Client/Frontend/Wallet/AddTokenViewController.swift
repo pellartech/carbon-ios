@@ -20,10 +20,6 @@ import Shared
 
 var tokens: [Token] = []
 
-protocol AddTokenDelegate{
-    func initiateAddToken()
-}
-
 class AddTokenViewController: UIViewController {
     
 // MARK: - UI Constants
@@ -612,11 +608,6 @@ extension AddTokenViewController : ConnectProtocol{
     func logout() {
         self.dismiss(animated: true)
     }
-}
-
-protocol SwitchDelegate{
-    func switchTapped(value: Bool,index:Int)
-    
 }
 
 class AddTokensTVCell: UITableViewCell {

@@ -14,6 +14,7 @@ struct TokensData: Codable {
     var isUserToken: Bool?
     var address: String?
     var imageUrl: String?
+    var network: String?
 
     // MARK: - Helper method: Convert managed objects to objects
     func toManagedObject(in context: NSManagedObjectContext) -> Tokens? {
@@ -24,6 +25,7 @@ struct TokensData: Codable {
         tokens.symbol = symbol
         tokens.address = address
         tokens.imageUrl = imageUrl
+        tokens.network = network
         tokens.isUserToken = isUserToken ?? false
         tokens.created_time = created_time ?? 0
         tokens.expiry_time = expiry_time ?? 0

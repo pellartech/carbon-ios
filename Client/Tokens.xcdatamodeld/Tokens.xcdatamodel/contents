@@ -8,6 +8,7 @@
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="isUserToken" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="network" optional="YES" attributeType="String"/>
         <attribute name="symbol" optional="YES" attributeType="String"/>
     </entity>
 </model>

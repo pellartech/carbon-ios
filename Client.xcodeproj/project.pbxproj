@@ -1215,6 +1215,7 @@
 		F9FC4C962A2F3CAD000FA4C8 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C952A2F3CAD000FA4C8 /* CoreDataManager.swift */; };
 		F9FC4C992A2F3D17000FA4C8 /* Tokens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C972A2F3D17000FA4C8 /* Tokens.xcdatamodeld */; };
 		F9FC4C9B2A2F3DE8000FA4C8 /* CoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C9A2A2F3DE8000FA4C8 /* CoreDataModel.swift */; };
+		F9FC4D202A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */; };
 		F9FE70242A28F3270006A379 /* AddCustomTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
@@ -5091,6 +5092,7 @@
 		F9FC4C952A2F3CAD000FA4C8 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		F9FC4C982A2F3D17000FA4C8 /* Tokens.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tokens.xcdatamodel; sourceTree = "<group>"; };
 		F9FC4C9A2A2F3DE8000FA4C8 /* CoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataModel.swift; sourceTree = "<group>"; };
+		F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEnWalletNetworkEnumum.swift; sourceTree = "<group>"; };
 		F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTokenViewController.swift; sourceTree = "<group>"; };
 		FA6B2AC11D41F02D00429414 /* String+Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Punycode.swift"; sourceTree = "<group>"; };
 		FA9293D31D6580E100AC8D33 /* QRCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
@@ -8123,6 +8125,7 @@
 		F99BEA842A135901003F49B2 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */,
 				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
 				F99BEA902A135B62003F49B2 /* WalletManager.swift */,
 				F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */,
@@ -10026,6 +10029,7 @@
 				F018F84C2719AE8300B9A52D /* ThemedDefaultNavigationController.swift in Sources */,
 				602B3D6729B0E1DB0066DEF8 /* ConversionValueUtil.swift in Sources */,
 				8ADED7EE276A7750009C19E6 /* CumulativeDaysOfUseCounter.swift in Sources */,
+				F9FC4D202A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift in Sources */,
 				4346FF08295BA6A300F4D220 /* CreditCardSettingsViewController.swift in Sources */,
 				E19B38B528A42EBC00D8C541 /* WallpaperCellViewModel.swift in Sources */,
 				5A3A7DCE2886F7880065F81A /* RecentlySavedDataAdaptor.swift in Sources */,
