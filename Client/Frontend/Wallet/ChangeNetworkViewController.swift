@@ -398,9 +398,9 @@ class ChangeNetworkViewController: UIViewController {
             case "BSC":
                 selectedIndexes = IndexPath.init(row: 0, section: 0)
             case "Solana":
-                selectedIndexes = IndexPath.init(row: 0, section: 2)
+                selectedIndexes = IndexPath.init(row: 2, section: 0)
             default:
-                selectedIndexes = IndexPath.init(row: 0, section: 1)
+                selectedIndexes = IndexPath.init(row: 1, section: 0)
             }
             self.tableView.reloadData()
         }

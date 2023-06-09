@@ -447,8 +447,7 @@ class WalletViewController: UIViewController {
     }
     
     func setUpNetwork(){
-        let chainInfo : Chain = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
-
+        let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
