@@ -29,8 +29,8 @@ struct SimpleToast: ThemeApplicable {
     }
 
     func applyTheme(theme: Theme) {
-        toastLabel.textColor = theme.colors.textInverted
-        toastLabel.backgroundColor = theme.colors.actionPrimary
+        toastLabel.textColor = theme.colors.actionPrimary
+        toastLabel.backgroundColor = theme.colors.textInverted
     }
 
     private func dismiss(_ toast: UIView) {

@@ -20,9 +20,11 @@ import Common
 import Shared
 
 typealias Chain = ParticleNetwork.ChainInfo
-typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
+typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
+
+var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
 
 class WalletViewController: UIViewController {
     
@@ -422,6 +424,7 @@ class WalletViewController: UIViewController {
     var themeManager :  ThemeManager?
     private var coreDataManager =  CoreDataManager.shared
     var tokens = [TokensData]()
+    var delegate :  ChangeNetwork?
 
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -444,7 +447,8 @@ class WalletViewController: UIViewController {
     }
     
     func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.mainnet.rawValue)!)
+        let chainInfo : Chain = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
@@ -739,11 +743,11 @@ class WalletViewController: UIViewController {
     }
     
     @objc func settingsIconTapped (){
-        initiateDrawerVC()
+       initiateChangeNetworkVC()
     }
     
     @objc func infoIconTapped (){
-        showToast()
+        showToast(message: "Stay tunned! Dev in progress...")
     }
 
     @objc func sendBtnTapped (){
@@ -762,7 +766,7 @@ class WalletViewController: UIViewController {
         initiateReceiveVC()
     }
     @objc func buyBtnTapped (){
-        showToast()
+        showToast(message: "Stay tunned! Dev in progress...")
     }
     
     @objc func seeAllBtnTapped(sender:UIButton){
@@ -797,6 +801,14 @@ class WalletViewController: UIViewController {
         drawerController.delegate = self
         present(drawerController, animated: true)
     }
+    func initiateChangeNetworkVC(){
+        let changeNetworkVC = ChangeNetworkViewController()
+        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.platforms = networks
+        changeNetworkVC.delegate = self
+        changeNetworkVC.isSettings = true
+        self.present(changeNetworkVC, animated: true)
+    }
     
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
@@ -821,8 +833,8 @@ class WalletViewController: UIViewController {
         }
     }
     
-    func showToast(){
-        SimpleToast().showAlertWithText("Coming soon...",
+    func showToast(message: String){
+        SimpleToast().showAlertWithText(message,
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
     }
@@ -853,6 +865,22 @@ extension WalletViewController : ConnectProtocol{
     }
     func logout() {
         self.dismiss(animated: true)
+    }
+}
+// MARK: - Extension - ChangeNetwork
+extension WalletViewController :  ChangeNetwork{
+    func changeNetworkDelegate(platforms: Platforms) {
+        var chainInfo : Chain?
+        switch platforms.name!.uppercased(){
+        case WalletNetworkEnum.Solana.rawValue.uppercased():
+            chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        default:
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        }
+        ParticleNetwork.setChainInfo(chainInfo!)
+        showToast(message: "\(platforms.name?.uppercased() ?? "") set to default")
     }
 }
 
