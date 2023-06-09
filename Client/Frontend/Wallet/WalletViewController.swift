@@ -1039,7 +1039,7 @@ class TokensTVCell: UITableViewCell {
                 defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
             case "BNB":
-                defaultImage = "ic_bnb"
+                defaultImage = "ic_binance"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
             }
