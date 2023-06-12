@@ -22,6 +22,7 @@ import Shared
 typealias Chain = ParticleNetwork.ChainInfo
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
+typealias BscNetwork = ParticleNetwork.BscNetwork
 
 class WalletViewController: UIViewController {
     
@@ -415,12 +416,13 @@ class WalletViewController: UIViewController {
     let bag = DisposeBag()
     private var publicAddress = String()
     private var tokensModel = [TokenModel]()
-    let viewModel = WalletViewModel()
     var networkData = [String]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
     var themeManager :  ThemeManager?
-    
+    private var coreDataManager =  CoreDataManager.shared
+    var tokens = [TokensData]()
+
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -428,6 +430,9 @@ class WalletViewController: UIViewController {
         setUpView()
         setUpNetwork()
         setUpViewContraint()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getLocalUserData()
     }
     
@@ -439,7 +444,7 @@ class WalletViewController: UIViewController {
     }
     
     func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.mainnet.rawValue)!)
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
@@ -677,7 +682,6 @@ class WalletViewController: UIViewController {
             //TODO: -Need to replace with account preference values
             let filterData = data.filter{$0.walletType == .particle}
             setUIAndFetchData(address: filterData.first?.publicAddress ?? "")
-        }else{
         }
     }
     
@@ -686,19 +690,19 @@ class WalletViewController: UIViewController {
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
         publicAddress = address
-        self.viewModel.addCustomTokenToUserAccount(address: publicAddress) {result in
-            switch result {
-            case .success(let tokens):
-                self.fetchUserTokens(tokens: tokens)
-            case .failure(let error):
-                print(error)
-                self.fetchUserTokens(tokens: [])
-            }
+        self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        self.tokens = self.tokens.filter{$0.isUserToken == true}
+        var tokenAddress = [TokenModel]()
+        for eachToken in self.tokens{
+            let tokenInfo = TokenInfo(chainName: "", chainId: 0, mintAddress: "", symbol: eachToken.symbol ?? "", name:eachToken.name ?? "", decimals: 0, logoURI:eachToken.imageUrl ?? "")
+            let model = TokenModel(address: eachToken.address ?? "", chainName: "", chainId: 0, amount: 0, decimals: 0, tokenInfo: tokenInfo, mintAddress: "")
+            tokenAddress.append(model)
         }
+        self.fetchUserTokens(tokens: tokenAddress)
     }
     
     func fetchUserTokens(tokens: [TokenModel]){
-        self.viewModel.getUserTokenListsForNativeTokens(address: publicAddress, tokenArray: tokens) { result in
+        WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
@@ -765,7 +769,7 @@ class WalletViewController: UIViewController {
         if (sender.tag == 0){
             sender.tag = 1
             collapseTokenView()
-            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: CGFloat(self.tokensModel.count * 85))
+            heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: CGFloat(self.tokensModel.count * 85) + 40)
             expandTokenView()
         }else{
             sender.tag = 0
@@ -776,7 +780,7 @@ class WalletViewController: UIViewController {
     }
     
     @objc func addTokenBtnTapped (){
-        showToast()
+        initiateAddTokenVC()
     }
     
 // MARK: - Helper Methods - Initiate view controller
@@ -801,6 +805,13 @@ class WalletViewController: UIViewController {
         self.present(vc, animated: false)
     }
     
+    func initiateAddTokenVC(){
+        let vc = AddCustomTokenViewController()
+        vc.delegate = self
+        vc.publicAddress = publicAddress
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: false)
+    }
     func toEther(wei: BInt) -> Decimal {
         let etherInWei = pow(Decimal(10), 18)
         if let decimalWei = Decimal(string: wei.description){
@@ -839,7 +850,6 @@ extension WalletViewController : UITableViewDelegate, UITableViewDataSource{
 extension WalletViewController : ConnectProtocol{
     func accountPublicAddress(address: String) {
         getLocalUserData()
-        setUIAndFetchData(address: address)
     }
     func logout() {
         self.dismiss(animated: true)
@@ -974,7 +984,7 @@ class TokensTVCell: UITableViewCell {
     func setUI(token : TokenModel){
         let value = toEther(wei: token.amount)
         titleLabel.text = token.tokenInfo.name
-        valueLabel.text = "\(value) \(token.tokenInfo.symbol)"
+        valueLabel.text = "\(value) \(token.tokenInfo.symbol.uppercased())"
         if #available(iOS 15.0, *) {
             valueAtLabel.text = value.formatted(.currency(code: "USD"))
         }

@@ -19,17 +19,12 @@ import SVProgressHUD
 import Common
 import Shared
 
-protocol AddWalletProtocol{
-    func addWalletDelegate()
-}
-
 class AddWalletViewController: UITableViewController {
     
     // MARK: - UI Properties
     let bag = DisposeBag()
     var data: [WalletType] = []
     var delegate: AddWalletProtocol?
-    let viewModel = WalletViewModel()
     
     
     // MARK: - View Lifecycles
@@ -82,7 +77,7 @@ extension AddWalletViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let walletType = data[indexPath.row]
-        viewModel.walletLogin(vc: self, walletType: walletType) { result in
+        WalletViewModel.shared.walletLogin(vc: self, walletType: walletType) { result in
             switch result {
             case .success(_):
                 self.navigationController?.popViewController(animated: true)

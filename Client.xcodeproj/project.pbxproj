@@ -1209,7 +1209,14 @@
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */; };
 		F99BEAA32A138F16003F49B2 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99BEAA22A138F16003F49B2 /* SDWebImage.framework */; };
+		F9AB00392A26571000775628 /* AddTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AB00382A26571000775628 /* AddTokenViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
+		F9FC4C932A2EEC03000FA4C8 /* ChangeNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */; };
+		F9FC4C962A2F3CAD000FA4C8 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C952A2F3CAD000FA4C8 /* CoreDataManager.swift */; };
+		F9FC4C992A2F3D17000FA4C8 /* Tokens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C972A2F3D17000FA4C8 /* Tokens.xcdatamodeld */; };
+		F9FC4C9B2A2F3DE8000FA4C8 /* CoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C9A2A2F3DE8000FA4C8 /* CoreDataModel.swift */; };
+		F9FC4D202A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */; };
+		F9FE70242A28F3270006A379 /* AddCustomTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */; };
 		FA6B2AC21D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA6B2AC41D41F02D00429414 /* String+Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B2AC11D41F02D00429414 /* String+Punycode.swift */; };
 		FA9293D41D6580E100AC8D33 /* QRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9293D31D6580E100AC8D33 /* QRCodeViewController.swift */; };
@@ -5074,12 +5081,19 @@
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticleNetwork-Info.plist"; sourceTree = "<group>"; };
 		F99BEAA22A138F16003F49B2 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9AB00382A26571000775628 /* AddTokenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTokenViewController.swift; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		F9CC376029C217CB00165415 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		F9F7412B87BA08E6FB185446 /* uz */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uz; path = uz.lproj/ErrorPages.strings; sourceTree = "<group>"; };
 		F9F94CED8452BC964CABDEE2 /* sk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sk; path = sk.lproj/3DTouchActions.strings; sourceTree = "<group>"; };
+		F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNetworkViewController.swift; sourceTree = "<group>"; };
+		F9FC4C952A2F3CAD000FA4C8 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		F9FC4C982A2F3D17000FA4C8 /* Tokens.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tokens.xcdatamodel; sourceTree = "<group>"; };
+		F9FC4C9A2A2F3DE8000FA4C8 /* CoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataModel.swift; sourceTree = "<group>"; };
+		F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEnWalletNetworkEnumum.swift; sourceTree = "<group>"; };
+		F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomTokenViewController.swift; sourceTree = "<group>"; };
 		FA6B2AC11D41F02D00429414 /* String+Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Punycode.swift"; sourceTree = "<group>"; };
 		FA9293D31D6580E100AC8D33 /* QRCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
 		FA9294001D6584A200AC8D33 /* QRCode.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = QRCode.xcassets; sourceTree = "<group>"; };
@@ -7829,6 +7843,7 @@
 		F84B21C01A090F8100AAB793 /* Client */ = {
 			isa = PBXGroup;
 			children = (
+				F9FC4C942A2F3C97000FA4C8 /* CoreData */,
 				F84B21E41A0910F600AAB793 /* Application */,
 				F84B21EB1A0910F600AAB793 /* Assets */,
 				E60961841B62B7E100DD640F /* Configuration */,
@@ -7848,6 +7863,7 @@
 				DFACDFAD274D4D4B00A94EEC /* Protocols */,
 				E69DB0B91E97E301008A67E6 /* Telemetry */,
 				E65075551E37F714006961AC /* Utils */,
+				F9FC4C972A2F3D17000FA4C8 /* Tokens.xcdatamodeld */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -8109,6 +8125,7 @@
 		F99BEA842A135901003F49B2 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				F9FC4D1F2A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift */,
 				F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */,
 				F99BEA902A135B62003F49B2 /* WalletManager.swift */,
 				F99BEA922A135BC5003F49B2 /* WalletProtocol.swift */,
@@ -8120,8 +8137,20 @@
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
 				F91441BF2A1C8A8A008BE25A /* WalletGetStartedViewController.swift */,
 				F91441C32A1CA320008BE25A /* AddWalletViewController.swift */,
+				F9AB00382A26571000775628 /* AddTokenViewController.swift */,
+				F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */,
+				F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */,
 			);
 			path = Wallet;
+			sourceTree = "<group>";
+		};
+		F9FC4C942A2F3C97000FA4C8 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				F9FC4C952A2F3CAD000FA4C8 /* CoreDataManager.swift */,
+				F9FC4C9A2A2F3DE8000FA4C8 /* CoreDataModel.swift */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -9969,6 +9998,7 @@
 				CAA3B7E62497DCB60094E3C1 /* LoginDataSource.swift in Sources */,
 				1DFE57FF27BAE3150025DE58 /* HomepageSectionType.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
+				F9AB00392A26571000775628 /* AddTokenViewController.swift in Sources */,
 				E1CD81BC290C5C3F00124B27 /* DevicePickerTableViewCell.swift in Sources */,
 				8AD40FD527BB1C1000672675 /* LockButton.swift in Sources */,
 				5F130D2E2483508E00B0F7D0 /* FxAWebViewModel.swift in Sources */,
@@ -9999,6 +10029,7 @@
 				F018F84C2719AE8300B9A52D /* ThemedDefaultNavigationController.swift in Sources */,
 				602B3D6729B0E1DB0066DEF8 /* ConversionValueUtil.swift in Sources */,
 				8ADED7EE276A7750009C19E6 /* CumulativeDaysOfUseCounter.swift in Sources */,
+				F9FC4D202A31C441000FA4C8 /* WalletEnWalletNetworkEnumum.swift in Sources */,
 				4346FF08295BA6A300F4D220 /* CreditCardSettingsViewController.swift in Sources */,
 				E19B38B528A42EBC00D8C541 /* WallpaperCellViewModel.swift in Sources */,
 				5A3A7DCE2886F7880065F81A /* RecentlySavedDataAdaptor.swift in Sources */,
@@ -10061,6 +10092,7 @@
 				C8B07A4128199500000AFCE7 /* NimbusFlaggableFeature.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,
 				431C0CA925C890E500395CE4 /* DefaultBrowserOnboardingViewModel.swift in Sources */,
+				F9FE70242A28F3270006A379 /* AddCustomTokenViewController.swift in Sources */,
 				8A05123927D17EC3009930CC /* LegacyWallpaperStorageUtility.swift in Sources */,
 				DFACBF81277B916B003D5F41 /* ConfigurableGradientView.swift in Sources */,
 				7482205C1DBAB56300EEEA72 /* MailProviders.swift in Sources */,
@@ -10181,6 +10213,7 @@
 				F91ABA9829F11A0B0060105E /* RewardsViewController.swift in Sources */,
 				E195440428A5AFDE00304CF0 /* BottomSheetViewModel.swift in Sources */,
 				8AED23C527AC1F9500DE7E97 /* BaseContentStackView.swift in Sources */,
+				F9FC4C992A2F3D17000FA4C8 /* Tokens.xcdatamodeld in Sources */,
 				C8699131289176A5007ACC5C /* WallpaperNetworking.swift in Sources */,
 				5A271ABD2860B0D700471CE4 /* WebServerUtil.swift in Sources */,
 				964FA97528A1A8F20024BB3B /* ContextualHintEligibilityUtility.swift in Sources */,
@@ -10200,6 +10233,7 @@
 				8A5BD95F2878B7B6000FE773 /* TopSitesWidgetManager.swift in Sources */,
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
 				E1442FD2294782D9003680B0 /* UIViewController+Extension.swift in Sources */,
+				F9FC4C9B2A2F3DE8000FA4C8 /* CoreDataModel.swift in Sources */,
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,
 				E127313C28B6AD99006F39D2 /* WallpaperSettingsViewController.swift in Sources */,
 				9636D92A27F767EC00771F5E /* GleanPlumbMessageUtility.swift in Sources */,
@@ -10261,6 +10295,7 @@
 				E47616C71AB74CA600E7DD25 /* ReaderModeBarView.swift in Sources */,
 				D821E90E2141B71C00452C55 /* SiriSettingsViewController.swift in Sources */,
 				EBB89507219398E500EB91A0 /* ContentBlocker.swift in Sources */,
+				F9FC4C962A2F3CAD000FA4C8 /* CoreDataManager.swift in Sources */,
 				5A3A2A0D287F742C00B79EAC /* BackgroundSyncUtil.swift in Sources */,
 				23ED80FF25C89C9800D0E9D5 /* DefaultBrowserOnboardingViewController.swift in Sources */,
 				D88FDA9F1F4E2B9200FD9709 /* PhotonActionSheetProtocol.swift in Sources */,
@@ -10340,6 +10375,7 @@
 				96EB6C4027DBEE9800A9D159 /* SearchGroupedItemsViewController.swift in Sources */,
 				C4E398601D22C409004E89BA /* TopTabsLayout.swift in Sources */,
 				E1442FD5294782D9003680B0 /* UIView+SnapKit.swift in Sources */,
+				F9FC4C932A2EEC03000FA4C8 /* ChangeNetworkViewController.swift in Sources */,
 				2816F0001B33E05400522243 /* UIConstants.swift in Sources */,
 				21E78A7228F9A93100F8D687 /* UIDeviceInterface.swift in Sources */,
 				EBB89508219398E500EB91A0 /* ContentBlocker+Safelist.swift in Sources */,
@@ -16165,6 +16201,19 @@
 			productName = Fuzi;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		F9FC4C972A2F3D17000FA4C8 /* Tokens.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F9FC4C982A2F3D17000FA4C8 /* Tokens.xcdatamodel */,
+			);
+			currentVersion = F9FC4C982A2F3D17000FA4C8 /* Tokens.xcdatamodel */;
+			path = Tokens.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F84B21B61A090F8100AAB793 /* Project object */;
 }

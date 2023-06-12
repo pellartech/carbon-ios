@@ -574,6 +574,22 @@ class GradientLabel: UILabel {
     }
 }
 
+class GradientSwitch: UISwitch {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateTextColor()
+    }
+    private func updateTextColor() {
+        let topColor: UIColor = UIColor(red: 255.0/255.0, green: 50.0/255.0, blue: 10.0/255.0, alpha: 1.0)
+        let bottomColor: UIColor = UIColor(red: 255.0/255.0, green: 145.0/255.0, blue: 51.0/255.0, alpha: 1.0)
+        let image = UIGraphicsImageRenderer(bounds: bounds).image { context in
+            let colors = [topColor.cgColor, bottomColor.cgColor]
+            guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
+            context.cgContext.drawLinearGradient(gradient, start: CGPoint(x: bounds.minX, y: bounds.midY), end: CGPoint(x: bounds.maxX, y: bounds.maxY),options: [])
+        }
+        backgroundColor = UIColor(patternImage: image)
+    }
+}
 class GradientView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -628,5 +644,23 @@ extension UIView{
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.frame = self.frame
         self.layer.insertSublayer(gradientLayer, at:0)
+    }
+}
+
+extension UIView {
+    func addGradient(with layer: CAGradientLayer, gradientFrame: CGRect? = nil, colorSet: [UIColor],
+                     locations: [Double], startEndPoints: (CGPoint, CGPoint)? = nil) {
+        layer.frame = gradientFrame ?? self.bounds
+        layer.frame.origin = .zero
+
+        let layerColorSet = colorSet.map { $0.cgColor }
+        let layerLocations = locations.map { $0 as NSNumber }
+
+        layer.colors = layerColorSet
+        layer.locations = layerLocations
+
+        layer.startPoint = CGPointMake(0.0, 0.7);
+        layer.endPoint = CGPointMake(1.0, 0.7);
+        self.layer.insertSublayer(layer, above: self.layer)
     }
 }

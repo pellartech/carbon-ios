@@ -90,7 +90,6 @@ class DrawerMenuViewController: UIViewController{
     let bag = DisposeBag()
     var delegate : ConnectProtocol?
     var data: [ConnectWalletModel] = []
-    let viewModel = WalletViewModel()
 
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -165,7 +164,7 @@ class DrawerMenuViewController: UIViewController{
     }
     func logout(){
         SVProgressHUD.show()
-        viewModel.walletLogout { result in
+        WalletViewModel.shared.walletLogout { result in
             switch result {
             case .success(let logout):
                 print(logout)
