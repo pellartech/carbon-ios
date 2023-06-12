@@ -26,6 +26,7 @@ typealias BscNetwork = ParticleNetwork.BscNetwork
 
 var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
 
+
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 class WalletViewController: UIViewController {
     
@@ -449,6 +450,7 @@ class WalletViewController: UIViewController {
     
     func setUpNetwork(){
         let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
@@ -716,7 +718,9 @@ class WalletViewController: UIViewController {
                 print(error)
                 self.showToast(message: error.localizedDescription)
             }
+
         }
+        self.fetchUserTokens(tokens: tokenAddress)
     }
     func fetchUserTokens(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in

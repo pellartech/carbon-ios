@@ -278,7 +278,6 @@ class ChangeNetworkViewController: UIViewController {
     var delegate :  ChangeNetwork?
     var platforms = [Platforms]()
     var isSettings = false
-
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -405,6 +404,7 @@ class ChangeNetworkViewController: UIViewController {
             self.tableView.reloadData()
         }
     }
+
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -419,6 +419,7 @@ class ChangeNetworkViewController: UIViewController {
     }
     @objc func addTokenBtnTapped (){
         showToast(message: "Stay tunned! Dev in progress...")
+
     }
     
     

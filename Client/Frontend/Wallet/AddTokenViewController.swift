@@ -347,7 +347,7 @@ class AddTokenViewController: UIViewController {
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
     }
-    
+   
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
         
