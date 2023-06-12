@@ -796,7 +796,7 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     @objc func infoIconTapped (){
-        showToast(message: "Coming soon...")
+        showToast(message: "Stay tunned! Dev in progress...")
     }
     @objc func addTokenBtnTapped (){
         SVProgressHUD.show()

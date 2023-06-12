@@ -273,19 +273,18 @@ class ChangeNetworkViewController: UIViewController {
     
     // MARK: - UI Properties
     let bag = DisposeBag()
-    var publicAddress = String()
-    var networkData = [String]()
     var themeManager :  ThemeManager?
     var selectedIndexes = IndexPath.init(row: 0, section: 0)
     var delegate :  ChangeNetwork?
     var platforms = [Platforms]()
-    
+    var isSettings = false
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
         applyTheme()
         setUpView()
         setUpViewContraint()
+        setUpNetwork()
     }
     
     // MARK: - UI Methods
@@ -391,6 +390,21 @@ class ChangeNetworkViewController: UIViewController {
         ])
     }
     
+    func setUpNetwork(){
+        if isSettings{
+            let chainName = ParticleNetwork.getChainInfo()
+            switch chainName.name{
+            case "BSC":
+                selectedIndexes = IndexPath.init(row: 0, section: 0)
+            case "Solana":
+                selectedIndexes = IndexPath.init(row: 2, section: 0)
+            default:
+                selectedIndexes = IndexPath.init(row: 1, section: 0)
+            }
+            self.tableView.reloadData()
+        }
+    }
+
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -401,10 +415,11 @@ class ChangeNetworkViewController: UIViewController {
     }
     
     @objc func infoIconTapped (){
-        showToast(message: "Coming soon...")
+        showToast(message: "Stay tunned! Dev in progress...")
     }
     @objc func addTokenBtnTapped (){
-        showToast(message: "Coming soon...")
+        showToast(message: "Stay tunned! Dev in progress...")
+
     }
     
     

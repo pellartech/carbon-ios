@@ -337,7 +337,6 @@ class AddTokenViewController: UIViewController {
         super.viewDidLoad()
         applyTheme()
         setUpView()
-        setUpNetwork()
         setUpViewContraint()
         checkAddedToken()
     }
@@ -348,12 +347,7 @@ class AddTokenViewController: UIViewController {
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
     }
-    
-    func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-        ParticleNetwork.setChainInfo(chainInfo)
-    }
-    
+   
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
         

@@ -20,10 +20,14 @@ import Common
 import Shared
 
 typealias Chain = ParticleNetwork.ChainInfo
-typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
+typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
 
+var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
+
+
+var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 class WalletViewController: UIViewController {
     
 // MARK: - UI Constants
@@ -422,6 +426,7 @@ class WalletViewController: UIViewController {
     var themeManager :  ThemeManager?
     private var coreDataManager =  CoreDataManager.shared
     var tokens = [TokensData]()
+    var delegate :  ChangeNetwork?
 
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -444,7 +449,8 @@ class WalletViewController: UIViewController {
     }
     
     func setUpNetwork(){
-        let chainInfo : Chain = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.mainnet.rawValue)!)
+        let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+
         ParticleNetwork.setChainInfo(chainInfo)
     }
     
@@ -700,26 +706,28 @@ class WalletViewController: UIViewController {
         }
         self.fetchUserTokens(tokens: tokenAddress)
     }
-    
+    func addCarbonToken(tokens : [String]){
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+            switch result {
+            case .success(let result):
+                self.tokensModel = result + self.tokensModel
+                self.updateUI()
+                SVProgressHUD.dismiss()
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+                self.showToast(message: error.localizedDescription)
+            }
+
+        }
+        self.fetchUserTokens(tokens: tokenAddress)
+    }
     func fetchUserTokens(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.tokenLabel.isHidden = false
-                        self.noTokenLabel.isHidden = true
-                        self.expandTokenView()
-                        self.tableView.reloadData()
-                        var total = Decimal()
-                        for token in self.tokensModel{
-                            total = total + self.toEther(wei: token.amount)
-                        }
-                        self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
-                    }
-                }
-                SVProgressHUD.dismiss()
+                self.addCarbonToken(tokens: carbonToken)
             case .failure(let error):
                 print(error)
                 DispatchQueue.global().async {
@@ -732,18 +740,32 @@ class WalletViewController: UIViewController {
             }
         }
     }
-    
+    func updateUI(){
+        DispatchQueue.global().async {
+            DispatchQueue.main.async {
+                self.tokenLabel.isHidden = false
+                self.noTokenLabel.isHidden = true
+                self.expandTokenView()
+                self.tableView.reloadData()
+                var total = Decimal()
+                for token in self.tokensModel{
+                    total = total + self.toEther(wei: token.amount)
+                }
+                self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
+            }
+        }
+    }
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
     }
     
     @objc func settingsIconTapped (){
-        initiateDrawerVC()
+       initiateChangeNetworkVC()
     }
     
     @objc func infoIconTapped (){
-        showToast()
+        showToast(message: "Stay tunned! Dev in progress...")
     }
 
     @objc func sendBtnTapped (){
@@ -762,7 +784,7 @@ class WalletViewController: UIViewController {
         initiateReceiveVC()
     }
     @objc func buyBtnTapped (){
-        showToast()
+        showToast(message: "Stay tunned! Dev in progress...")
     }
     
     @objc func seeAllBtnTapped(sender:UIButton){
@@ -797,6 +819,14 @@ class WalletViewController: UIViewController {
         drawerController.delegate = self
         present(drawerController, animated: true)
     }
+    func initiateChangeNetworkVC(){
+        let changeNetworkVC = ChangeNetworkViewController()
+        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.platforms = networks
+        changeNetworkVC.delegate = self
+        changeNetworkVC.isSettings = true
+        self.present(changeNetworkVC, animated: true)
+    }
     
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
@@ -821,8 +851,8 @@ class WalletViewController: UIViewController {
         }
     }
     
-    func showToast(){
-        SimpleToast().showAlertWithText("Coming soon...",
+    func showToast(message: String){
+        SimpleToast().showAlertWithText(message,
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
     }
@@ -853,6 +883,22 @@ extension WalletViewController : ConnectProtocol{
     }
     func logout() {
         self.dismiss(animated: true)
+    }
+}
+// MARK: - Extension - ChangeNetwork
+extension WalletViewController :  ChangeNetwork{
+    func changeNetworkDelegate(platforms: Platforms) {
+        var chainInfo : Chain?
+        switch platforms.name!.uppercased(){
+        case WalletNetworkEnum.Solana.rawValue.uppercased():
+            chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        default:
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        }
+        ParticleNetwork.setChainInfo(chainInfo!)
+        showToast(message: "\(platforms.name?.uppercased() ?? "") set to default")
     }
 }
 
@@ -993,17 +1039,11 @@ class TokensTVCell: UITableViewCell {
         }else{
             var defaultImage = ""
             switch token.tokenInfo.symbol {
-            case "ETH":
-                defaultImage = "ic_eth"
+            case "CSIX":
+                defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "USDC":
-                defaultImage = "ic_usdc"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "USDT":
-                defaultImage = "ic_usdt"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "WETH":
-                defaultImage = "ic_weth"
+            case "BNB":
+                defaultImage = "ic_binance"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
             }
