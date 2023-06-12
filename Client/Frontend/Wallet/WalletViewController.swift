@@ -26,6 +26,7 @@ typealias BscNetwork = ParticleNetwork.BscNetwork
 
 var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
 
+var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 class WalletViewController: UIViewController {
     
 // MARK: - UI Constants
@@ -703,26 +704,26 @@ class WalletViewController: UIViewController {
         }
         self.fetchUserTokens(tokens: tokenAddress)
     }
-    
+    func addCarbonToken(tokens : [String]){
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+            switch result {
+            case .success(let result):
+                self.tokensModel = result + self.tokensModel
+                self.updateUI()
+                SVProgressHUD.dismiss()
+            case .failure(let error):
+                SVProgressHUD.dismiss()
+                print(error)
+                self.showToast(message: error.localizedDescription)
+            }
+        }
+    }
     func fetchUserTokens(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.tokenLabel.isHidden = false
-                        self.noTokenLabel.isHidden = true
-                        self.expandTokenView()
-                        self.tableView.reloadData()
-                        var total = Decimal()
-                        for token in self.tokensModel{
-                            total = total + self.toEther(wei: token.amount)
-                        }
-                        self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
-                    }
-                }
-                SVProgressHUD.dismiss()
+                self.addCarbonToken(tokens: carbonToken)
             case .failure(let error):
                 print(error)
                 DispatchQueue.global().async {
@@ -735,7 +736,21 @@ class WalletViewController: UIViewController {
             }
         }
     }
-    
+    func updateUI(){
+        DispatchQueue.global().async {
+            DispatchQueue.main.async {
+                self.tokenLabel.isHidden = false
+                self.noTokenLabel.isHidden = true
+                self.expandTokenView()
+                self.tableView.reloadData()
+                var total = Decimal()
+                for token in self.tokensModel{
+                    total = total + self.toEther(wei: token.amount)
+                }
+                self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
+            }
+        }
+    }
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -1020,17 +1035,11 @@ class TokensTVCell: UITableViewCell {
         }else{
             var defaultImage = ""
             switch token.tokenInfo.symbol {
-            case "ETH":
-                defaultImage = "ic_eth"
+            case "CSIX":
+                defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "USDC":
-                defaultImage = "ic_usdc"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "USDT":
-                defaultImage = "ic_usdt"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "WETH":
-                defaultImage = "ic_weth"
+            case "BNB":
+                defaultImage = "ic_binance"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
             }
