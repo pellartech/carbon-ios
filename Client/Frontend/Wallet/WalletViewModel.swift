@@ -166,22 +166,35 @@ public class WalletViewModel {
     }
     
     /// This method will fetch the native tokens which belongs to user account
-    func getUserTokenLists(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
+    func getUserTokenLists(isSolana:Bool,address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
         print(ParticleNetwork.getChainInfo().name)
         var tokenAddress = [String]()
         for each in tokenArray{
             tokenAddress.append(each.address)
         }
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenAddress)//
-            .subscribe { result in
-                switch result {
-                case .failure(let error):
-                    completed(.failure(error))
-                case .success(let tokens):
-                    let token = tokens.tokens as [TokenModel]
-                    completed(.success(token + tokenArray))
-                }
-            }.disposed(by: bag)
+        if (isSolana){
+            ParticleWalletAPI.getSolanaService().getTokensAndNFTs(by: address, tokenAddresses: [])
+                .subscribe { result in
+                    switch result {
+                    case .failure(let error):
+                        completed(.failure(error))
+                    case .success(let tokens):
+                        let token = tokens.tokens as [TokenModel]
+                        completed(.success(token + tokenArray))
+                    }
+                }.disposed(by: bag)
+        }else{
+            ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenAddress)//
+                .subscribe { result in
+                    switch result {
+                    case .failure(let error):
+                        completed(.failure(error))
+                    case .success(let tokens):
+                        let token = tokens.tokens as [TokenModel]
+                        completed(.success(token + tokenArray))
+                    }
+                }.disposed(by: bag)
+        }
     }
     
     
@@ -217,3 +230,4 @@ public class WalletViewModel {
             }.disposed(by: bag)
     }
 }
+

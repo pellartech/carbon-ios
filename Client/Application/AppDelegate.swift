@@ -167,6 +167,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             adapters
         }
     }
+    func setUpDefaultNetwork(){
+        let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        ParticleNetwork.setChainInfo(chainInfo)
+    }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
     // Eventually we'll sync in response to notifications.

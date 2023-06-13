@@ -18,6 +18,7 @@ import SVProgressHUD
 import SDWebImage
 import Common
 import Shared
+import Toast_Swift
 
 typealias Chain = ParticleNetwork.ChainInfo
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
@@ -25,9 +26,9 @@ typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
 
 var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
-
-
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
+var solonaToken = ["0x41848d32f281383f214c69b7b248dc7c2e0a7374"]
+
 class WalletViewController: UIViewController {
     
 // MARK: - UI Constants
@@ -427,13 +428,13 @@ class WalletViewController: UIViewController {
     private var coreDataManager =  CoreDataManager.shared
     var tokens = [TokensData]()
     var delegate :  ChangeNetwork?
-
+    var isSolana = false
+    
 // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
         applyTheme()
         setUpView()
-        setUpNetwork()
         setUpViewContraint()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -446,12 +447,6 @@ class WalletViewController: UIViewController {
         themeManager =  AppContainer.shared.resolve()
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
-    }
-    
-    func setUpNetwork(){
-        let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-
-        ParticleNetwork.setChainInfo(chainInfo)
     }
     
     func setUpView(){
@@ -686,8 +681,11 @@ class WalletViewController: UIViewController {
         }
         if(data.count > 0){
             //TODO: -Need to replace with account preference values
-            let filterData = data.filter{$0.walletType == .particle}
-            setUIAndFetchData(address: filterData.first?.publicAddress ?? "")
+             let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
+            if (filterData.count > 0){
+                print(filterData[0].publicAddress)
+                setUIAndFetchData(address: filterData[0].publicAddress)
+            }
         }
     }
     
@@ -706,7 +704,7 @@ class WalletViewController: UIViewController {
         }
         self.fetchUserTokens(tokens: tokenAddress)
     }
-    func addCarbonToken(tokens : [String]){
+    func addNativeToken(tokens : [String]){
         WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
             switch result {
             case .success(let result):
@@ -716,22 +714,24 @@ class WalletViewController: UIViewController {
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
+                self.tokensModel = []
+                self.updateUI()
                 self.showToast(message: error.localizedDescription)
             }
-
         }
-        self.fetchUserTokens(tokens: tokenAddress)
     }
     func fetchUserTokens(tokens: [TokenModel]){
-        WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
+        WalletViewModel.shared.getUserTokenLists(isSolana: self.isSolana, address: publicAddress, tokenArray: tokens) { result in
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
-                self.addCarbonToken(tokens: carbonToken)
+                self.checkNetworkToAddNativeToken()
             case .failure(let error):
                 print(error)
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
+                        self.tokensModel = []
+                        self.tableView.reloadData()
                         self.tokenLabel.isHidden = true
                         self.noTokenLabel.isHidden = false
                         SVProgressHUD.dismiss()
@@ -754,6 +754,19 @@ class WalletViewController: UIViewController {
                 self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
             }
         }
+    }
+    
+    func checkNetworkToAddNativeToken(){
+//        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
+//        switch symbol{
+//        case NetworkEnum.BinanceSmartChain.rawValue:
+//            self.addNativeToken(tokens: carbonToken)
+//        case NetworkEnum.Solana.rawValue:
+//            self.addNativeToken(tokens: solonaToken)
+//        default:
+            self.updateUI()
+            SVProgressHUD.dismiss()
+//        }
     }
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
@@ -892,13 +905,15 @@ extension WalletViewController :  ChangeNetwork{
         switch platforms.name!.uppercased(){
         case WalletNetworkEnum.Solana.rawValue.uppercased():
             chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+            self.isSolana = true
         case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
             chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
         default:
             chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
         }
         ParticleNetwork.setChainInfo(chainInfo!)
-        showToast(message: "\(platforms.name?.uppercased() ?? "") set to default")
+        self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)
+        getLocalUserData()
     }
 }
 
@@ -1039,6 +1054,12 @@ class TokensTVCell: UITableViewCell {
         }else{
             var defaultImage = ""
             switch token.tokenInfo.symbol {
+            case "SOL":
+                defaultImage = "ic_sol"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "ETH":
+                defaultImage = "ic_eth"
+                iconImageView.image = UIImage(named: defaultImage)
             case "CSIX":
                 defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
@@ -1061,5 +1082,3 @@ class TokensTVCell: UITableViewCell {
     }
     
 }
-
-

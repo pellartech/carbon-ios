@@ -904,6 +904,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == self.tokensTableView){
+            self.view.endEditing(true)
             let cell = tableView.cellForRow(at: indexPath)
             cell?.accessoryType = .checkmark
             self.selectedIndexes = indexPath
