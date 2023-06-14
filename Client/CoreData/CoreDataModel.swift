@@ -10,14 +10,12 @@ struct TokensData: Codable {
     var name: String?
     var symbol: String?
     var created_time: Int64?
-    var expiry_time : Int64?
     var isUserToken: Bool?
     var address: String?
     var imageUrl: String?
-    var network: String?
 
     // MARK: - Helper method: Convert managed objects to objects
-    func toManagedObject(in context: NSManagedObjectContext) -> Tokens? {
+    func toManagedObject(in context: NSManagedObjectContext, network: Networks) -> Tokens? {
         let entity = Tokens.entity()
         let tokens = Tokens(entity: entity, insertInto: context)
         tokens.id = id
@@ -25,10 +23,9 @@ struct TokensData: Codable {
         tokens.symbol = symbol
         tokens.address = address
         tokens.imageUrl = imageUrl
-        tokens.network = network
         tokens.isUserToken = isUserToken ?? false
         tokens.created_time = created_time ?? 0
-        tokens.expiry_time = expiry_time ?? 0
+        network.token = tokens
         return tokens
     }
 }

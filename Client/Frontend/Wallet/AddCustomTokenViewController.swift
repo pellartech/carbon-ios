@@ -459,6 +459,7 @@ class AddCustomTokenViewController: UIViewController {
     var networkData = [String]()
     var themeManager :  ThemeManager?
     var tokens = [TokensData]()
+    var network : Networks?
     var tokenInfo : TokensInfo?
     var selectedIndexes = IndexPath()
     private var coreDataManager =  CoreDataManager.shared
@@ -683,7 +684,7 @@ class AddCustomTokenViewController: UIViewController {
     // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
         SVProgressHUD.show()
-        self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        self.tokens = self.coreDataManager.fetchTokens(networks: network!)
         self.tokens = self.tokens.filter{$0.isUserToken == false}
         if(self.tokens.count == 0){
             self.fetchTokens()
@@ -703,9 +704,7 @@ class AddCustomTokenViewController: UIViewController {
                 self.tokens[index].isUserToken = true
                 self.tokens[index].address = self.tokenInfo?.contract_address
                 self.tokens[index].imageUrl = self.tokenInfo?.image?.large
-                self.tokens[index].network = self.tokenInfo?.network
-                self.coreDataManager.clearDataFromCoreData()
-                self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
+                self.coreDataManager.saveTokens(tokensData:self.tokens, network: self.network!)
                 SVProgressHUD.dismiss()
                 self.delegate?.accountPublicAddress(address: "")
                 self.dismissVC()
@@ -723,9 +722,9 @@ class AddCustomTokenViewController: UIViewController {
             case .success(let tokensList):
                 SVProgressHUD.dismiss()
                 self.tokens = tokensList
-                self.coreDataManager.clearDataFromCoreData()
-                self.coreDataManager.saveDataToCoreData(tokensData: tokensList)
-                self.tokens = self.coreDataManager.fetchDataFromCoreData()
+//                self.coreDataManager.clearDataFromCoreData()
+                self.coreDataManager.saveTokens(tokensData:  self.tokens, network: self.network!)
+                self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
                         self.tokensTableView.reloadData()

@@ -429,6 +429,7 @@ class WalletViewController: UIViewController {
     var tokens = [TokensData]()
     var delegate :  ChangeNetwork?
     var isSolana = false
+    var network : Networks?
     
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -694,7 +695,7 @@ class WalletViewController: UIViewController {
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
         publicAddress = address
-        self.tokens = self.coreDataManager.fetchDataFromCoreData()
+        self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
         self.tokens = self.tokens.filter{$0.isUserToken == true}
         var tokenAddress = [TokenModel]()
         for eachToken in self.tokens{
