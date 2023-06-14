@@ -695,7 +695,7 @@ class WalletViewController: UIViewController {
     func setUIAndFetchData(address: String){
         SVProgressHUD.show()
         publicAddress = address
-        self.network = fetchDefaultNetwork()
+        self.fetchDefaultNetwork()
         self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
         self.tokens = self.tokens.filter{$0.isUserToken == true}
         var tokenAddress = [TokenModel]()
@@ -706,10 +706,11 @@ class WalletViewController: UIViewController {
         }
         self.fetchUserTokens(tokens: tokenAddress)
     }
-    func fetchDefaultNetwork() -> Networks{
+    func fetchDefaultNetwork(){
         let networks =  CoreDataManager.shared.fetchNetworks()
         let chainName = ParticleNetwork.getChainInfo()
-        return networks.filter{$0.name == chainName.name}.first!
+        let filterNetworks =  networks.filter{$0.name == chainName.name}
+        self.network = filterNetworks.count > 0 ? networks.first : networks[0]
     }
     func addNativeToken(tokens : [String]){
         WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
