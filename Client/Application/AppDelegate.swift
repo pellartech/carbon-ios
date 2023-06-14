@@ -171,6 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setUpDefaultNetwork(){
         let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
         ParticleNetwork.setChainInfo(chainInfo)
+        CoreDataManager.shared.saveNetworks(networks: networks)
     }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.

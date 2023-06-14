@@ -88,7 +88,7 @@ class CoreDataManager {
     static let shared = CoreDataManager()
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CoreDataRelationship")
+        let container = NSPersistentContainer(name: "Tokens")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -98,11 +98,10 @@ class CoreDataManager {
     }()
     
     //MARK: - Method: Save networks
-    func saveNetworks(name: String) -> Networks {
-        let networks = Networks(context: persistentContainer.viewContext)
-        networks.name = name
-        return networks
-    }
+//    func saveNetworks(name: String) {
+//        let networks = Networks(context: persistentContainer.viewContext)
+//        networks.name = name
+//    }
     
     //MARK: - Method: Save tokens
 //    func saveTokens(id: String, address: String, imageUrl: String, isUserToken: Bool, created_time: Int64 ,symbol : String ,networks: Networks) -> Tokens {
@@ -116,6 +115,11 @@ class CoreDataManager {
 //        networks.token = token
 //        return token
 //    }
+    func saveNetworks(networks:[Platforms]) {
+        let context = persistentContainer.viewContext
+        _ = networks.map { $0.toManagedObject(in: context) }
+        saveChanges()
+    }
     func saveTokens(tokensData:[TokensData],network:Networks) {
         let context = persistentContainer.newBackgroundContext()
         do {
@@ -166,7 +170,7 @@ class CoreDataManager {
         return TokensData(id: tokens.id, name: tokens.name, symbol: tokens.symbol, created_time: tokens.created_time,isUserToken: tokens.isUserToken, address: tokens.address,imageUrl: tokens.imageUrl)
     }
     // MARK: - Core Data Saving support
-    func save () {
+    func saveChanges () {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -177,17 +181,17 @@ class CoreDataManager {
             }
         }
     }
-    
+   
     //MARK: - Method: Clear data from core data
     func deleteTokens(token: Tokens) {
         let context = persistentContainer.viewContext
         context.delete(token)
-        save()
+        saveChanges()
     }
     
     func deleteNetworks(networks: Networks) {
         let context = persistentContainer.viewContext
         context.delete(networks)
-        save()
+        saveChanges()
     }
 }
