@@ -477,8 +477,8 @@ class AddCustomTokenViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
+        fetchDefaultNetwork()
         checkCoreDataValue()
-        
     }
     
     // MARK: - UI Methods
@@ -722,7 +722,6 @@ class AddCustomTokenViewController: UIViewController {
             case .success(let tokensList):
                 SVProgressHUD.dismiss()
                 self.tokens = tokensList
-//                self.coreDataManager.clearDataFromCoreData()
                 self.coreDataManager.saveTokens(tokensData:  self.tokens, network: self.network!)
                 self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
                 DispatchQueue.global().async {
@@ -736,6 +735,22 @@ class AddCustomTokenViewController: UIViewController {
                 print(error)
             }
         }
+    }
+    func fetchDefaultNetwork(){
+        let networkData =  CoreDataManager.shared.fetchNetworks()
+        let chainName = ParticleNetwork.getChainInfo()
+        var networkName = String()
+        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
+        switch symbol{
+        case NetworkEnum.BinanceSmartChain.rawValue:
+            networkName =  WalletNetworkEnum.BinanceSmartChain.rawValue
+        case NetworkEnum.Solana.rawValue:
+            networkName =  WalletNetworkEnum.Solana.rawValue
+        default:
+            networkName =  WalletNetworkEnum.Ethereum.rawValue
+        }
+        let filterNetworks =  networkData.filter{$0.name == networkName}
+        self.network = filterNetworks.count > 0 ? networkData.first : networkData[0]
     }
     func fetchTokenInfo(token : TokensData){
         SVProgressHUD.show()

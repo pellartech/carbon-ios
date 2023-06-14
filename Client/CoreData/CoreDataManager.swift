@@ -152,7 +152,7 @@ class CoreDataManager {
     //MARK: - Method: Fetch tokens
     func fetchTokens(networks: Networks) -> [TokensData] {
         let request: NSFetchRequest<Tokens> = Tokens.fetchRequest()
-        request.predicate = NSPredicate(format: "networks = %@", networks)
+        request.predicate = NSPredicate(format: "network = %@", networks)
         var tokensData: [TokensData] = []
         do {
            let fetchedTokenss = try persistentContainer.viewContext.fetch(request)

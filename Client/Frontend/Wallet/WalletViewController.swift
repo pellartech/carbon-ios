@@ -707,10 +707,20 @@ class WalletViewController: UIViewController {
         self.fetchUserTokens(tokens: tokenAddress)
     }
     func fetchDefaultNetwork(){
-        let networks =  CoreDataManager.shared.fetchNetworks()
+        let networkData =  CoreDataManager.shared.fetchNetworks()
         let chainName = ParticleNetwork.getChainInfo()
-        let filterNetworks =  networks.filter{$0.name == chainName.name}
-        self.network = filterNetworks.count > 0 ? networks.first : networks[0]
+        var networkName = String()
+        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
+        switch symbol{
+        case NetworkEnum.BinanceSmartChain.rawValue:
+            networkName =  WalletNetworkEnum.BinanceSmartChain.rawValue
+        case NetworkEnum.Solana.rawValue:
+            networkName =  WalletNetworkEnum.Solana.rawValue
+        default:
+            networkName =  WalletNetworkEnum.Ethereum.rawValue
+        }
+        let filterNetworks =  networkData.filter{$0.name == networkName}
+        self.network = filterNetworks.count > 0 ? networkData.first : networkData[0]
     }
     func addNativeToken(tokens : [String]){
         WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
@@ -733,7 +743,8 @@ class WalletViewController: UIViewController {
             switch result {
             case .success(let tokens):
                 self.tokensModel = tokens
-                self.checkNetworkToAddNativeToken()
+                self.updateUI()
+                SVProgressHUD.dismiss()
             case .failure(let error):
                 print(error)
                 DispatchQueue.global().async {
@@ -762,19 +773,6 @@ class WalletViewController: UIViewController {
                 self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
             }
         }
-    }
-    
-    func checkNetworkToAddNativeToken(){
-//        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
-//        switch symbol{
-//        case NetworkEnum.BinanceSmartChain.rawValue:
-//            self.addNativeToken(tokens: carbonToken)
-//        case NetworkEnum.Solana.rawValue:
-//            self.addNativeToken(tokens: solonaToken)
-//        default:
-            self.updateUI()
-            SVProgressHUD.dismiss()
-//        }
     }
 // MARK: - Objc Methods
     @objc func closeBtnTapped (){
