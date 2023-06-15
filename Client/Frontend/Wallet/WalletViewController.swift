@@ -687,6 +687,8 @@ class WalletViewController: UIViewController {
                 setUIAndFetchData(address: filterData[0].publicAddress,isSolana: isSolana)
             }
         }else{
+            let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+            ParticleNetwork.setChainInfo(chainInfo)
             self.view.makeToast("Unable to connect. Login to selected network and try again!", duration: 3.0, position: .bottom)
         }
     }
@@ -920,8 +922,10 @@ extension WalletViewController :  ChangeNetwork{
         switch platforms.name!.uppercased(){
         case WalletNetworkEnum.Solana.rawValue.uppercased(): isSolana = true
             chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
-        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased(): chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-        default: chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():isSolana = false
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        default: isSolana = false
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
         }
         ParticleNetwork.setChainInfo(chainInfo!)
         self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)

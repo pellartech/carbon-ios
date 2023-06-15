@@ -101,32 +101,12 @@ public class WalletViewModel {
     func getTokenList(completed : @escaping (Result<[TokensData], Error>) -> Void) {
         let urlString = "\(GET_TOKEN_BASE_URL)list"
         guard let url = URL(string: urlString) else {return}
-        var request = URLRequest(url:url, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60);
-        if let etag = UserDefaults.standard.object(forKey: urlString) as? String{
-            request.addValue(etag, forHTTPHeaderField: IF_NONE_MATCH)
-        }
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             do {
-                if (response != nil) {
-                    if let httpResponse = response as? HTTPURLResponse {
-                        if let urlString = httpResponse.url?.absoluteString {
-                            if let etag = httpResponse.allHeaderFields[ETAG] as? String {
-                                UserDefaults.standard.set(etag, forKey: urlString)
-                                UserDefaults.standard.synchronize()
-                            }
-                        }
-                    }
-                    if let httpResponse = response as? HTTPURLResponse ,(httpResponse.statusCode == CODE && error == nil && data != nil) {
-                        let decoder = JSONDecoder()
-                        let result = try decoder.decode([TokensData].self,from:data!)
-                        completed(.success(result))
-                        return
-                    }else{
-                        completed(.failure(error!))
-                    }
-                }else{
-                    completed(.failure(error!))
-                }
+                guard let responseData = data else{return}
+                let decoder = JSONDecoder()
+                let result = try decoder.decode([TokensData].self,from:responseData)
+                completed(.success(result))
             } catch {
                 completed(.failure(error))
             }
