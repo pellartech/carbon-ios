@@ -171,9 +171,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setUpDefaultNetwork(){
         let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
         ParticleNetwork.setChainInfo(chainInfo)
-        let networkSaved = CoreDataManager.shared.fetchNetworks()
-        if( networkSaved.count == 0){
-            CoreDataManager.shared.saveNetworks(networks: networks)
+        networks = CoreDataManager.shared.fetchNetworks()
+        if (networks.count == 0){
+            for network in WalletNetworkEnum.allCases{
+                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue)
+                networks.append(network)
+                CoreDataManager.shared.save()
+            }
         }
     }
 

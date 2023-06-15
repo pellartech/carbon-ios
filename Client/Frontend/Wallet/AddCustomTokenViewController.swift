@@ -458,12 +458,11 @@ class AddCustomTokenViewController: UIViewController {
     var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokens = [TokensData]()
+    var tokens = [Tokens]()
     var network : Networks?
     var tokenInfo : TokensInfo?
     var selectedIndexes = IndexPath()
-    private var coreDataManager =  CoreDataManager.shared
-    var searchTokenList = [TokensData]()
+    var searchTokenList = [Tokens]()
     var platforms = [Platforms]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
@@ -684,8 +683,8 @@ class AddCustomTokenViewController: UIViewController {
     // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
         SVProgressHUD.show()
-        self.tokens = self.coreDataManager.fetchTokens(networks: network!)
-        self.tokens = self.tokens.filter{$0.isUserToken == false}
+        self.tokens = CoreDataManager.shared.fetchTokens(network: network!)
+        self.tokens = self.tokens.filter{$0.isAdded == false}
         if(self.tokens.count == 0){
             self.fetchTokens()
         }else{
@@ -701,10 +700,10 @@ class AddCustomTokenViewController: UIViewController {
             case .success(let result):
                 print(result)
                 guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
-                self.tokens[index].isUserToken = true
+                self.tokens[index].isAdded = true
                 self.tokens[index].address = self.tokenInfo?.contract_address
                 self.tokens[index].imageUrl = self.tokenInfo?.image?.large
-                self.coreDataManager.saveTokens(tokensData:self.tokens, network: self.network!)
+                CoreDataManager.shared.save()
                 SVProgressHUD.dismiss()
                 self.delegate?.accountPublicAddress(address: "")
                 self.dismissVC()
@@ -720,16 +719,17 @@ class AddCustomTokenViewController: UIViewController {
         WalletViewModel.shared.getTokenList{result in
             switch result {
             case .success(let tokensList):
-                SVProgressHUD.dismiss()
-                self.tokens = tokensList
-                self.coreDataManager.saveTokens(tokensData:  self.tokens, network: self.network!)
-                self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
                 DispatchQueue.global().async {
                     DispatchQueue.main.async {
+                        for each in tokensList{
+                         _ = CoreDataManager.shared.saveToken(id: each.id ?? "", name: each.name ?? "", address: each.address ?? "", isAdded: each.isAdded ?? false, imageUrl: each.imageUrl ?? "", symbol: each.symbol ?? "", network: self.network!)
+                            CoreDataManager.shared.save()
+                        }
+                        self.tokens =  CoreDataManager.shared.fetchTokens(network: self.network!)
                         self.tokensTableView.reloadData()
+                        SVProgressHUD.dismiss()
                     }
                 }
-                
             case .failure(let error):
                 SVProgressHUD.dismiss()
                 print(error)
@@ -738,21 +738,13 @@ class AddCustomTokenViewController: UIViewController {
     }
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        let chainName = ParticleNetwork.getChainInfo()
-        var networkName = String()
-        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
-        switch symbol{
-        case NetworkEnum.BinanceSmartChain.rawValue:
-            networkName =  WalletNetworkEnum.BinanceSmartChain.rawValue
-        case NetworkEnum.Solana.rawValue:
-            networkName =  WalletNetworkEnum.Solana.rawValue
-        default:
-            networkName =  WalletNetworkEnum.Ethereum.rawValue
+        switch ParticleNetwork.getChainInfo().nativeSymbol{
+        case NetworkEnum.Ethereum.rawValue:  self.network  = networkData[0]
+        case NetworkEnum.Solana.rawValue:  self.network  = networkData[1]
+        default: self.network  = networkData[2]
         }
-        let filterNetworks =  networkData.filter{$0.name == networkName}
-        self.network = filterNetworks.count > 0 ? networkData.first : networkData[0]
     }
-    func fetchTokenInfo(token : TokensData){
+    func fetchTokenInfo(token : Tokens){
         SVProgressHUD.show()
         WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
             switch result {
@@ -1118,7 +1110,7 @@ class CustomTokensTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setUI(token : TokensData){
+    func setUI(token : Tokens){
         titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
     }
 }

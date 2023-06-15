@@ -25,7 +25,7 @@ typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
 
-var networks =  [Platforms(name: WalletNetworkEnum.BinanceSmartChain.rawValue, address: "") , Platforms(name: WalletNetworkEnum.Ethereum.rawValue, address: ""), Platforms(name: WalletNetworkEnum.Solana.rawValue, address: ""), ]
+var networks =  [Networks]()
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 var solonaToken = ["0x41848d32f281383f214c69b7b248dc7c2e0a7374"]
 
@@ -426,9 +426,8 @@ class WalletViewController: UIViewController {
     var heightForTokenView =  NSLayoutConstraint()
     var themeManager :  ThemeManager?
     private var coreDataManager =  CoreDataManager.shared
-    var tokens = [TokensData]()
+    var tokens = [Tokens]()
     var delegate :  ChangeNetwork?
-    var isSolana = false
     var network : Networks?
     
 // MARK: - View Lifecycles
@@ -440,7 +439,7 @@ class WalletViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getLocalUserData()
+        getLocalUserData(isSolana: false)
     }
     
 // MARK: - UI Methods
@@ -673,7 +672,7 @@ class WalletViewController: UIViewController {
         }
     }
     
-    func getLocalUserData(){
+    func getLocalUserData(isSolana: Bool){
         data = WalletManager.shared.getWallets().filter { connectWalletModel in
             let adapters = ParticleConnect.getAdapterByAddress(publicAddress: connectWalletModel.publicAddress).filter {
                 $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
@@ -685,42 +684,40 @@ class WalletViewController: UIViewController {
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
                 print(filterData[0].publicAddress)
-                setUIAndFetchData(address: filterData[0].publicAddress)
+                setUIAndFetchData(address: filterData[0].publicAddress,isSolana: isSolana)
             }
+        }else{
+            self.view.makeToast("Unable to connect. Login to selected network and try again!", duration: 3.0, position: .bottom)
         }
     }
     
     
 // MARK: - View Model Methods - Network actions
-    func setUIAndFetchData(address: String){
+    func setUIAndFetchData(address: String,isSolana: Bool){
         SVProgressHUD.show()
         publicAddress = address
         self.fetchDefaultNetwork()
-        self.tokens = self.coreDataManager.fetchTokens(networks: self.network!)
-        self.tokens = self.tokens.filter{$0.isUserToken == true}
+        self.tokens = self.coreDataManager.fetchTokens(network: self.network!)
+        self.tokens = self.tokens.filter{$0.isAdded == true}
         var tokenAddress = [TokenModel]()
         for eachToken in self.tokens{
             let tokenInfo = TokenInfo(chainName: "", chainId: 0, mintAddress: "", symbol: eachToken.symbol ?? "", name:eachToken.name ?? "", decimals: 0, logoURI:eachToken.imageUrl ?? "")
             let model = TokenModel(address: eachToken.address ?? "", chainName: "", chainId: 0, amount: 0, decimals: 0, tokenInfo: tokenInfo, mintAddress: "")
             tokenAddress.append(model)
         }
-        self.fetchUserTokens(tokens: tokenAddress)
+        if (isSolana){
+            self.fetchUserTokensSolana(tokens: tokenAddress)
+        }else{
+            self.fetchUserTokensEVM(tokens: tokenAddress)
+        }
     }
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        let chainName = ParticleNetwork.getChainInfo()
-        var networkName = String()
-        let symbol = ParticleNetwork.getChainInfo().nativeSymbol
-        switch symbol{
-        case NetworkEnum.BinanceSmartChain.rawValue:
-            networkName =  WalletNetworkEnum.BinanceSmartChain.rawValue
-        case NetworkEnum.Solana.rawValue:
-            networkName =  WalletNetworkEnum.Solana.rawValue
-        default:
-            networkName =  WalletNetworkEnum.Ethereum.rawValue
+        switch ParticleNetwork.getChainInfo().nativeSymbol{
+        case NetworkEnum.Ethereum.rawValue:  self.network  = networkData[0]
+        case NetworkEnum.Solana.rawValue:  self.network  = networkData[1]
+        default: self.network  = networkData[2]
         }
-        let filterNetworks =  networkData.filter{$0.name == networkName}
-        self.network = filterNetworks.count > 0 ? networkData.first : networkData[0]
     }
     func addNativeToken(tokens : [String]){
         WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
@@ -738,27 +735,36 @@ class WalletViewController: UIViewController {
             }
         }
     }
-    func fetchUserTokens(tokens: [TokenModel]){
-        WalletViewModel.shared.getUserTokenLists(isSolana: self.isSolana, address: publicAddress, tokenArray: tokens) { result in
-            switch result {
-            case .success(let tokens):
-                self.tokensModel = tokens
-                self.updateUI()
-                SVProgressHUD.dismiss()
-            case .failure(let error):
-                print(error)
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.tokensModel = []
-                        self.tableView.reloadData()
-                        self.tokenLabel.isHidden = true
-                        self.noTokenLabel.isHidden = false
-                        SVProgressHUD.dismiss()
-                    }
+    func fetchUserTokensEVM(tokens: [TokenModel]){
+        WalletViewModel.shared.getUserTokenListsEVM( address: publicAddress, tokenArray: tokens) { result in
+            self.helperMethodToUpdateUI(result: result)
+        }
+    }
+    func fetchUserTokensSolana(tokens: [TokenModel]){
+        WalletViewModel.shared.getUserTokenListsSolana( address: publicAddress, tokenArray: tokens) { result in
+            self.helperMethodToUpdateUI(result: result)
+        }
+    }
+    func helperMethodToUpdateUI(result: Result<[TokenModel], Error>){
+        switch result {
+        case .success(let tokens):
+            self.tokensModel = tokens
+            self.updateUI()
+            SVProgressHUD.dismiss()
+        case .failure(let error):
+            print(error)
+            DispatchQueue.global().async {
+                DispatchQueue.main.async {
+                    self.tokensModel = []
+                    self.tableView.reloadData()
+                    self.tokenLabel.isHidden = true
+                    self.noTokenLabel.isHidden = false
+                    SVProgressHUD.dismiss()
                 }
             }
         }
     }
+    
     func updateUI(){
         DispatchQueue.global().async {
             DispatchQueue.main.async {
@@ -840,8 +846,10 @@ class WalletViewController: UIViewController {
     }
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
+        for each in networks{
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: ""))
+        }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
-        changeNetworkVC.platforms = networks
         changeNetworkVC.delegate = self
         changeNetworkVC.isSettings = true
         self.present(changeNetworkVC, animated: true)
@@ -898,7 +906,7 @@ extension WalletViewController : UITableViewDelegate, UITableViewDataSource{
 // MARK: - Extension - ConnectProtocol
 extension WalletViewController : ConnectProtocol{
     func accountPublicAddress(address: String) {
-        getLocalUserData()
+        getLocalUserData(isSolana: false)
     }
     func logout() {
         self.dismiss(animated: true)
@@ -907,19 +915,17 @@ extension WalletViewController : ConnectProtocol{
 // MARK: - Extension - ChangeNetwork
 extension WalletViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
+        var isSolana =  false
         var chainInfo : Chain?
         switch platforms.name!.uppercased(){
-        case WalletNetworkEnum.Solana.rawValue.uppercased():
+        case WalletNetworkEnum.Solana.rawValue.uppercased(): isSolana = true
             chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
-            self.isSolana = true
-        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
-            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-        default:
-            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased(): chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        default: chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
         }
         ParticleNetwork.setChainInfo(chainInfo!)
         self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)
-        getLocalUserData()
+        self.getLocalUserData(isSolana:  isSolana)
     }
 }
 
