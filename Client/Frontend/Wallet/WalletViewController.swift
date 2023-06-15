@@ -25,9 +25,16 @@ typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
 
-var networks =  [Networks]()
+
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 var solonaToken = ["0x41848d32f281383f214c69b7b248dc7c2e0a7374"]
+var publicAddress = String()
+var networks =  [Networks]()
+var tokens = [Tokens]()
+var selectedNetwork: Networks = {
+    let network = Networks()
+    return network
+}()
 
 class WalletViewController: UIViewController {
     
@@ -419,16 +426,13 @@ class WalletViewController: UIViewController {
     var shownFromAppMenu: Bool = false
     private var data: [ConnectWalletModel] = []
     let bag = DisposeBag()
-    private var publicAddress = String()
     private var tokensModel = [TokenModel]()
     var networkData = [String]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
     var themeManager :  ThemeManager?
     private var coreDataManager =  CoreDataManager.shared
-    var tokens = [Tokens]()
     var delegate :  ChangeNetwork?
-    var network : Networks?
     
 // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -439,7 +443,8 @@ class WalletViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getLocalUserData(isSolana: false)
+        self.fetchTokens()
+        self.getLocalUserData(isSolana: false)
     }
     
 // MARK: - UI Methods
@@ -693,16 +698,29 @@ class WalletViewController: UIViewController {
         }
     }
     
-    
+    func fetchTokens() {
+        selectedNetwork = self.fetchDefaultNetwork()
+        tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
+        if (tokens.count == 0){
+            WalletViewModel.shared.getTokenList{result in
+                switch result {
+                case .success(let tokensList):
+                    CoreDataManager.shared.saveToken(tokensData: tokensList, network: selectedNetwork)
+                    tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
+    }
+        
 // MARK: - View Model Methods - Network actions
     func setUIAndFetchData(address: String,isSolana: Bool){
         SVProgressHUD.show()
         publicAddress = address
-        self.fetchDefaultNetwork()
-        self.tokens = self.coreDataManager.fetchTokens(network: self.network!)
-        self.tokens = self.tokens.filter{$0.isAdded == true}
+        tokens = tokens.filter{$0.isAdded == true}
         var tokenAddress = [TokenModel]()
-        for eachToken in self.tokens{
+        for eachToken in tokens{
             let tokenInfo = TokenInfo(chainName: "", chainId: 0, mintAddress: "", symbol: eachToken.symbol ?? "", name:eachToken.name ?? "", decimals: 0, logoURI:eachToken.imageUrl ?? "")
             let model = TokenModel(address: eachToken.address ?? "", chainName: "", chainId: 0, amount: 0, decimals: 0, tokenInfo: tokenInfo, mintAddress: "")
             tokenAddress.append(model)
@@ -713,12 +731,12 @@ class WalletViewController: UIViewController {
             self.fetchUserTokensEVM(tokens: tokenAddress)
         }
     }
-    func fetchDefaultNetwork(){
+    func fetchDefaultNetwork() -> Networks{
         let networkData =  CoreDataManager.shared.fetchNetworks()
         switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  self.network  = networkData[0]
-        case NetworkEnum.Solana.rawValue:  self.network  = networkData[1]
-        default: self.network  = networkData[2]
+        case NetworkEnum.Ethereum.rawValue:  return networkData[0]
+        case NetworkEnum.Solana.rawValue: return networkData[1]
+        default: return networkData[2]
         }
     }
     func addNativeToken(tokens : [String]){
@@ -867,7 +885,6 @@ class WalletViewController: UIViewController {
     func initiateAddTokenVC(){
         let vc = AddCustomTokenViewController()
         vc.delegate = self
-        vc.publicAddress = publicAddress
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: false)
     }
@@ -929,6 +946,7 @@ extension WalletViewController :  ChangeNetwork{
         }
         ParticleNetwork.setChainInfo(chainInfo!)
         self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)
+        self.fetchTokens()
         self.getLocalUserData(isSolana:  isSolana)
     }
 }

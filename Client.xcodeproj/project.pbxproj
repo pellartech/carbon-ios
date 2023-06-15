@@ -1215,7 +1215,6 @@
 		F99BEA9D2A135F96003F49B2 /* DrawerTransitionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */; };
 		F99BEAA12A138484003F49B2 /* ParticleNetwork-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */; };
 		F99BEAA32A138F16003F49B2 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99BEAA22A138F16003F49B2 /* SDWebImage.framework */; };
-		F9AB00392A26571000775628 /* AddTokenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AB00382A26571000775628 /* AddTokenViewController.swift */; };
 		F9CC376129C218D100165415 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */; };
 		F9DDF8372A393DEA006AAADE /* WalletEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9DDF8362A393DEA006AAADE /* WalletEnum.swift */; };
 		F9FC4C932A2EEC03000FA4C8 /* ChangeNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */; };
@@ -5091,7 +5090,6 @@
 		F99BEA9C2A135F96003F49B2 /* DrawerTransitionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerTransitionManager.swift; sourceTree = "<group>"; };
 		F99BEAA02A138484003F49B2 /* ParticleNetwork-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParticleNetwork-Info.plist"; sourceTree = "<group>"; };
 		F99BEAA22A138F16003F49B2 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9AB00382A26571000775628 /* AddTokenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTokenViewController.swift; sourceTree = "<group>"; };
 		F9CC375D29C217CA00165415 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		F9CC375E29C217CA00165415 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		F9CC375F29C217CA00165415 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -8148,7 +8146,6 @@
 				F99BEA982A135EAB003F49B2 /* DrawerMenuViewController.swift */,
 				F91441BF2A1C8A8A008BE25A /* WalletGetStartedViewController.swift */,
 				F91441C32A1CA320008BE25A /* AddWalletViewController.swift */,
-				F9AB00382A26571000775628 /* AddTokenViewController.swift */,
 				F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */,
 				F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */,
 				F9DDF8362A393DEA006AAADE /* WalletEnum.swift */,
@@ -10013,7 +10010,6 @@
 				CAA3B7E62497DCB60094E3C1 /* LoginDataSource.swift in Sources */,
 				1DFE57FF27BAE3150025DE58 /* HomepageSectionType.swift in Sources */,
 				E4CD9F6D1A77DD2800318571 /* ReaderModeStyleViewController.swift in Sources */,
-				F9AB00392A26571000775628 /* AddTokenViewController.swift in Sources */,
 				E1CD81BC290C5C3F00124B27 /* DevicePickerTableViewCell.swift in Sources */,
 				8AD40FD527BB1C1000672675 /* LockButton.swift in Sources */,
 				5F130D2E2483508E00B0F7D0 /* FxAWebViewModel.swift in Sources */,

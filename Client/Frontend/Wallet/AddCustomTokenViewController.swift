@@ -455,11 +455,8 @@ class AddCustomTokenViewController: UIViewController {
     
     // MARK: - UI Properties
     let bag = DisposeBag()
-    var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokens = [Tokens]()
-    var network : Networks?
     var tokenInfo : TokensInfo?
     var selectedIndexes = IndexPath()
     var searchTokenList = [Tokens]()
@@ -682,27 +679,20 @@ class AddCustomTokenViewController: UIViewController {
     }
     // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
-        SVProgressHUD.show()
-        self.tokens = CoreDataManager.shared.fetchTokens(network: network!)
-        self.tokens = self.tokens.filter{$0.isAdded == false}
-        if(self.tokens.count == 0){
-            self.fetchTokens()
-        }else{
-            SVProgressHUD.dismiss()
-            self.tokensTableView.reloadData()
-        }
+        tokens = tokens.filter{$0.isAdded == false}
+        self.tokensTableView.reloadData()
     }
     
     // MARK: - View Model Methods - Network actions
-    func addToken(tokens : [String]){
-        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+    func addToken(tokenArray : [String]){
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokenArray) {result in
             switch result {
             case .success(let result):
                 print(result)
-                guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
-                self.tokens[index].isAdded = true
-                self.tokens[index].address = self.tokenInfo?.contract_address
-                self.tokens[index].imageUrl = self.tokenInfo?.image?.large
+                guard let index = tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
+                tokens[index].isAdded = true
+                tokens[index].address = self.tokenInfo?.contract_address
+                tokens[index].imageUrl = self.tokenInfo?.image?.large
                 CoreDataManager.shared.save()
                 SVProgressHUD.dismiss()
                 self.delegate?.accountPublicAddress(address: "")
@@ -715,33 +705,12 @@ class AddCustomTokenViewController: UIViewController {
         }
     }
     
-    func fetchTokens() {
-        WalletViewModel.shared.getTokenList{result in
-            switch result {
-            case .success(let tokensList):
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        for each in tokensList{
-                         _ = CoreDataManager.shared.saveToken(id: each.id ?? "", name: each.name ?? "", address: each.address ?? "", isAdded: each.isAdded ?? false, imageUrl: each.imageUrl ?? "", symbol: each.symbol ?? "", network: self.network!)
-                            CoreDataManager.shared.save()
-                        }
-                        self.tokens =  CoreDataManager.shared.fetchTokens(network: self.network!)
-                        self.tokensTableView.reloadData()
-                        SVProgressHUD.dismiss()
-                    }
-                }
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-            }
-        }
-    }
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
         switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  self.network  = networkData[0]
-        case NetworkEnum.Solana.rawValue:  self.network  = networkData[1]
-        default: self.network  = networkData[2]
+        case NetworkEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
+        case NetworkEnum.Solana.rawValue: selectedNetwork  = networkData[1]
+        default: selectedNetwork  = networkData[2]
         }
     }
     func fetchTokenInfo(token : Tokens){
@@ -807,7 +776,7 @@ class AddCustomTokenViewController: UIViewController {
     @objc func addTokenBtnTapped (){
         SVProgressHUD.show()
         let contractAddress = self.tokenInfo?.contract_address ?? ""
-        self.addToken(tokens: [contractAddress])
+        self.addToken(tokenArray: [contractAddress])
     }
     
     
@@ -841,7 +810,7 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
         if searchText.count >= 3 {
             emptyList()
             searchText = String(searchText.dropLast(range.length))
-            for each in  self.tokens{
+            for each in  tokens{
                 if (each.name?.hasPrefix(searchText) ?? false){
                     self.searchTokenList.append(each)
                 }

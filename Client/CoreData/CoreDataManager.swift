@@ -21,17 +21,29 @@ class CoreDataManager {
     }
     
     // MARK: - Save token
-    func saveToken(id: String, name: String,address: String, isAdded: Bool, imageUrl: String, symbol :String ,network: Networks) -> Tokens {
-        let token = Tokens(context: persistentContainer.viewContext)
-        token.id = id
-        token.name = name
-        token.address = address
-        token.symbol = symbol
-        token.isAdded = isAdded
-        token.imageUrl = imageUrl
-        network.addToTokens(token)
-        return token
-    }
+    func saveToken(tokensData:[TokensData],network: Networks) {
+           let context = persistentContainer.viewContext
+           do {
+               if #available(iOS 15.0, *) {
+                   try   context.performAndWait {
+                       tokensData.forEach{ token in
+                           let token = Tokens(context: persistentContainer.viewContext)
+                           token.id = token.id
+                           token.name = token.name
+                           token.address = token.address
+                           token.symbol = token.symbol
+                           token.isAdded = token.isAdded
+                           token.imageUrl = token.imageUrl
+                           network.addToTokens(token)
+                       }
+                       try context.save()
+                   }
+               }
+           } catch {
+               print(error)
+           }
+       }
+       
     
     // MARK: - Fetch network
     func fetchNetworks() -> [Networks] {
