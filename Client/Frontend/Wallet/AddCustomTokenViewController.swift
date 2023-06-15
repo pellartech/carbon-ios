@@ -679,6 +679,7 @@ class AddCustomTokenViewController: UIViewController {
     }
     // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
+        tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
         tokens = tokens.filter{$0.isAdded == false}
         self.tokensTableView.reloadData()
     }

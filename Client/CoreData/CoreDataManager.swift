@@ -26,14 +26,14 @@ class CoreDataManager {
            do {
                if #available(iOS 15.0, *) {
                    try   context.performAndWait {
-                       tokensData.forEach{ token in
+                       tokensData.forEach{ eachToken in
                            let token = Tokens(context: persistentContainer.viewContext)
-                           token.id = token.id
-                           token.name = token.name
-                           token.address = token.address
-                           token.symbol = token.symbol
-                           token.isAdded = token.isAdded
-                           token.imageUrl = token.imageUrl
+                           token.id = eachToken.id
+                           token.name = eachToken.name
+                           token.address = eachToken.address
+                           token.symbol = eachToken.symbol
+                           token.isAdded = eachToken.isAdded ?? false
+                           token.imageUrl = eachToken.imageUrl
                            network.addToTokens(token)
                        }
                        try context.save()
