@@ -678,6 +678,7 @@ class WalletViewController: UIViewController {
     }
     
     func getLocalUserData(isSolana: Bool){
+        tokens = CoreDataManager.shared.fetchTokens(network: selectedNetwork)
         data = WalletManager.shared.getWallets().filter { connectWalletModel in
             let adapters = ParticleConnect.getAdapterByAddress(publicAddress: connectWalletModel.publicAddress).filter {
                 $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
