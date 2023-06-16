@@ -710,8 +710,7 @@ class AddCustomTokenViewController: UIViewController {
         let networkData =  CoreDataManager.shared.fetchNetworks()
         switch ParticleNetwork.getChainInfo().nativeSymbol{
         case NetworkEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
-        case NetworkEnum.Solana.rawValue: selectedNetwork  = networkData[1]
-        default: selectedNetwork  = networkData[2]
+        default: selectedNetwork  = networkData[1]
         }
     }
     func fetchTokenInfo(token : Tokens){
@@ -738,7 +737,7 @@ class AddCustomTokenViewController: UIViewController {
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
             self.platforms.append(Platforms(name: key, address: value))
         }
-        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.Solana.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
+        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
         if (self.platforms.count > 1 ){
             self.chevronImageView.isHidden = false
             self.trailingForChevron.isActive = true
@@ -775,9 +774,13 @@ class AddCustomTokenViewController: UIViewController {
         showToast(message: "Stay tunned! Dev in progress...")
     }
     @objc func addTokenBtnTapped (){
-        SVProgressHUD.show()
-        let contractAddress = self.tokenInfo?.contract_address ?? ""
-        self.addToken(tokenArray: [contractAddress])
+        if ( self.tokenNetworkValueLabel.text  == selectedNetwork.name?.capitalized){
+            SVProgressHUD.show()
+                let contractAddress = self.tokenInfo?.contract_address ?? ""
+                self.addToken(tokenArray: [contractAddress])
+        }else{
+            self.view.makeToast("Sorry! Unable to add. Please select different token or network", duration: 3.0, position: .bottom)
+        }
     }
     
     
@@ -913,8 +916,6 @@ extension AddCustomTokenViewController :  ChangeNetwork{
             if (platform == platforms.name){
                 var chainInfo : Chain?
                 switch platform.uppercased(){
-                case WalletNetworkEnum.Solana.rawValue.uppercased():
-                    chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
                 case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
                     chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
                 default:
