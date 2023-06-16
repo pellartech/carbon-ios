@@ -990,11 +990,11 @@ extension String {
             tableName: "SearchHeaderTitle",
             value: "%@ search",
             comment: "When making a new search from the awesome bar, search results appear as the user write new letters in their search. Different sections with results from the selected search engine will appear. This string will be used as a header to separate the selected engine search results from current search query.")
-        public static let GoogleEngineSectionTitle = MZLocalizedString(
-            "Search.Google.Title.v108",
+        public static let PresearchEngineSectionTitle = MZLocalizedString(
+            "Search.Presearch.Title.v108",
             tableName: "SearchHeaderTitle",
-            value: "Google Search",
-            comment: "When making a new search from the awesome bar, search results appear as the user write new letters in their search. This string will be used as a header for Google search results listed as suggestions.")
+            value: "Presearch Search",
+            comment: "When making a new search from the awesome bar, search results appear as the user write new letters in their search. This string will be used as a header for Presearch search results listed as suggestions.")
     }
 }
 

@@ -161,8 +161,13 @@ class SearchEngines {
     }
 
     func getOrderedEngines(completion: @escaping ([OpenSearchEngine]) -> Void) {
+        guard var array = prefs.stringArrayForKey(self.orderedEngineNames) else {return}
+        var first = array.removeFirst()
+        var last = array.removeLast()
+        array.insert(last, at: array.startIndex)
+        array.append(first)
         engineProvider.getOrderedEngines(customEngines: customEngines,
-                                         orderedEngineNames: prefs.stringArrayForKey(self.orderedEngineNames),
+                                         orderedEngineNames: array,
                                          completion: completion)
     }
 
