@@ -88,7 +88,9 @@ class DefaultSearchEngineProvider: SearchEngineProvider {
         DispatchQueue.global().async {
             let result = engineNames.map({ (name: $0, path: pluginDirectory.appendingPathComponent("\($0).xml").path) })
                 .filter({
-                    FileManager.default.fileExists(atPath: $0.path)
+                    print($0.path)
+                    print($0.name)
+                    return FileManager.default.fileExists(atPath: $0.path)
                 }).compactMap({
                     parser.parse($0.path, engineID: $0.name)
                 }).sorted { e, _ in

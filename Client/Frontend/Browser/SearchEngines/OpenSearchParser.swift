@@ -127,6 +127,7 @@ class OpenSearchParser {
             }
         }
 
+    
         let uiImage: UIImage
         if let imageElement = largestImageElement,
             let imageURL = URL(string: imageElement.stringValue),
@@ -136,7 +137,7 @@ class OpenSearchParser {
         } else {
             return nil
         }
-
+        print("Engine ================= \(shortName)")
         return OpenSearchEngine(engineID: engineID, shortName: shortName, image: uiImage, searchTemplate: searchTemplate, suggestTemplate: suggestTemplate, isCustomEngine: false)
     }
 }
