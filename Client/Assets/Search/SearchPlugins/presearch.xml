@@ -9,5 +9,5 @@
 <!-- search service expects a text/html entry -->
 <Url type="text/html" method="get" template="https://presearch.com/search?q={searchTerms}"/>
 <!-- tablet search not supported -->
-<SearchForm>http://www.bing.com</SearchForm>
+<SearchForm>https://presearch.com</SearchForm>
 </SearchPlugin>
