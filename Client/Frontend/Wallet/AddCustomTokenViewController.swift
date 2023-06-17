@@ -315,6 +315,7 @@ class AddCustomTokenViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isUserInteractionEnabled = true
         textField.delegate = self
+        textField.autocorrectionType = .no
         return textField
     }()
     
@@ -776,8 +777,8 @@ class AddCustomTokenViewController: UIViewController {
     @objc func addTokenBtnTapped (){
         if ( self.tokenNetworkValueLabel.text  == selectedNetwork.name?.capitalized){
             SVProgressHUD.show()
-                let contractAddress = self.tokenInfo?.contract_address ?? ""
-                self.addToken(tokenArray: [contractAddress])
+            let contractAddress = self.tokenInfo?.contract_address ?? ""
+            self.addToken(tokenArray: [contractAddress])
         }else{
             self.view.makeToast("Sorry! Unable to add. Please select different token or network", duration: 3.0, position: .bottom)
         }
@@ -812,28 +813,38 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
         var searchText  = textField.text! + string
         if searchText.count >= 3 {
-            emptyList()
+            self.emptyList()
             searchText = String(searchText.dropLast(range.length))
             for each in  tokens{
                 if (each.name?.hasPrefix(searchText) ?? false){
                     self.searchTokenList.append(each)
                 }
             }
+            self.filteredList()
+        }else{
+            self.emptyList()
+        }
+        return true
+    }
+    
+    func filteredList(){
+        if self.searchTokenList.count > 0{
             self.tokenInfoLabel.text =  self.searchTokenList.count > 4 ? "\(self.searchTokenList.count) results. Scroll to see more" :  self.searchTokenList.count == 0 ? "0 result" :"\(self.searchTokenList.count) results"
             self.expandTableView()
             self.tokensTableView.reloadData()
         }else{
             self.emptyList()
-            self.collapseTableView()
         }
-        return true
     }
     
     func emptyList(){
+        self.selectedIndexes = IndexPath()
         self.tokenInfoLabel.text = "0 result"
         self.searchTokenList = []
         self.tokensTableView.reloadData()
+        self.collapseTableView()
     }
+    
     func expandTableView(){
         heightForTokenViewNoToken.isActive = false
         heightForTokenView.isActive = true
@@ -841,6 +852,7 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
             self.view.layoutIfNeeded()
         }
     }
+    
     func collapseTableView(){
         heightForTokenView.isActive = false
         heightForTokenViewNoToken.isActive = true
@@ -1080,7 +1092,6 @@ class CustomTokensTVCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
     func setUI(token : Tokens){
         titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
     }
