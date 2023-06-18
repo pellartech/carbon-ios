@@ -720,7 +720,6 @@ class WalletViewController: UIViewController {
             }
 
         }
-        self.fetchUserTokens(tokens: tokenAddress)
     }
     func fetchUserTokens(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenLists(address: publicAddress, tokenArray: tokens) { result in
