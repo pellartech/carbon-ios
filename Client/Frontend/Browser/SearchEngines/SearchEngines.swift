@@ -161,11 +161,10 @@ class SearchEngines {
     }
 
     func getOrderedEngines(completion: @escaping ([OpenSearchEngine]) -> Void) {
-        engineProvider.getOrderedEngines(customEngines: customEngines,
-                                         orderedEngineNames: prefs.stringArrayForKey(self.orderedEngineNames),
-                                         completion: completion)
+            engineProvider.getOrderedEngines(customEngines: customEngines,
+                                             orderedEngineNames:  prefs.stringArrayForKey(self.orderedEngineNames),
+                                             completion: completion)
     }
-
     private var customEngineFilePath: String {
         let profilePath = try! self.fileAccessor.getAndEnsureDirectory() as NSString
         return profilePath.appendingPathComponent(customSearchEnginesFileName)

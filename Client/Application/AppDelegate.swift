@@ -166,6 +166,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ParticleConnect.initialize(env: .debug, chainInfo: .ethereum(.mainnet), dAppData: DAppMetaData(name: "Particle Connect", icon: URL(string: "https://connect.particle.network/icons/512.png")!, url: URL(string: "https://connect.particle.network")!)) {
             adapters
         }
+        setUpDefaultNetwork()
+    }
+    func setUpDefaultNetwork(){
+        let chainInfo : Chain = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+        ParticleNetwork.setChainInfo(chainInfo)
+        networks = CoreDataManager.shared.fetchNetworks()
+        if (networks.count == 0){
+            for network in WalletNetworkEnum.allCases{
+                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue)
+                networks.append(network)
+                CoreDataManager.shared.save()
+            }
+        }
     }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.

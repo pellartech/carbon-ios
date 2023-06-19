@@ -88,6 +88,7 @@ PODS:
   - SwiftMessages/App (9.0.6)
   - SwiftyJSON (5.0.1)
   - SwiftyUserDefaults (5.3.0)
+  - Toast-Swift (5.0.1)
   - TweetNacl (1.0.2)
   - WalletConnectSwift (1.7.0):
     - CryptoSwift (~> 1.5)
@@ -106,6 +107,7 @@ DEPENDENCIES:
   - SDWebImage
   - SnapKit
   - SVProgressHUD
+  - Toast-Swift (~> 5.0.0)
   - WalletConnectSwift (from `https://github.com/SunZhiC/WalletConnectSwift`, branch `master`)
 
 SPEC REPOS:
@@ -136,6 +138,7 @@ SPEC REPOS:
     - SwiftMessages
     - SwiftyJSON
     - SwiftyUserDefaults
+    - Toast-Swift
     - TweetNacl
 
 EXTERNAL SOURCES:
@@ -175,9 +178,10 @@ SPEC CHECKSUMS:
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   SwiftyUserDefaults: 63f80248cf5bfb3458825d9a78f2eb7e1293a040
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwift: 6309bf3011b0b30e3e9d1e7449535302a9240f71
 
-PODFILE CHECKSUM: 0d6fb8a1a3d1dea648cd7c3e57bfcef2e587e9ff
+PODFILE CHECKSUM: e55dda682a59691fff7e92a018ba6c75016e2bd9
 
 COCOAPODS: 1.12.1
