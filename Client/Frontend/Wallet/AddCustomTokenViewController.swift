@@ -777,8 +777,8 @@ class AddCustomTokenViewController: UIViewController {
     @objc func addTokenBtnTapped (){
         if ( self.tokenNetworkValueLabel.text  == selectedNetwork.name?.capitalized){
             SVProgressHUD.show()
-            let contractAddress = self.tokenInfo?.contract_address ?? ""
-            self.addToken(tokenArray: [contractAddress])
+                let contractAddress = self.tokenInfo?.contract_address ?? ""
+                self.addToken(tokenArray: [contractAddress])
         }else{
             self.view.makeToast("Sorry! Unable to add. Please select different token or network", duration: 3.0, position: .bottom)
         }
@@ -1092,6 +1092,7 @@ class CustomTokensTVCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     func setUI(token : Tokens){
         titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
     }

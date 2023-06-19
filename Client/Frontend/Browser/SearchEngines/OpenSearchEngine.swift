@@ -19,11 +19,11 @@ class OpenSearchEngine: NSObject, NSCoding {
     private let searchTermComponent = "{searchTerms}"
     private let localeTermComponent = "{moz:locale}"
     private lazy var searchQueryComponentKey: String? = self.getQueryArgFromTemplate()
-    private let googleEngineID = "google-b-1-m"
+    private let presearchEngineID = "presearch"
 
     var headerSearchTitle: String {
-        guard engineID != googleEngineID else {
-            return .Search.GoogleEngineSectionTitle
+        guard engineID != presearchEngineID else {
+            return .Search.PresearchEngineSectionTitle
         }
 
         return String(format: .Search.EngineSectionTitle, shortName)

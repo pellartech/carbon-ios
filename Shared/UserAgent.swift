@@ -53,8 +53,9 @@ open class UserAgent {
         return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15"
     }
 
+ 
     public static func mobileUserAgent() -> String {
-        return UserAgentBuilder.defaultMobileUserAgent().userAgent()
+        return "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
     }
 
     public static func oppositeUserAgent(domain: String) -> String {

@@ -1,8 +1,8 @@
 {
   "default": {
-    "searchDefault": "Google",
+    "searchDefault": "presearch",
     "visibleDefaultEngines": [
-      "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+        "presearch", "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
     ]
   },
   "regionOverrides": {
@@ -228,27 +228,27 @@
     "en-US": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch", "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch",  "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "experimental-hidden": {
@@ -815,7 +815,7 @@
     },
     "trs": {
       "default": {
-        "searchDefault": "google-b-m",
+        "searchDefault": "presearch",
         "visibleDefaultEngines": [
             "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-es"
         ]
@@ -877,7 +877,7 @@
         ]
       },
       "CN": {
-        "searchDefault": "百度"
+        "searchDefault": "预研"
       }
     },
     "zh-TW": {
