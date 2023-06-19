@@ -11,13 +11,11 @@ import BigInt
 import Combine
 
 struct BrowserViewModelInput {
-    let progress: AnyPublisher<Double, Never>
     let decidePolicy: AnyPublisher<DecidePolicy, Never>
 }
 
 struct BrowserViewModelOutput {
     let universalLink: AnyPublisher<URL, Never>
-    let recordUrl: AnyPublisher<Void, Never>
     let dappAction: AnyPublisher<(action: DappAction, callbackId: Int), Never>
 }
 

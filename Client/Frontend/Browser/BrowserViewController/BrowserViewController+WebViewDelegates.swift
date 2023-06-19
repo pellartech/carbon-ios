@@ -553,7 +553,7 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
         }
-
+        decidePolicy.send((navigationAction, decisionHandler))
         decisionHandler(.cancel)
     }
 

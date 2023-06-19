@@ -59,19 +59,19 @@ extension WKWebView {
 
 extension WKUserContentController {
     public func addInDefaultContentWorld(scriptMessageHandler: WKScriptMessageHandler, name: String) {
-        if #available(iOS 14.3, *), USE_NEW_SANDBOX_APIS {
-            add(scriptMessageHandler, contentWorld: .defaultClient, name: name)
-        } else {
-            add(scriptMessageHandler, name: name)
-        }
+//        if #available(iOS 14.3, *), USE_NEW_SANDBOX_APIS {
+//            add(scriptMessageHandler, contentWorld: .defaultClient, name: name)
+//        } else {
+//            add(scriptMessageHandler, name: name)
+//        }
     }
 
     public func addInPageContentWorld(scriptMessageHandler: WKScriptMessageHandler, name: String) {
-        if #available(iOS 14.3, *), USE_NEW_SANDBOX_APIS {
-            add(scriptMessageHandler, contentWorld: .page, name: name)
-        } else {
-            add(scriptMessageHandler, name: name)
-        }
+//        if #available(iOS 14.3, *), USE_NEW_SANDBOX_APIS {
+//            add(scriptMessageHandler, contentWorld: .page, name: name)
+//        } else {
+//            add(scriptMessageHandler, name: name)
+//        }
     }
 }
 
