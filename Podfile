@@ -27,6 +27,7 @@ target 'Client' do
   pod 'SnapKit'
   pod 'SVProgressHUD'
   pod 'iOSDropDown'
+  pod 'Toast-Swift', '~> 5.0.0'
 end
 
 target 'CredentialProvider' do

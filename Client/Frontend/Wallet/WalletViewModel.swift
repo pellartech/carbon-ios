@@ -94,39 +94,19 @@ public class WalletViewModel {
             }
         }.disposed(by: bag)
     }
-
-
+    
+    
     /// This method will get the list of tokens from Coingecko server
     /// This is public API
     func getTokenList(completed : @escaping (Result<[TokensData], Error>) -> Void) {
-        var urlString = "\(GET_TOKEN_BASE_URL)list"
+        let urlString = "\(GET_TOKEN_BASE_URL)list"
         guard let url = URL(string: urlString) else {return}
-        var request = URLRequest(url:url, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60);
-        if let etag = UserDefaults.standard.object(forKey: urlString) as? String{
-            request.addValue(etag, forHTTPHeaderField: IF_NONE_MATCH)
-        }
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             do {
-                if (response != nil) {
-                    if let httpResponse = response as? HTTPURLResponse {
-                        if let urlString = httpResponse.url?.absoluteString {
-                            if let etag = httpResponse.allHeaderFields[ETAG] as? String {
-                                UserDefaults.standard.set(etag, forKey: urlString)
-                                UserDefaults.standard.synchronize()
-                            }
-                        }
-                    }
-                    if let httpResponse = response as? HTTPURLResponse ,(httpResponse.statusCode == CODE && error == nil && data != nil) {
-                            let decoder = JSONDecoder()
-                            let result = try decoder.decode([TokensData].self,from:data!)
-                            completed(.success(result))
-                            return
-                    }else{
-                        completed(.failure(error!))
-                    }
-                }else{
-                    completed(.failure(error!))
-                }
+                guard let responseData = data else{return}
+                let decoder = JSONDecoder()
+                let result = try decoder.decode([TokensData].self,from:responseData)
+                completed(.success(result))
             } catch {
                 completed(.failure(error))
             }
@@ -136,20 +116,20 @@ public class WalletViewModel {
     /// This method will get the token details from Coingecko server by passind token ID
     /// This is public API
     func getTokenDetails( tokenID:String, completed : @escaping (Result<TokensInfo, Error>) -> Void) {
-            var urlString = "\(GET_TOKEN_BASE_URL)\(tokenID)"
-            guard let url = URL(string: urlString) else {return}
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                do {
-                    guard let responseData = data else{return}
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode(TokensInfo.self,from:responseData)
-                    completed(.success(result))
-                } catch {
-                    completed(.failure(error))
-                }
-            }.resume()
-        }
-        
+        let urlString = "\(GET_TOKEN_BASE_URL)\(tokenID)"
+        guard let url = URL(string: urlString) else {return}
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            do {
+                guard let responseData = data else{return}
+                let decoder = JSONDecoder()
+                let result = try decoder.decode(TokensInfo.self,from:responseData)
+                completed(.success(result))
+            } catch {
+                completed(.failure(error))
+            }
+        }.resume()
+    }
+    
     
     /// This method will add the pre defined tokens to the user account
     func addTokenToUserAccount(address:String,tokens:[String],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
@@ -166,13 +146,30 @@ public class WalletViewModel {
     }
     
     /// This method will fetch the native tokens which belongs to user account
-    func getUserTokenLists(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
+    func getUserTokenListsEVM(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
         print(ParticleNetwork.getChainInfo().name)
         var tokenAddress = [String]()
         for each in tokenArray{
             tokenAddress.append(each.address)
         }
-        ParticleWalletAPI.getEvmService().getTokens(by: address, tokenAddresses: tokenAddress)//
+            ParticleWalletAPI.getEvmService().getTokensAndNFTs(by: address, tokenAddresses: tokenAddress)//
+                .subscribe { result in
+                    switch result {
+                    case .failure(let error):
+                        completed(.failure(error))
+                    case .success(let tokens):
+                        let token = tokens.tokens as [TokenModel]
+                        completed(.success(token + tokenArray))
+                    }
+                }.disposed(by: bag)
+    }
+    func getUserTokenListsSolana(address: String, tokenArray : [TokenModel],completed : @escaping (Result<[TokenModel], Error>) -> Void) {
+        print(ParticleNetwork.getChainInfo().name)
+        var tokenAddress = [String]()
+        for each in tokenArray{
+            tokenAddress.append(each.address)
+        }
+        ParticleWalletAPI.getSolanaService().getTokensAndNFTs(by: address, tokenAddresses: [])
             .subscribe { result in
                 switch result {
                 case .failure(let error):
@@ -183,7 +180,6 @@ public class WalletViewModel {
                 }
             }.disposed(by: bag)
     }
-    
     
     /// This method will send the native tokens  to  user account
     func sendNativeEVM(amountString: String,sender:String,receiver: String,completed : @escaping (Result<String, Error>) -> Void) {
@@ -217,3 +213,4 @@ public class WalletViewModel {
             }.disposed(by: bag)
     }
 }
+

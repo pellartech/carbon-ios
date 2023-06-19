@@ -315,6 +315,7 @@ class AddCustomTokenViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.isUserInteractionEnabled = true
         textField.delegate = self
+        textField.autocorrectionType = .no
         return textField
     }()
     
@@ -455,14 +456,11 @@ class AddCustomTokenViewController: UIViewController {
     
     // MARK: - UI Properties
     let bag = DisposeBag()
-    var publicAddress = String()
     var networkData = [String]()
     var themeManager :  ThemeManager?
-    var tokens = [TokensData]()
     var tokenInfo : TokensInfo?
     var selectedIndexes = IndexPath()
-    private var coreDataManager =  CoreDataManager.shared
-    var searchTokenList = [TokensData]()
+    var searchTokenList = [Tokens]()
     var platforms = [Platforms]()
     var heightForTokenViewNoToken =  NSLayoutConstraint()
     var heightForTokenView =  NSLayoutConstraint()
@@ -476,8 +474,8 @@ class AddCustomTokenViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
+        fetchDefaultNetwork()
         checkCoreDataValue()
-        
     }
     
     // MARK: - UI Methods
@@ -682,30 +680,22 @@ class AddCustomTokenViewController: UIViewController {
     }
     // MARK: - View Helper Methods - Check coredata stored values
     func checkCoreDataValue() {
-        SVProgressHUD.show()
-        self.tokens = self.coreDataManager.fetchDataFromCoreData()
-        self.tokens = self.tokens.filter{$0.isUserToken == false}
-        if(self.tokens.count == 0){
-            self.fetchTokens()
-        }else{
-            SVProgressHUD.dismiss()
-            self.tokensTableView.reloadData()
-        }
+        tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
+        tokens = tokens.filter{$0.isAdded == false}
+        self.tokensTableView.reloadData()
     }
     
     // MARK: - View Model Methods - Network actions
-    func addToken(tokens : [String]){
-        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokens) {result in
+    func addToken(tokenArray : [String]){
+        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokenArray) {result in
             switch result {
             case .success(let result):
                 print(result)
-                guard let index = self.tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
-                self.tokens[index].isUserToken = true
-                self.tokens[index].address = self.tokenInfo?.contract_address
-                self.tokens[index].imageUrl = self.tokenInfo?.image?.large
-                self.tokens[index].network = self.tokenInfo?.network
-                self.coreDataManager.clearDataFromCoreData()
-                self.coreDataManager.saveDataToCoreData(tokensData:self.tokens)
+                guard let index = tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
+                tokens[index].isAdded = true
+                tokens[index].address = self.tokenInfo?.contract_address
+                tokens[index].imageUrl = self.tokenInfo?.image?.large
+                CoreDataManager.shared.save()
                 SVProgressHUD.dismiss()
                 self.delegate?.accountPublicAddress(address: "")
                 self.dismissVC()
@@ -717,28 +707,14 @@ class AddCustomTokenViewController: UIViewController {
         }
     }
     
-    func fetchTokens() {
-        WalletViewModel.shared.getTokenList{result in
-            switch result {
-            case .success(let tokensList):
-                SVProgressHUD.dismiss()
-                self.tokens = tokensList
-                self.coreDataManager.clearDataFromCoreData()
-                self.coreDataManager.saveDataToCoreData(tokensData: tokensList)
-                self.tokens = self.coreDataManager.fetchDataFromCoreData()
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.tokensTableView.reloadData()
-                    }
-                }
-                
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-            }
+    func fetchDefaultNetwork(){
+        let networkData =  CoreDataManager.shared.fetchNetworks()
+        switch ParticleNetwork.getChainInfo().nativeSymbol{
+        case NetworkEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
+        default: selectedNetwork  = networkData[1]
         }
     }
-    func fetchTokenInfo(token : TokensData){
+    func fetchTokenInfo(token : Tokens){
         SVProgressHUD.show()
         WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
             switch result {
@@ -762,7 +738,7 @@ class AddCustomTokenViewController: UIViewController {
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
             self.platforms.append(Platforms(name: key, address: value))
         }
-        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.Solana.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
+        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
         if (self.platforms.count > 1 ){
             self.chevronImageView.isHidden = false
             self.trailingForChevron.isActive = true
@@ -799,9 +775,13 @@ class AddCustomTokenViewController: UIViewController {
         showToast(message: "Stay tunned! Dev in progress...")
     }
     @objc func addTokenBtnTapped (){
-        SVProgressHUD.show()
-        let contractAddress = self.tokenInfo?.contract_address ?? ""
-        self.addToken(tokens: [contractAddress])
+        if ( self.tokenNetworkValueLabel.text  == selectedNetwork.name?.capitalized){
+            SVProgressHUD.show()
+            let contractAddress = self.tokenInfo?.contract_address ?? ""
+            self.addToken(tokenArray: [contractAddress])
+        }else{
+            self.view.makeToast("Sorry! Unable to add. Please select different token or network", duration: 3.0, position: .bottom)
+        }
     }
     
     
@@ -833,28 +813,38 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
         var searchText  = textField.text! + string
         if searchText.count >= 3 {
-            emptyList()
+            self.emptyList()
             searchText = String(searchText.dropLast(range.length))
-            for each in  self.tokens{
+            for each in  tokens{
                 if (each.name?.hasPrefix(searchText) ?? false){
                     self.searchTokenList.append(each)
                 }
             }
+            self.filteredList()
+        }else{
+            self.emptyList()
+        }
+        return true
+    }
+    
+    func filteredList(){
+        if self.searchTokenList.count > 0{
             self.tokenInfoLabel.text =  self.searchTokenList.count > 4 ? "\(self.searchTokenList.count) results. Scroll to see more" :  self.searchTokenList.count == 0 ? "0 result" :"\(self.searchTokenList.count) results"
             self.expandTableView()
             self.tokensTableView.reloadData()
         }else{
             self.emptyList()
-            self.collapseTableView()
         }
-        return true
     }
     
     func emptyList(){
+        self.selectedIndexes = IndexPath()
         self.tokenInfoLabel.text = "0 result"
         self.searchTokenList = []
         self.tokensTableView.reloadData()
+        self.collapseTableView()
     }
+    
     func expandTableView(){
         heightForTokenViewNoToken.isActive = false
         heightForTokenView.isActive = true
@@ -862,6 +852,7 @@ extension AddCustomTokenViewController: UITextFieldDelegate{
             self.view.layoutIfNeeded()
         }
     }
+    
     func collapseTableView(){
         heightForTokenView.isActive = false
         heightForTokenViewNoToken.isActive = true
@@ -904,6 +895,7 @@ extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == self.tokensTableView){
+            self.view.endEditing(true)
             let cell = tableView.cellForRow(at: indexPath)
             cell?.accessoryType = .checkmark
             self.selectedIndexes = indexPath
@@ -936,8 +928,6 @@ extension AddCustomTokenViewController :  ChangeNetwork{
             if (platform == platforms.name){
                 var chainInfo : Chain?
                 switch platform.uppercased(){
-                case WalletNetworkEnum.Solana.rawValue.uppercased():
-                    chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
                 case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
                     chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
                 default:
@@ -1102,8 +1092,7 @@ class CustomTokensTVCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func setUI(token : TokensData){
+    func setUI(token : Tokens){
         titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
     }
 }

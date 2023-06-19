@@ -8,6 +8,7 @@ import ConnectCommon
 import Foundation
 import UIKit
 import SwiftyUserDefaults
+import CoreData
 
 class AccountModel {
     
@@ -137,5 +138,12 @@ class Platforms {
     init(name: String?,address: String?){
         self.name = name
         self.address = address
+    }
+    // MARK: - Helper method: Convert managed objects to objects
+    func toManagedObject(in context: NSManagedObjectContext) -> Networks? {
+        let entity = Networks.entity()
+        let network = Networks(entity: entity, insertInto: context)
+        network.name = name
+        return network
     }
 }

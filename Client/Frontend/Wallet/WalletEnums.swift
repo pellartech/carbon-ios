@@ -11,3 +11,8 @@ enum WalletNetworkEnum : String {
     case Solana = "Solana"
     case BinanceSmartChain = "Binance-Smart-Chain"
 }
+enum NetworkEnum : String {
+    case Ethereum = "ETH"
+    case Solana = "SOL"
+    case BinanceSmartChain = "BNB"
+}

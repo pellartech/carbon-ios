@@ -1,81 +1,100 @@
-//
-//  CoreDataManager.swift
-//  Client
-//
-//  Created by Ashok on 06/06/23.
-//
-
 import Foundation
 import CoreData
 
-let entire_name = "Tokens"
-
 class CoreDataManager {
     
-    //MARK: -Properties
     static let shared = CoreDataManager()
+    
     private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: entire_name)
+        let container = NSPersistentContainer(name: "carbon")
         container.loadPersistentStores(completionHandler: { _, error in
             _ = error.map { fatalError("Fatal error : \($0)") }
         })
         return container
     }()
     
-    fileprivate lazy var fetchedResultsController: NSFetchedResultsController<Tokens> = {
-        let fetchRequest: NSFetchRequest<Tokens> = Tokens.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created_time", ascending: true)]
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        return fetchedResultsController
-    }()
+    // MARK: - Save network
+    func saveNetwork(name: String) -> Networks {
+        let network = Networks(context: persistentContainer.viewContext)
+        network.name = name
+        return network
+    }
     
-    //MARK: - Method: Fetch all data from core data
-    func fetchDataFromCoreData() -> [TokensData] {
-        var tokensData = [TokensData]()
-        do {
-            try self.fetchedResultsController.performFetch()
-        } catch {
-        }
-        if let tokens = self.fetchedResultsController.fetchedObjects {
-            for token in tokens{
-                let tokenDta = self.toModel(tokens:token)
-                tokensData.append(tokenDta)
-            }
-        }
-        return tokensData
+    // MARK: - Save token
+    func saveToken(tokensData:[TokensData],network: Networks) {
+           let context = persistentContainer.viewContext
+           do {
+               if #available(iOS 15.0, *) {
+                   try   context.performAndWait {
+                       tokensData.forEach{ eachToken in
+                           let token = Tokens(context: persistentContainer.viewContext)
+                           token.id = eachToken.id
+                           token.name = eachToken.name
+                           token.address = eachToken.address
+                           token.symbol = eachToken.symbol
+                           token.isAdded = eachToken.isAdded ?? false
+                           token.imageUrl = eachToken.imageUrl
+                           network.addToTokens(token)
+                       }
+                       try context.save()
+                   }
+               }
+           } catch {
+               print(error)
+           }
+       }
+       
+    
+    // MARK: - Fetch network
+    func fetchNetworks() -> [Networks] {
+        let request: NSFetchRequest<Networks> = Networks.fetchRequest()
+        var fetchedNetworkss: [Networks] = []
         
-    }
-    
-    //MARK: - Helper Method: convert coredate properties to model objects
-    func toModel(tokens: Tokens) -> TokensData {
-        return TokensData(id: tokens.id, name: tokens.name, symbol: tokens.symbol, created_time: tokens.created_time, expiry_time: tokens.expiry_time,isUserToken: tokens.isUserToken, address: tokens.address,imageUrl: tokens.imageUrl,network: tokens.network)
-    }
-    
-    //MARK: - Method: save all changes into core data
-    func saveDataToCoreData(tokensData:[TokensData]) {
-        let context = persistentContainer.newBackgroundContext()
         do {
-            if #available(iOS 15.0, *) {
-                try   context.performAndWait {
-                    _ = tokensData.map { $0.toManagedObject(in: context) }
-                    try context.save()
-                }
-            } else {
-                // Fallback on earlier versions
+            fetchedNetworkss = try persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Error fetching networks \(error)")
+        }
+        return fetchedNetworkss
+    }
+    
+    // MARK: - Fetch tokens
+    func fetchTokens(network: Networks) -> [Tokens] {
+        let request: NSFetchRequest<Tokens> = Tokens.fetchRequest()
+        request.predicate = NSPredicate(format: "ANY network = %@", network)
+        var fetchedTokenss: [Tokens] = []
+        do {
+            fetchedTokenss = try persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Error fetching tokens \(error)")
+        }
+        return fetchedTokenss
+    }
+    
+    // MARK: - Core Data Saving support
+    func save () {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                fatalError("❗️Unresolved error \(nserror), \(nserror.userInfo)")
             }
-        } catch {
-            print(error)
         }
     }
     
-    //MARK: - Method: Clear all data from core data
-    func clearDataFromCoreData() {
-        let deleteAll = NSBatchDeleteRequest(fetchRequest: NSFetchRequest<NSFetchRequestResult>(entityName: entire_name))
-        do {
-            try persistentContainer.viewContext.execute(deleteAll)
-        }
-        catch {
-            print(error)
-        }
+    // MARK: - Delete token from core data
+    func deleteTokens(token: Tokens) {
+        let context = persistentContainer.viewContext
+        context.delete(token)
+        save()
+    }
+    
+    // MARK: - Delete network from core data
+    func deleteNetworks(network: Networks) {
+        let context = persistentContainer.viewContext
+        context.delete(network)
+        save()
     }
 }
