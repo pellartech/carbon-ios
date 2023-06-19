@@ -2,7 +2,7 @@
   "default": {
     "searchDefault": "presearch",
     "visibleDefaultEngines": [
-        "presearch", "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+       "presearch" ,"google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
     ]
   },
   "regionOverrides": {
@@ -14,241 +14,241 @@
     "ach": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia"
+         "presearch" ,"google-b-m", "bing", "wikipedia"
         ]
       }
     },
     "an": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-an"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-an"
         ]
       }
     },
     "ar": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ar"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ar"
         ]
       }
     },
     "as": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "wikipedia-as"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "wikipedia-as"
         ]
       }
     },
     "ast": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ast"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ast"
         ]
       }
     },
     "az": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "azerdict", "bing", "ddg", "wikipedia-az"
+         "presearch" ,"google-b-m", "amazondotcom", "azerdict", "bing", "ddg", "wikipedia-az"
         ]
       }
     },
     "be": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "wikipedia-be"
+         "presearch" ,"google-b-m", "bing", "ddg", "wikipedia-be"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ddg", "wikipedia-be"
+          "presearch" ,"google-com-nocodes", "bing", "ddg", "wikipedia-be"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ddg", "wikipedia-be"
+          "presearch" ,"google-com-nocodes", "bing", "ddg", "wikipedia-be"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ddg", "wikipedia-be"
+          "presearch" ,"google-com-nocodes", "bing", "ddg", "wikipedia-be"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ddg", "wikipedia-be"
+          "presearch" ,"google-com-nocodes", "bing", "ddg", "wikipedia-be"
         ]
       }
     },
     "bg": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-bg"
+         "presearch" ,"google-b-m", "bing", "wikipedia-bg"
         ]
       }
     },
     "bn-BD": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "wikipedia-bn"
+         "presearch" ,"google-b-m", "bing", "ddg", "wikipedia-bn"
         ]
       }
     },
     "bn-IN": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "rediff", "wikipedia-bn"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "rediff", "wikipedia-bn"
         ]
       }
     },
     "br": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-br"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-br"
         ]
       }
     },
     "bs": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-bs"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-bs"
         ]
       }
     },
     "ca": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-ca"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-ca"
         ]
       }
     },
     "cak": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "ddg", "wikipedia-es"
+         "presearch" ,"google-b-m", "amazondotcom", "ddg", "wikipedia-es"
         ]
       }
     },
     "cs": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "mapy-cz", "seznam-cz", "wikipedia-cz"
+         "presearch" ,"google-b-m", "bing", "ddg", "mapy-cz", "seznam-cz", "wikipedia-cz"
         ]
       }
     },
     "cy": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "bing", "ddg", "wikipedia-cy"
+         "presearch" ,"google-b-m", "amazon-co-uk", "bing", "ddg", "wikipedia-cy"
         ]
       }
     },
     "da": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "ebay", "wikipedia-da"
+         "presearch" ,"google-b-m", "amazon-co-uk", "ebay", "wikipedia-da"
         ]
       }
     },
     "de": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-de", "bing", "ddg", "ebay-de", "ecosia", "qwant", "wikipedia-de"
+         "presearch" ,"google-b-m", "amazon-de", "bing", "ddg", "ebay-de", "ecosia", "qwant", "wikipedia-de"
         ]
       }
     },
     "dsb": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-de", "bing", "ebay", "wikipedia-dsb"
+         "presearch" ,"google-b-m", "amazon-de", "bing", "ebay", "wikipedia-dsb"
         ]
       }
     },
     "el": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "skroutz", "wikipedia-el"
+         "presearch" ,"google-b-m", "bing", "ebay", "skroutz", "wikipedia-el"
         ]
       }
     },
     "en-GB": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "bing", "ddg", "ebay-co-uk", "qwant", "wikipedia"
+         "presearch" ,"google-b-m", "amazon-co-uk", "bing", "ddg", "ebay-co-uk", "qwant", "wikipedia"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
+          "presearch" ,"google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
+          "presearch" ,"google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
+          "presearch" ,"google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
+          "presearch" ,"google-com-nocodes", "amazon-co-uk", "bing", "ddg", "qwant", "wikipedia"
         ]
       }
     },
     "en-RU": {
       "default": {
         "visibleDefaultEngines": [
-            "google-com-nocodes", "ebay", "wikipedia-ru"
+            "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-            "google-com-nocodes", "ebay", "wikipedia-ru"
+            "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-            "google-com-nocodes", "ebay", "wikipedia-ru"
+            "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-            "google-com-nocodes", "ebay", "wikipedia-ru"
+            "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-            "google-com-nocodes", "ebay", "wikipedia-ru"
+            "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       }
     },
     "en-US": {
       "default": {
         "visibleDefaultEngines": [
-            "presearch", "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+           "presearch" ,"google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-            "presearch",  "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch" ,"google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+           "presearch" ,"google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+           "presearch" ,"google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-            "presearch", "google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
+            "presearch" ,"google-com-nocodes", "amazondotcom", "bing", "ddg", "ebay", "wikipedia"
         ]
       },
       "experimental-hidden": {
@@ -260,42 +260,42 @@
     "en-ZA": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia"
+         "presearch" ,"google-b-m", "ebay", "wikipedia"
         ]
       }
     },
     "eo": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay", "reta-vortaro", "wikipedia-eo"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay", "reta-vortaro", "wikipedia-eo"
         ]
       }
     },
     "es-AR": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "mercadolibre-ar", "wikipedia-es"
+         "presearch" ,"google-b-m", "ebay", "mercadolibre-ar", "wikipedia-es"
         ]
       }
     },
     "es-CL": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "mercadolibre-cl", "wikipedia-es"
+         "presearch" ,"google-b-m", "bing", "ebay", "mercadolibre-cl", "wikipedia-es"
         ]
       }
     },
     "es-ES": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-es", "bing", "ddg", "ebay-es-es", "wikipedia-es"
+         "presearch" ,"google-b-m", "amazon-es", "bing", "ddg", "ebay-es-es", "wikipedia-es"
         ]
       }
     },
     "es-MX": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "mercadolibre-mx", "wikipedia-es"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ddg", "ebay", "mercadolibre-mx", "wikipedia-es"
         ]
       },
       "experimental-hidden": {
@@ -307,49 +307,49 @@
     "et": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "ebay", "wikipedia-et"
+         "presearch" ,"google-b-m", "amazon-co-uk", "ebay", "wikipedia-et"
         ]
       }
     },
     "eu": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "elebila", "wikipedia-eu"
+         "presearch" ,"google-b-m", "bing", "elebila", "wikipedia-eu"
         ]
       }
     },
     "fa": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-fa"
+         "presearch" ,"google-b-m", "bing", "wikipedia-fa"
         ]
       }
     },
     "ff": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-fr", "bing", "wikipedia-fr"
+         "presearch" ,"google-b-m", "amazon-fr", "bing", "wikipedia-fr"
         ]
       }
     },
     "fi": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "ebay", "wikipedia-fi"
+         "presearch" ,"google-b-m", "amazondotcom", "ebay", "wikipedia-fi"
         ]
       }
     },
     "fr": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay-fr", "qwant", "wikipedia-fr"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay-fr", "qwant", "wikipedia-fr"
         ]
       }
     },
     "fy-NL": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bolcom-fy-NL", "wikipedia-fy-NL"
+         "presearch" ,"google-b-m", "bolcom-fy-NL", "wikipedia-fy-NL"
         ]
       },
       "experimental-hidden": {
@@ -361,265 +361,265 @@
     "ga-IE": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "ebay-ga-ie", "wikipedia-ga-IE"
+         "presearch" ,"google-b-m", "amazon-co-uk", "ebay-ga-ie", "wikipedia-ga-IE"
         ]
       }
     },
     "gd": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "faclair-beag", "wikipedia-gd"
+         "presearch" ,"google-b-m", "bing", "ddg", "faclair-beag", "wikipedia-gd"
         ]
       }
     },
     "gl": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-gl"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-gl"
         ]
       }
     },
     "gn": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-gn"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-gn"
         ]
       }
     },
     "gu-IN": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "wikipedia-gu"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "wikipedia-gu"
         ]
       }
     },
     "he": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-he"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-he"
         ]
       }
     },
     "hi-IN": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "ebay", "wikipedia-hi"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "ebay", "wikipedia-hi"
         ]
       }
     },
     "hr": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "bing", "ddg", "ebay", "wikipedia-hr"
+         "presearch" ,"google-b-m", "amazon-co-uk", "bing", "ddg", "ebay", "wikipedia-hr"
         ]
       }
     },
     "hsb": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-de", "bing", "ebay", "wikipedia-hsb"
+         "presearch" ,"google-b-m", "amazon-de", "bing", "ebay", "wikipedia-hsb"
         ]
       }
     },
     "hu": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "sztaki-en-hu", "vatera", "wikipedia-hu"
+         "presearch" ,"google-b-m", "ebay", "sztaki-en-hu", "vatera", "wikipedia-hu"
         ]
       }
     },
     "hy-AM": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "wikipedia-hy-AM"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "wikipedia-hy-AM"
         ]
       }
     },
     "ia": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia-ia"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ddg", "ebay", "wikipedia-ia"
         ]
       }
     },
     "id": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-id"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-id"
         ]
       }
     },
     "is": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "leit-is", "wikipedia-is"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "leit-is", "wikipedia-is"
         ]
       }
     },
     "it": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-it", "bing", "ddg", "ebay-it", "wikipedia-it"
+         "presearch" ,"google-b-m", "amazon-it", "bing", "ddg", "ebay-it", "wikipedia-it"
         ]
       }
     },
     "ja": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-jp", "bing", "ebay", "wikipedia-ja", "yahoo-jp"
+         "presearch" ,"google-b-m", "amazon-jp", "bing", "ebay", "wikipedia-ja", "yahoo-jp"
         ]
       }
     },
     "ka": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ddg", "wikipedia-ka"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ddg", "wikipedia-ka"
         ]
       }
     },
     "kab": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-kab"
+         "presearch" ,"google-b-m", "bing", "wikipedia-kab"
         ]
       }
     },
     "kk": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-kk"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-kk"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ebay", "wikipedia-kk"
+          "presearch" ,"google-com-nocodes", "bing", "ebay", "wikipedia-kk"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ebay", "wikipedia-kk"
+          "presearch" ,"google-com-nocodes", "bing", "ebay", "wikipedia-kk"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ebay", "wikipedia-kk"
+          "presearch" ,"google-com-nocodes", "bing", "ebay", "wikipedia-kk"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "bing", "ebay", "wikipedia-kk"
+          "presearch" ,"google-com-nocodes", "bing", "ebay", "wikipedia-kk"
         ]
       }
     },
     "km": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-km"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-km"
         ]
       }
     },
     "kn": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "ebay", "wikipedia-kn", "wiktionary-kn"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "ebay", "wikipedia-kn", "wiktionary-kn"
         ]
       }
     },
     "ko": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "danawa-kr", "daum-kr", "ebay"
+         "presearch" ,"google-b-m", "danawa-kr", "daum-kr", "ebay"
         ]
       }
     },
     "lij": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "ebay", "wikipedia"
+         "presearch" ,"google-b-m", "amazondotcom", "ebay", "wikipedia"
         ]
       }
     },
     "lo": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-lo"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-lo"
         ]
       }
     },
     "lt": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-lt"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-lt"
         ]
       }
     },
     "ltg": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "bing", "ebay", "wikipedia-ltg"
+         "presearch" ,"google-b-m", "amazon-co-uk", "bing", "ebay", "wikipedia-ltg"
         ]
       }
     },
     "lv": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "salidzinilv", "wikipedia-lv"
+         "presearch" ,"google-b-m", "ebay", "salidzinilv", "wikipedia-lv"
         ]
       }
     },
     "mai": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "ebay", "wikipedia-hi"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "ebay", "wikipedia-hi"
         ]
       }
     },
     "ml": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay", "wikipedia-ml"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay", "wikipedia-ml"
         ]
       }
     },
     "mr": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "rediff", "wikipedia-mr"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "rediff", "wikipedia-mr"
         ]
       }
     },
     "ms": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ms"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-ms"
         ]
       }
     },
     "my": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-my"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-my"
         ]
       }
     },
     "nb-NO": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ddg", "ebay", "gulesider-mobile-NO", "wikipedia-NO"
+         "presearch" ,"google-b-m", "ddg", "ebay", "gulesider-mobile-NO", "wikipedia-NO"
         ]
       }
     },
     "ne-NP": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-ne"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-ne"
         ]
       }
     },
     "nl": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay-nl", "wikipedia-nl"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay-nl", "wikipedia-nl"
         ]
       },
       "experimental-hidden": {
@@ -631,42 +631,42 @@
     "nn-NO": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ddg", "ebay", "gulesider-mobile-NO", "wikipedia-NN"
+         "presearch" ,"google-b-m", "ddg", "ebay", "gulesider-mobile-NO", "wikipedia-NN"
         ]
       }
     },
     "oc": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-oc", "wiktionary-oc"
+         "presearch" ,"google-b-m", "bing", "wikipedia-oc", "wiktionary-oc"
         ]
       }
     },
     "or": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "wikipedia-or", "wiktionary-or"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "wikipedia-or", "wiktionary-or"
         ]
       }
     },
     "pa-IN": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-pa"
+         "presearch" ,"google-b-m", "bing", "wikipedia-pa"
         ]
       }
     },
     "pl": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay", "wikipedia-pl"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay", "wikipedia-pl"
         ]
       }
     },
     "pt-BR": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia-pt"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia-pt"
         ]
       },
       "experimental-hidden": {
@@ -678,138 +678,138 @@
     "pt-PT": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "wikipedia-pt"
+         "presearch" ,"google-b-m", "wikipedia-pt"
         ]
       }
     },
     "rm": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "leo_ende_de", "pledarigrond", "wikipedia-rm"
+         "presearch" ,"google-b-m", "bing", "ddg", "leo_ende_de", "pledarigrond", "wikipedia-rm"
         ]
       }
     },
     "ro": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-ro"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-ro"
         ]
       }
     },
     "ru": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-ru"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-ru"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-ru"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-ru"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-ru"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-ru"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-ru"
         ]
       }
     },
     "sk": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "slovnik-sk", "wikipedia-sk"
+         "presearch" ,"google-b-m", "ebay", "slovnik-sk", "wikipedia-sk"
         ]
       }
     },
     "sl": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ceneje", "ebay", "odpiralni", "wikipedia-sl"
+         "presearch" ,"google-b-m", "ceneje", "ebay", "odpiralni", "wikipedia-sl"
         ]
       }
     },
     "son": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-fr", "bing", "ebay", "wikipedia-fr"
+         "presearch" ,"google-b-m", "amazon-fr", "bing", "ebay", "wikipedia-fr"
         ]
       }
     },
     "sq": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-co-uk", "bing", "ebay", "wikipedia-sq"
+         "presearch" ,"google-b-m", "amazon-co-uk", "bing", "ebay", "wikipedia-sq"
         ]
       }
     },
     "sr": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "ebay", "wikipedia-sr"
+         "presearch" ,"google-b-m", "bing", "ddg", "ebay", "wikipedia-sr"
         ]
       }
     },
     "sv-SE": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-se", "ebay", "prisjakt-sv-SE", "wikipedia-sv-SE"
+         "presearch" ,"google-b-m", "amazon-se", "ebay", "prisjakt-sv-SE", "wikipedia-sv-SE"
         ]
       }
     },
     "ta": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "ddg", "wikipedia-ta", "wiktionary-ta"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "ddg", "wikipedia-ta", "wiktionary-ta"
         ]
       }
     },
     "te": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "wikipedia-te", "wiktionary-te"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "wikipedia-te", "wiktionary-te"
         ]
       }
     },
     "th": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-th"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-th"
         ]
       }
     },
     "tr": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-tr"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-tr"
         ]
       },
       "TR": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-tr"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-tr"
         ]
       },
       "BY": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-tr"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-tr"
         ]
       },
       "KZ": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-tr"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-tr"
         ]
       },
       "RU": {
         "visibleDefaultEngines": [
-          "google-com-nocodes", "ebay", "wikipedia-tr"
+          "presearch" ,"google-com-nocodes", "ebay", "wikipedia-tr"
         ]
       }
     },
@@ -817,63 +817,63 @@
       "default": {
         "searchDefault": "presearch",
         "visibleDefaultEngines": [
-            "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-es"
+           "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-es"
         ]
       }
     },
     "uk": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "ebay", "wikipedia-uk"
+         "presearch" ,"google-b-m", "ebay", "wikipedia-uk"
         ]
       }
     },
     "ur": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazon-in", "bing", "ddg", "ebay", "wikipedia-ur"
+         "presearch" ,"google-b-m", "amazon-in", "bing", "ddg", "ebay", "wikipedia-ur"
         ]
       }
     },
     "uz": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-uz"
+         "presearch" ,"google-b-m", "amazondotcom", "bing", "ebay", "wikipedia-uz"
         ]
       }
     },
     "vi": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "coccoc", "ddg", "ebay", "wikipedia-vi"
+         "presearch" ,"google-b-m", "coccoc", "ddg", "ebay", "wikipedia-vi"
         ]
       }
     },
     "wo": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "wikipedia-wo"
+         "presearch" ,"google-b-m", "bing", "ddg", "wikipedia-wo"
         ]
       }
     },
     "xh": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ebay", "wikipedia"
+         "presearch" ,"google-b-m", "bing", "ebay", "wikipedia"
         ]
       }
     },
     "zam": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "wikipedia-es"
+         "presearch" ,"google-b-m", "bing", "wikipedia-es"
         ]
       }
     },
     "zh-CN": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "baidu", "bing", "wikipedia-zh-CN"
+         "presearch" ,"google-b-m", "baidu", "bing", "wikipedia-zh-CN"
         ]
       },
       "CN": {
@@ -883,7 +883,7 @@
     "zh-TW": {
       "default": {
         "visibleDefaultEngines": [
-          "google-b-m", "bing", "ddg", "wikipedia-zh-TW"
+         "presearch" ,"google-b-m", "bing", "ddg", "wikipedia-zh-TW"
         ]
       },
       "experimental-hidden": {
