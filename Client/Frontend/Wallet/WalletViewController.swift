@@ -844,7 +844,7 @@ class WalletViewController: UIViewController {
 
     }
     func helperMethodToAnimate(view: UIView, button: UIButton){
-        UIView.animate(withDuration: 0.5, animations: {
+        UIView.animate(withDuration: 0.1, animations: {
             view.alpha = 1
             button.backgroundColor = UIColor.clear
         }, completion: {
