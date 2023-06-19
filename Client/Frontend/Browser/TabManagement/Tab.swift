@@ -425,10 +425,10 @@ class Tab: NSObject {
             }
         }
     }
-
+    weak var delegate: BrowserViewControllerDelegate?
     func createWebview() {
         if webView == nil {
-            configuration.userContentController = WKUserContentController()
+//            configuration.userContentController = WKUserContentController()
             configuration.allowsInlineMediaPlayback = true
             let webView = TabWebView(frame: .zero, configuration: configuration)
             webView.delegate = self
@@ -467,7 +467,66 @@ class Tab: NSObject {
 
             tabDelegate?.tab(self, didCreateWebView: webView)
         }
+        bind()
+        injectUserAgent()
     }
+    
+    private func bind() {
+        let input = BrowserViewModelInput(
+            decidePolicy: decidePolicy.eraseToAnyPublisher())
+
+        let output = transform(input: input)
+        output.universalLink
+            .sink { [weak self] url in
+                guard let strongSelf = self else { return }
+                strongSelf.delegate?.handleUniversalLink(url, in: strongSelf)
+            }.store(in: &cancellable)
+
+        output.dappAction
+            .sink { [weak self] data in
+                guard let strongSelf = self else { return }
+                strongSelf.delegate?.didCall(action: data.action, callbackId: data.callbackId, in: strongSelf)
+            }.store(in: &cancellable)
+
+    }
+
+    private func injectUserAgent() {
+        self.webView?.evaluateJavaScript("navigator.userAgent") { [weak self] result, _ in
+            guard let strongSelf = self, let currentUserAgent = result as? String else { return }
+            strongSelf.webView?.customUserAgent = currentUserAgent + " " + "Carbon" + "/" + "1.0.0" + " 1inchWallet"
+        }
+    }
+    private  func transform(input: BrowserViewModelInput) -> BrowserViewModelOutput {
+            input.decidePolicy
+                .sink { [weak self] in self?.handle(decidePolicy: $0) }
+                .store(in: &cancellable)
+    
+            return .init(
+                universalLink: universalLinkSubject.eraseToAnyPublisher(),
+                dappAction: dappActionSubject.eraseToAnyPublisher())
+        }
+             func handle(decidePolicy: DecidePolicy) {
+                print("[Browser] decidePolicyFor url: \(String(describing: decidePolicy.navigationAction.request.url?.absoluteString))")
+    
+                guard let url = decidePolicy.navigationAction.request.url, let scheme = url.scheme else {
+                    decidePolicy.decisionHandler(.allow)
+                    return
+                }
+                let app = UIApplication.shared
+                if ["tel", "mailto"].contains(scheme), app.canOpenURL(url) {
+                    app.open(url)
+                    decidePolicy.decisionHandler(.cancel)
+                    return
+                }
+    
+                 if url.host == "aw.app" && url.path == "/wc", let components = URLComponents(url: url, resolvingAgainstBaseURL: false), ((components.queryItems?.isEmpty) != nil) {
+                    print("[Browser] Swallowing URL and doing a no-op, url: \(url.absoluteString)")
+                    decidePolicy.decisionHandler(.cancel)
+                    return
+                }
+                decidePolicy.decisionHandler(.allow)
+            }
+
 
     func restore(_ webView: WKWebView) {
         // Pulls restored session data from a previous SavedTab to load into the Tab. If it's nil, a session restore
@@ -865,10 +924,21 @@ private class TabContentScriptManager: NSObject, WKScriptMessageHandler {
         }
     }
 
-    @objc func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         for helper in helpers.values {
             if let scriptMessageHandlerName = helper.scriptMessageHandlerName(), scriptMessageHandlerName == message.name {
                 helper.userContentController(userContentController, didReceiveScriptMessage: message)
+                guard let command = DappAction.fromMessage(message) else {
+                    if message.name == Browser.locationChangedEventName {
+                        recordUrlSubject.send(())
+                    }
+                    return
+                }
+                print("[Browser] dapp command: \(command)")
+                let action = DappAction.fromCommand(command, server: server)
+
+                print("[Browser] dapp action: \(action)")
+                dappActionSubject.send((action: action, callbackId: command.id))
                 return
             }
         }

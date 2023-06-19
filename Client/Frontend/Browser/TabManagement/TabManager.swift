@@ -174,7 +174,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
     }
 
     // MARK: - Webview configuration
-    public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?) -> WKWebViewConfiguration {
+    public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?,forType type: WebViewType) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.dataDetectorTypes = [.phoneNumber]
         configuration.processPool = WKProcessPool()
@@ -185,19 +185,251 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         configuration.ignoresViewportScaleLimits = true
         if isPrivate {
             configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+        }else{
+            configuration.websiteDataStore = WKWebsiteDataStore.default()
         }
         configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
+        
+        //dApp
+        var js = ""
+        
+        switch type {
+        case .dappBrowser(let server):
+            
+            if let filepath = Bundle.main.path(forResource: "Carbon-min", ofType: "js") {
+                do {
+                    js += try String(contentsOfFile: filepath)
+                } catch { }
+            }
+            js += javaScriptForDappBrowser(server: server)
+        case .tokenScriptRenderer:
+            js += javaScriptForTokenScriptRenderer()
+            js += """
+                  \n
+                  web3.tokens = {
+                      data: {
+                          currentInstance: {
+                          },
+                          token: {
+                          },
+                          card: {
+                          },
+                      },
+                      dataChanged: (old, updated, tokenCardId) => {
+                        console.log(\"web3.tokens.data changed. You should assign a function to `web3.tokens.dataChanged` to monitor for changes like this:\\n    `web3.tokens.dataChanged = (old, updated, tokenCardId) => { //do something }`\")
+                      }
+                  }
+                  """
+        }
+        let userScript = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+        configuration.userContentController.addUserScript(userScript)
+        
+        switch type {
+        case .dappBrowser:
+            break
+        case .tokenScriptRenderer:
+            configuration.setURLSchemeHandler(configuration, forURLScheme: "tokenscript-resource")
+        }
+        
+        HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: configuration)
         return configuration
+    }
+    
+    fileprivate static func javaScriptForDappBrowser(server: RPCServer) -> String {
+        return """
+               //Space is needed here because it is sometimes cut off by websites.
+               
+               const addressHex = "\(walletAddress)"
+               const rpcURL = "\(server.web3InjectedRpcURL.absoluteString)"
+               const chainID = "\(server.chainID)"
+             
+               function executeCallback (id, error, value) {
+                   AlphaWallet.executeCallback(id, error, value)
+               }
+             
+               AlphaWallet.init(rpcURL, {
+                   getAccounts: function (cb) { cb(null, [addressHex]) },
+                   processTransaction: function (tx, cb){
+                       console.log('signing a transaction', tx)
+                       const { id = 8888 } = tx
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.sendTransaction.postMessage({"name": "sendTransaction", "object":     tx, id: id})
+                   },
+                   signMessage: function (msgParams, cb) {
+                       const { data } = msgParams
+                       const { id = 8888 } = msgParams
+                       console.log("signing a message", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.signMessage.postMessage({"name": "signMessage", "object": { data }, id:    id} )
+                   },
+                   signPersonalMessage: function (msgParams, cb) {
+                       const { data } = msgParams
+                       const { id = 8888 } = msgParams
+                       console.log("signing a personal message", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.signPersonalMessage.postMessage({"name": "signPersonalMessage", "object":  { data }, id: id})
+                   },
+                   signTypedMessage: function (msgParams, cb) {
+                       const { data } = msgParams
+                       const { id = 8888 } = msgParams
+                       console.log("signing a typed message", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.signTypedMessage.postMessage({"name": "signTypedMessage", "object":     { data }, id: id})
+                   },
+                   ethCall: function (msgParams, cb) {
+                       const data = msgParams
+                       const { id = Math.floor((Math.random() * 100000) + 1) } = msgParams
+                       console.log("eth_call", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.ethCall.postMessage({"name": "ethCall", "object": data, id: id})
+                   },
+                   walletAddEthereumChain: function (msgParams, cb) {
+                       const data = msgParams
+                       const { id = Math.floor((Math.random() * 100000) + 1) } = msgParams
+                       console.log("walletAddEthereumChain", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.walletAddEthereumChain.postMessage({"name": "walletAddEthereumChain", "object": data, id: id})
+                   },
+                   walletSwitchEthereumChain: function (msgParams, cb) {
+                       const data = msgParams
+                       const { id = Math.floor((Math.random() * 100000) + 1) } = msgParams
+                       console.log("walletSwitchEthereumChain", msgParams)
+                       AlphaWallet.addCallback(id, cb)
+                       webkit.messageHandlers.walletSwitchEthereumChain.postMessage({"name": "walletSwitchEthereumChain", "object": data, id: id})
+                   },
+                   enable: function() {
+                      return new Promise(function(resolve, reject) {
+                          //send back the coinbase account as an array of one
+                          resolve([addressHex])
+                      })
+                   }
+               }, {
+                   address: addressHex,
+                   networkVersion: "0x" + parseInt(chainID).toString(16) || null
+               })
+             
+               web3.setProvider = function () {
+                   console.debug('AlphaWallet Wallet - overrode web3.setProvider')
+               }
+             
+               web3.eth.defaultAccount = addressHex
+             
+               web3.version.getNetwork = function(cb) {
+                   cb(null, chainID)
+               }
+             
+              web3.eth.getCoinbase = function(cb) {
+               return cb(null, addressHex)
+             }
+             window.ethereum = web3.currentProvider
+               
+             // So we can detect when sites use History API to generate the page location. Especially common with React and similar frameworks
+             ;(function() {
+               var pushState = history.pushState;
+               var replaceState = history.replaceState;
+             
+               history.pushState = function() {
+                 pushState.apply(history, arguments);
+                 window.dispatchEvent(new Event('locationchange'));
+               };
+             
+               history.replaceState = function() {
+                 replaceState.apply(history, arguments);
+                 window.dispatchEvent(new Event('locationchange'));
+               };
+             
+               window.addEventListener('popstate', function() {
+                 window.dispatchEvent(new Event('locationchange'))
+               });
+             })();
+             
+             window.addEventListener('locationchange', function(){
+               webkit.messageHandlers.\(Browser.locationChangedEventName).postMessage(window.location.href)
+             })
+             """
+    }
+    fileprivate static func javaScriptForTokenScriptRenderer() -> String {
+        return """
+               window.web3CallBacks = {}
+               window.tokenScriptCallBacks = {}
+               
+               function executeCallback (id, error, value) {
+                   window.web3CallBacks[id](error, value)
+                   delete window.web3CallBacks[id]
+               }
+               
+               function executeTokenScriptCallback (id, error, value) {
+                   let cb = window.tokenScriptCallBacks[id]
+                   if (cb) {
+                       window.tokenScriptCallBacks[id](error, value)
+                       delete window.tokenScriptCallBacks[id]
+                   } else {
+                   }
+               }
+               
+               web3 = {
+                 personal: {
+                   sign: function (msgParams, cb) {
+                     const { data } = msgParams
+                     const { id = 8888 } = msgParams
+                     window.web3CallBacks[id] = cb
+                     webkit.messageHandlers.signPersonalMessage.postMessage({"name": "signPersonalMessage", "object":  { data }, id: id})
+                   }
+                 },
+                 action: {
+                   setProps: function (object, cb) {
+                     const id = 8888
+                     window.tokenScriptCallBacks[id] = cb
+                     webkit.messageHandlers.\(TokenScript.SetProperties.setActionProps).postMessage({"object":  object, id: id})
+                   }
+                 }
+               }
+               """
+    }
+    
+    fileprivate static func contentBlockingRulesJson() -> String {
+        let whiteListedUrls = [
+            "https://unpkg.com/",
+            "^tokenscript-resource://",
+            "^http://stormbird.duckdns.org:8080/api/getChallenge$",
+            "^http://stormbird.duckdns.org:8080/api/checkSignature"
+        ]
+        var json = """
+                   [
+                       {
+                           "trigger": {
+                               "url-filter": ".*"
+                           },
+                           "action": {
+                               "type": "block"
+                           }
+                       }
+                   """
+        for each in whiteListedUrls {
+            json += """
+                    ,
+                    {
+                        "trigger": {
+                            "url-filter": "\(each)"
+                        },
+                        "action": {
+                            "type": "ignore-previous-rules"
+                        }
+                    }
+                    """
+        }
+        json += "]"
+        return json
     }
 
     // A WKWebViewConfiguration used for normal tabs
     lazy private var configuration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs)
+        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server))
     }()
 
     // A WKWebViewConfiguration used for private mode tabs
     lazy private var privateConfiguration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server))
     }()
 
     // MARK: Get tabs
@@ -633,7 +865,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
         if tab.isPrivate && privateTabs.count < 1 {
-            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server))
         }
 
         tab.close()
@@ -669,7 +901,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                 // Bugzilla 1646756: close last private tab clears the WKWebViewConfiguration (#6827)
                 DispatchQueue.main.async { [unowned self] in
                     self.privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true,
-                                                                             prefs: self.profile.prefs)
+                                                                             prefs: self.profile.prefs, forType: .dappBrowser(server))
                 }
             }
 
@@ -842,7 +1074,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         privateTabs.forEach { $0.close() }
         tabs = normalTabs
 
-        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs)
+        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server))
     }
 
     // MARK: - Start at Home

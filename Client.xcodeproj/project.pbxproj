@@ -1204,6 +1204,13 @@
 		F91ABAA229F1A17F0060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
+		F95C23202A3F3DDD00B956B7 /* RPCServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */; };
+		F95C23232A3F445200B956B7 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23222A3F445200B956B7 /* Enum.swift */; };
+		F95C23252A3F44AA00B956B7 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23242A3F44AA00B956B7 /* Helper.swift */; };
+		F95C23272A3F44D200B956B7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23262A3F44D200B956B7 /* Constants.swift */; };
+		F95C23292A3F44FE00B956B7 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23282A3F44FE00B956B7 /* Extension.swift */; };
+		F95C232B2A3F451900B956B7 /* Carbon-min.js in Resources */ = {isa = PBXBuildFile; fileRef = F95C232A2A3F451900B956B7 /* Carbon-min.js */; };
+		F95C232D2A3F45AB00B956B7 /* BrowserViewController+dApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C232C2A3F45AB00B956B7 /* BrowserViewController+dApp.swift */; };
 		F99BEA862A13591C003F49B2 /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA852A13591C003F49B2 /* WalletViewController.swift */; };
 		F99BEA8B2A135983003F49B2 /* WalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA8A2A135982003F49B2 /* WalletModel.swift */; };
 		F99BEA8F2A135A71003F49B2 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F99BEA8E2A135A71003F49B2 /* WalletViewModel.swift */; };
@@ -5078,6 +5085,13 @@
 		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
+		F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCServer.swift; sourceTree = "<group>"; };
+		F95C23222A3F445200B956B7 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		F95C23242A3F44AA00B956B7 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		F95C23262A3F44D200B956B7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F95C23282A3F44FE00B956B7 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		F95C232A2A3F451900B956B7 /* Carbon-min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "Carbon-min.js"; sourceTree = "<group>"; };
+		F95C232C2A3F45AB00B956B7 /* BrowserViewController+dApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+dApp.swift"; sourceTree = "<group>"; };
 		F991462C8BE57AF0DA53AF95 /* zh-TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-TW"; path = "zh-TW.lproj/PrivateBrowsing.strings"; sourceTree = "<group>"; };
 		F99BEA852A13591C003F49B2 /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
 		F99BEA8A2A135982003F49B2 /* WalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModel.swift; sourceTree = "<group>"; };
@@ -7853,7 +7867,7 @@
 		F84B21C01A090F8100AAB793 /* Client */ = {
 			isa = PBXGroup;
 			children = (
-				F90E2FA62A39E9E900BFF587 /* carbon.xcdatamodeld */,
+				F95C231D2A3F3BA600B956B7 /* dApp */,
 				F9FC4C942A2F3C97000FA4C8 /* CoreData */,
 				F84B21E41A0910F600AAB793 /* Application */,
 				F84B21EB1A0910F600AAB793 /* Assets */,
@@ -8130,6 +8144,28 @@
 				F91ABA9729F11A0B0060105E /* RewardsViewController.swift */,
 			);
 			path = Rewards;
+			sourceTree = "<group>";
+		};
+		F95C231D2A3F3BA600B956B7 /* dApp */ = {
+			isa = PBXGroup;
+			children = (
+				F95C232A2A3F451900B956B7 /* Carbon-min.js */,
+				F95C231E2A3F3DBC00B956B7 /* RPCServer */,
+				F95C23222A3F445200B956B7 /* Enum.swift */,
+				F95C23242A3F44AA00B956B7 /* Helper.swift */,
+				F95C23262A3F44D200B956B7 /* Constants.swift */,
+				F95C23282A3F44FE00B956B7 /* Extension.swift */,
+				F95C232C2A3F45AB00B956B7 /* BrowserViewController+dApp.swift */,
+			);
+			path = dApp;
+			sourceTree = "<group>";
+		};
+		F95C231E2A3F3DBC00B956B7 /* RPCServer */ = {
+			isa = PBXGroup;
+			children = (
+				F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */,
+			);
+			path = RPCServer;
 			sourceTree = "<group>";
 		};
 		F99BEA842A135901003F49B2 /* Wallet */ = {
@@ -8962,6 +8998,7 @@
 				E69922171B94E3EF007C480D /* Licenses.html in Resources */,
 				E1AF3560286DE5F800960045 /* Smoketest3.xctestplan in Resources */,
 				E4CD9F5B1A71506C00318571 /* Reader.css in Resources */,
+				F95C232B2A3F451900B956B7 /* Carbon-min.js in Resources */,
 				D0FCF8061FE4772D004A7995 /* AllFramesAtDocumentEnd.js in Resources */,
 				EBC9D38622D4D56F0011D881 /* disconnect-block-cookies-analytics.json in Resources */,
 				D37524871C6E8B5A00A5F6C2 /* topdomains.txt in Resources */,
@@ -10069,6 +10106,7 @@
 				3BCE6D3C1CEB9E4D0080928C /* ThirdPartySearchAlerts.swift in Sources */,
 				E195440528A5AFDE00304CF0 /* BottomSheetViewController.swift in Sources */,
 				E13F8C342928194800BDC8B4 /* PhotonActionSheetSiteHeaderView.swift in Sources */,
+				F95C23252A3F44AA00B956B7 /* Helper.swift in Sources */,
 				C869912F28917688007ACC5C /* WallpaperMetadataLoader.swift in Sources */,
 				2137785D297F1F2800D01309 /* DownloadedFile.swift in Sources */,
 				745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */,
@@ -10135,6 +10173,7 @@
 				E15DE7C2293A7AED00B32667 /* PhotonActionSheetLineSeparator.swift in Sources */,
 				43BDBBFE2752FA8600254DE4 /* TabCell.swift in Sources */,
 				E60D03181D511398002FE3F6 /* SyncStatusResolver.swift in Sources */,
+				F95C23272A3F44D200B956B7 /* Constants.swift in Sources */,
 				8A9CB41E2846F0BF00CC3A16 /* FadeScrollView.swift in Sources */,
 				C4E3983D1D21F1E7004E89BA /* TopTabCell.swift in Sources */,
 				210E0EBA298D9D6400BB4F33 /* OpenSearchEngine.swift in Sources */,
@@ -10173,6 +10212,7 @@
 				E19B38B328A42D5E00D8C541 /* WallpaperCollectionViewCell.swift in Sources */,
 				0BB5B30B1AC0AD1F0052877D /* LoginsHelper.swift in Sources */,
 				C87DF9DB267247190097E707 /* UIConstants+BottomInset.swift in Sources */,
+				F95C23202A3F3DDD00B956B7 /* RPCServer.swift in Sources */,
 				8AD08D1527E9198E00B8E907 /* TabsQuantityTelemetry.swift in Sources */,
 				1DA3CE6324EEE83200422BB2 /* SavedTab+ConfigureExtension.swift in Sources */,
 				C87DC85627B2C8B0006EFCE2 /* LegacyWallpaperNetworkUtility.swift in Sources */,
@@ -10255,6 +10295,7 @@
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				96EB6C3E27D9266500A9D159 /* HistoryActionables.swift in Sources */,
 				C4F3B29A1CFCF93A00966259 /* ButtonToast.swift in Sources */,
+				F95C23292A3F44FE00B956B7 /* Extension.swift in Sources */,
 				C81B78A4280752A20000C15F /* NimbusFeatureFlagLayer.swift in Sources */,
 				4345441D26D2E52600D5EEAA /* SearchTermGroupsUtility.swift in Sources */,
 				2165B2CC28748CD7004C0786 /* LibraryPanelDescriptor.swift in Sources */,
@@ -10335,6 +10376,7 @@
 				8AB5958A284145B30090F4AE /* HomepageSectionHandler.swift in Sources */,
 				E1442FD0294782D9003680B0 /* UIAlertController+Extension.swift in Sources */,
 				E660BDD91BB06521009AC090 /* TabsButton.swift in Sources */,
+				F95C232D2A3F45AB00B956B7 /* BrowserViewController+dApp.swift in Sources */,
 				E1A6AB4828CA833000EBEBDD /* WallpaperBaseViewController.swift in Sources */,
 				4331A9BB27193DF0005E8080 /* ContextualHintViewController.swift in Sources */,
 				39EF434E260A73950011E22E /* Experiments.swift in Sources */,
@@ -10488,6 +10530,7 @@
 				DFA51481275FFEE500266AA0 /* HistoryHighlightsManager.swift in Sources */,
 				EBA3B2D22268F57E00728BDB /* BadgeWithBackdrop.swift in Sources */,
 				8AB5958828413F6C0090F4AE /* RecentlySavedCell.swift in Sources */,
+				F95C23232A3F445200B956B7 /* Enum.swift in Sources */,
 				96EB6C3C27D82AEA00A9D159 /* HistoryPanel+ContextMenuExtensions.swift in Sources */,
 				E1CD81C2290C62A600124B27 /* HostingTableViewCell.swift in Sources */,
 				43175DB826B87D2C00C41C31 /* AdsTelemetryHelper.swift in Sources */,

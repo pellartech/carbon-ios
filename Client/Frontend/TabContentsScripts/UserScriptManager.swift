@@ -58,7 +58,7 @@ class UserScriptManager {
     public func injectUserScriptsIntoTab(_ tab: Tab, nightMode: Bool, noImageMode: Bool) {
         // Start off by ensuring that any previously-added user scripts are
         // removed to prevent the same script from being injected twice.
-        tab.webView?.configuration.userContentController.removeAllUserScripts()
+//        tab.webView?.configuration.userContentController.removeAllUserScripts()
 
         // Inject all pre-compiled user scripts.
         [(WKUserScriptInjectionTime.atDocumentStart, mainFrameOnly: false),
