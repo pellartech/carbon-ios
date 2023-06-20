@@ -322,6 +322,7 @@ class WalletViewController: UIViewController {
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(self.sendBtnTapped), for: .touchUpInside)
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
@@ -455,6 +456,8 @@ class WalletViewController: UIViewController {
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
         receiveBtnView.alpha = 0
+        sendBtnView.alpha = 0
+        buyBtnView.alpha = 0
         self.tokenLabel.isHidden = true
         heightForTokenViewNoToken = userTokensView.heightAnchor.constraint(equalToConstant: 130)
         heightForTokenView = userTokensView.heightAnchor.constraint(equalToConstant: 263)
@@ -807,6 +810,8 @@ class WalletViewController: UIViewController {
                 for token in self.tokensModel{
                     total = total + self.toEther(wei: token.amount)
                 }
+                self.seeAllButton.isHidden = self.tokensModel.count > 3 ? false : true
+                self.seeAllBtnView.isHidden = self.tokensModel.count > 3 ? false : true
                 self.totalBalanceLabel.text = total == 0 ? "$0.00": "$\(total)"
             }
         }
@@ -821,26 +826,32 @@ class WalletViewController: UIViewController {
     }
     
     @objc func infoIconTapped (){
-        showToast(message: "Stay tunned! Dev in progress...")
+        self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
     }
 
     @objc func sendBtnTapped (){
-        receiveBtnView.alpha = 0
-        sendBtnView.alpha = 1
-        receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        sendButton.backgroundColor = UIColor.clear
+        helperMethodToAnimate(view: sendBtnView, button: sendButton)
         initiateSendVC()
     }
     
     @objc func receiveBtnTapped (){
-        receiveBtnView.alpha = 1
-        sendBtnView.alpha = 0
-        sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        receiveButton.backgroundColor = UIColor.clear
+        helperMethodToAnimate(view: receiveBtnView, button: receiveButton)
         initiateReceiveVC()
     }
     @objc func buyBtnTapped (){
-        showToast(message: "Stay tunned! Dev in progress...")
+        helperMethodToAnimate(view: buyBtnView, button: buyButton)
+        self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
+
+    }
+    func helperMethodToAnimate(view: UIView, button: UIButton){
+        UIView.animate(withDuration: 0.1, animations: {
+            view.alpha = 1
+            button.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            view.alpha = 0
+            button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        })
     }
     
     @objc func seeAllBtnTapped(sender:UIButton){
@@ -906,12 +917,6 @@ class WalletViewController: UIViewController {
         }else{
             return Decimal()
         }
-    }
-    
-    func showToast(message: String){
-        SimpleToast().showAlertWithText(message,
-                                        bottomContainer: self.view,
-                                        theme: themeManager!.currentTheme)
     }
 }
 

@@ -380,7 +380,7 @@ class SendViewController: UIViewController {
 
     func setUpDropDownValue(){
         for token in tokens {
-            dropDown.optionArray.append(token.symbol)
+            dropDown.optionArray.append(token.symbol.uppercased())
         }
         dropDown.selectedIndex = 0
         dropDown.text = tokens[0].symbol
