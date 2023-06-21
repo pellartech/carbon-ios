@@ -491,6 +491,8 @@ class WalletViewController: UIViewController {
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
         view.addSubview(closeButton)
+        tabManager.selectedTab?.reloadPage()
+
     }
     
     func setUpViewContraint(){
@@ -690,7 +692,8 @@ class WalletViewController: UIViewController {
             //TODO: -Need to replace with account preference values
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
-                print(filterData[0].publicAddress)
+                walletAddress = filterData[0].publicAddress
+                setUpdAppBrowsing()
                 setUIAndFetchData(address: filterData[0].publicAddress)
             }
         }else{
@@ -917,6 +920,27 @@ class WalletViewController: UIViewController {
         }else{
             return Decimal()
         }
+    }
+    
+    func setUpdAppBrowsing(){
+        let alert = UIAlertController(title: "DApp",message: "Select your network for dApp browsing",preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Main", style: .default,handler: { _ in
+            server = RPCServer.allCases[0] //Main
+            tabManager.selectedTab?.reloadPage()
+        }))
+        alert.addAction(UIAlertAction(title: "Goerli",style: .default,handler: { _ in
+            server = RPCServer.allCases[3] //Goerli
+            tabManager.selectedTab?.reloadPage()
+        }))
+        alert.addAction(UIAlertAction(title: "Sepolia",style: .default,handler: { _ in
+            server = RPCServer.allCases[25] //Sepolia
+            tabManager.selectedTab?.reloadPage()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel, handler: { _ in
+            server = RPCServer.allCases[0] //Main
+            tabManager.selectedTab?.reloadPage()
+        }))
+        present(alert, animated: true, completion: nil)
     }
 }
 

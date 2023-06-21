@@ -17,6 +17,14 @@ import ConnectSolanaAdapter
 import ConnectWalletConnectAdapter
 import ParticleConnect
 
+ var profile: Profile = BrowserProfile(
+    localName: "profile"
+)
+var tabManager = TabManager(profile: profile, imageStore:  DiskImageStore(
+    files: profile.files,
+    namespace: "TabManagerScreenshots",
+    quality: UIConstants.ScreenshotQuality))
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let logger = DefaultLogger.shared
     var notificationCenter: NotificationProtocol = NotificationCenter.default

@@ -426,11 +426,11 @@ extension DappAction {
         var contract : String?
         
         if data.isEmpty || data.toHexString() == "0x" {
-            recipient = recipientAddress
+            recipient = walletAddress
             contract = nil
         } else {
             recipient = nil
-            contract = recipientAddress
+            contract = walletAddress
         }
         
         return UnconfirmedTransaction(
