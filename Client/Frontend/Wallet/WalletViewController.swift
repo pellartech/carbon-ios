@@ -491,8 +491,6 @@ class WalletViewController: UIViewController {
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
         view.addSubview(closeButton)
-        tabManager.selectedTab?.reloadPage()
-
     }
     
     func setUpViewContraint(){
@@ -926,19 +924,19 @@ class WalletViewController: UIViewController {
         let alert = UIAlertController(title: "DApp",message: "Select your network for dApp browsing",preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Main", style: .default,handler: { _ in
             server = RPCServer.allCases[0] //Main
-            tabManager.selectedTab?.reloadPage()
+            tabManager.addTab()
         }))
         alert.addAction(UIAlertAction(title: "Goerli",style: .default,handler: { _ in
             server = RPCServer.allCases[3] //Goerli
-            tabManager.selectedTab?.reloadPage()
+            tabManager.addTab()
         }))
         alert.addAction(UIAlertAction(title: "Sepolia",style: .default,handler: { _ in
             server = RPCServer.allCases[25] //Sepolia
-            tabManager.selectedTab?.reloadPage()
+            tabManager.addTab()
         }))
         alert.addAction(UIAlertAction(title: "Cancel",style: .cancel, handler: { _ in
             server = RPCServer.allCases[0] //Main
-            tabManager.selectedTab?.reloadPage()
+            tabManager.addTab()
         }))
         present(alert, animated: true, completion: nil)
     }

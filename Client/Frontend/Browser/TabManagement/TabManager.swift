@@ -423,15 +423,13 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
     }
 
     // A WKWebViewConfiguration used for normal tabs
-    lazy private var configuration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server))
-    }()
+     private var configuration = WKWebViewConfiguration()
+//    return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server))
 
     // A WKWebViewConfiguration used for private mode tabs
-    lazy private var privateConfiguration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server))
-    }()
+     private var privateConfiguration = WKWebViewConfiguration()
 
+//    return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server))
     // MARK: Get tabs
     func getTabFor(_ url: URL) -> Tab? {
         for tab in tabs {
@@ -680,9 +678,12 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                 isPrivate: Bool = false
     ) -> Tab {
         // Take the given configuration. Or if it was nil, take our default configuration for the current browsing mode.
-        let configuration: WKWebViewConfiguration = configuration ?? (isPrivate ? privateConfiguration : self.configuration)
-
-        let tab = Tab(profile: profile, configuration: configuration, isPrivate: isPrivate)
+        if isPrivate{
+           privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server))
+        }else{
+         self.configuration = TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server))
+        }
+        let tab = Tab(profile: profile, configuration: isPrivate ? privateConfiguration : self.configuration, isPrivate: isPrivate)
         configureTab(tab, request: request, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
         return tab
     }
