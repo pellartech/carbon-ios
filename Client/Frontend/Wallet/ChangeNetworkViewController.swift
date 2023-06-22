@@ -467,6 +467,57 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
         self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
         self.dismissVC()
     }
+    
+    func setUpdAppBrowsing(platform : Platforms){
+        
+        switch platform.name?.uppercased(){
+        case NetworkEnum.Ethereum.rawValue.uppercased():
+            server = RPCServer.allCases[0] //Ethereum
+        case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():
+            server = RPCServer.allCases[3] //Goerli-Ethereum Testnet
+        case NetworkEnum.EthereumSepoliaTest.rawValue.uppercased():
+            server = RPCServer.allCases[25] //Sepolia-Ethereum Testnet
+            
+        case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
+            server = RPCServer.allCases[5] //BinanceSmartChain
+        case NetworkEnum.BinanceSmartChainTest.rawValue.uppercased():
+            server = RPCServer.allCases[4] //BinanceSmartChain Testnet
+            
+        case NetworkEnum.Solana.rawValue.uppercased():
+            server = RPCServer.allCases[0] //Solana
+            
+        case NetworkEnum.KucoinCommunityChain.rawValue.uppercased():
+            server = RPCServer.allCases[0] //KucoinCommunityChain
+            
+        case NetworkEnum.OkexChain.rawValue.uppercased():
+            server = RPCServer.allCases[0] //OkexChain
+            
+        case NetworkEnum.Polygon.rawValue.uppercased():
+            server = RPCServer.allCases[11] //Polygon
+            
+        case NetworkEnum.PolygonTest.rawValue.uppercased():
+            server = RPCServer.allCases[13] //Polygon-Mumbai Testnet
+        default:
+            server = RPCServer.allCases[0] //Ethereum
+        }
+        let alert = UIAlertController(title: "DApp",message: "Select your network for dApp browsing",preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Main", style: .default,handler: { _ in
+          
+        }))
+        alert.addAction(UIAlertAction(title: "Goerli",style: .default,handler: { _ in
+            server = RPCServer.allCases[3] //Goerli
+            tabManager.addTab()
+        }))
+        alert.addAction(UIAlertAction(title: "Sepolia",style: .default,handler: { _ in
+            //Sepolia
+            tabManager.addTab()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel, handler: { _ in
+            server = RPCServer.allCases[0] //Main
+            tabManager.addTab()
+        }))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Extension - ConnectProtocol

@@ -710,7 +710,7 @@ class AddCustomTokenViewController: UIViewController {
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
         switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
+        case NetworkSymbolEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
         default: selectedNetwork  = networkData[1]
         }
     }
@@ -738,7 +738,7 @@ class AddCustomTokenViewController: UIViewController {
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
             self.platforms.append(Platforms(name: key, address: value))
         }
-        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
+        self.platforms =  self.platforms.filter { $0.name?.uppercased() == NetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == NetworkEnum.BinanceSmartChain.rawValue.uppercased() }
         if (self.platforms.count > 1 ){
             self.chevronImageView.isHidden = false
             self.trailingForChevron.isActive = true
@@ -928,7 +928,7 @@ extension AddCustomTokenViewController :  ChangeNetwork{
             if (platform == platforms.name){
                 var chainInfo : Chain?
                 switch platform.uppercased(){
-                case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
+                case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
                     chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
                 default:
                     chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)

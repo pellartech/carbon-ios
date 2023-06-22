@@ -691,7 +691,6 @@ class WalletViewController: UIViewController {
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
                 walletAddress = filterData[0].publicAddress
-                setUpdAppBrowsing()
                 setUIAndFetchData(address: filterData[0].publicAddress)
             }
         }else{
@@ -734,7 +733,7 @@ class WalletViewController: UIViewController {
     func fetchDefaultNetwork() -> Networks{
         let networkData =  CoreDataManager.shared.fetchNetworks()
         switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  return networkData[0]
+        case NetworkSymbolEnum.Ethereum.rawValue:  return networkData[0]
         default: return networkData[1]
         }
     }
@@ -919,27 +918,6 @@ class WalletViewController: UIViewController {
             return Decimal()
         }
     }
-    
-    func setUpdAppBrowsing(){
-        let alert = UIAlertController(title: "DApp",message: "Select your network for dApp browsing",preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Main", style: .default,handler: { _ in
-            server = RPCServer.allCases[0] //Main
-            tabManager.addTab()
-        }))
-        alert.addAction(UIAlertAction(title: "Goerli",style: .default,handler: { _ in
-            server = RPCServer.allCases[3] //Goerli
-            tabManager.addTab()
-        }))
-        alert.addAction(UIAlertAction(title: "Sepolia",style: .default,handler: { _ in
-            server = RPCServer.allCases[25] //Sepolia
-            tabManager.addTab()
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel, handler: { _ in
-            server = RPCServer.allCases[0] //Main
-            tabManager.addTab()
-        }))
-        present(alert, animated: true, completion: nil)
-    }
 }
 
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
@@ -974,7 +952,7 @@ extension WalletViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
         var chainInfo : Chain?
         switch platforms.name!.uppercased(){
-        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
+        case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
             chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
         default:
             chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
