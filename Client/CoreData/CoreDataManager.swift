@@ -14,12 +14,12 @@ class CoreDataManager {
     }()
     
     // MARK: - Save network
-    func saveNetwork(name: String, isTest: Bool, nativeSymbol: String,isDefault: Bool) -> Networks {
+    func saveNetwork(name: String, isTest: Bool, nativeSymbol: String,isSelected: Bool) -> Networks {
         let network = Networks(context: persistentContainer.viewContext)
         network.name = name
         network.isTest = isTest
         network.nativeSymbol = nativeSymbol
-        network.isDefault = isDefault
+        network.isSelected = isSelected
         return network
     }
     

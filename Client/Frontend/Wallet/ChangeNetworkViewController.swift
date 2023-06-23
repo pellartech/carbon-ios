@@ -436,7 +436,12 @@ class ChangeNetworkViewController: UIViewController {
     func setUpNetwork(){
         if isSettings{
             self.copyPlatforms = self.platforms
-            self.platforms = self.copyPlatforms.filter{$0.isTest == false}
+            if  let isSwitch = UserDefaults.standard.value(forKey: "NetworkSwitch") as? Bool{
+            switchButton.status = isSwitch
+            self.platforms = isSwitch ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
+            }
+            let selectedIndex = self.platforms.firstIndex{$0.isSelected == true}
+            selectedIndexes = IndexPath(row: selectedIndex ?? 0, section: 0)
             self.tableView.reloadData()
         }
     }
@@ -476,15 +481,13 @@ class ChangeNetworkViewController: UIViewController {
 // MARK: - Extension - NetworkSwitchDelegate
 extension ChangeNetworkViewController : NetworkSwitchDelegate{
     func networkSwitchTapped(value: Bool) {
-        if (value){
-        self.platforms = self.copyPlatforms
-        }else{
-          self.platforms = self.copyPlatforms.filter{$0.isTest == false}
+        if selectedIndexes.row > 0{
+            selectedIndexes = IndexPath(row: 0, section: 0)
         }
-
+        self.platforms = value ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
+        UserDefaults.standard.setValue(value, forKey: "NetworkSwitch")
         self.tableView.reloadData()
     }
-    
 }
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSource{
@@ -514,6 +517,9 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexes = indexPath
         tableView.reloadData()
+        networks.forEach( { network in
+            network.isSelected = ( network.name?.uppercased() == self.platforms[indexPath.row].name?.uppercased() ) ? true : false
+        })
         self.setUpNetworkDAppBrowsing(platform:self.platforms[indexPath.row])
         self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
         self.dismissVC()

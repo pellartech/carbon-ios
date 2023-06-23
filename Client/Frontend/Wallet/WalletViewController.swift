@@ -753,13 +753,11 @@ class WalletViewController: UIViewController {
     }
     func fetchUserTokensEVM(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenListsEVM( address: publicAddress, tokenArray: tokens) { result in
-            for each in networks.filter({$0.isDefault == true}){
-                if (selectedNetwork == each){
+                if (selectedNetwork == networks[0] || selectedNetwork == networks[1]){
                     self.helperMethodToUpdateUIWithCarbonToken(result: result)
                 }else{
                     self.helperMethodToUpdateUI(result: result)
                 }
-            }
         }
     }
     
@@ -891,7 +889,7 @@ class WalletViewController: UIViewController {
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
         for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol))
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
         }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.delegate = self

@@ -734,7 +734,7 @@ class AddCustomTokenViewController: UIViewController {
     
     func setUpData(){
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
-            self.platforms.append(Platforms(name: key, address: value, isTest: false, nativeSymbol: ""))
+            self.platforms.append(Platforms(name: key, address: value, isTest: false, nativeSymbol: "",isSelected: false))
         }
         self.platforms =  self.platforms.filter {
         $0.name?.uppercased() == NetworkEnum.Ethereum.rawValue.uppercased() ||
