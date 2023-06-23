@@ -753,10 +753,12 @@ class WalletViewController: UIViewController {
     }
     func fetchUserTokensEVM(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenListsEVM( address: publicAddress, tokenArray: tokens) { result in
-            if (selectedNetwork == networks.filter{$0.isDefault == true}.first){
-                self.helperMethodToUpdateUIWithCarbonToken(result: result)
-            }else{
-                self.helperMethodToUpdateUI(result: result)
+            for each in networks.filter({$0.isDefault == true}){
+                if (selectedNetwork == each){
+                    self.helperMethodToUpdateUIWithCarbonToken(result: result)
+                }else{
+                    self.helperMethodToUpdateUI(result: result)
+                }
             }
         }
     }

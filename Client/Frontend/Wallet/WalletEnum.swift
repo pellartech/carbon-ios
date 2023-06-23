@@ -41,10 +41,8 @@ enum NetworkEnum : String,CaseIterable {
     
     func nativeSymbol() -> String {
         switch self {
-        case .BinanceSmartChain:
+        case .BinanceSmartChain,.BinanceSmartChainTest:
             return "BNB"
-        case .BinanceSmartChainTest:
-            return "TBNB"
         case .Ethereum:
             return "ETH"
         case .EthereumGoerliTest:
