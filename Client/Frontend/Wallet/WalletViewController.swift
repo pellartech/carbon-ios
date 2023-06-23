@@ -1107,10 +1107,10 @@ class TokensTVCell: UITableViewCell {
             case "MATIC":
                 defaultImage = "ic_matic"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "KCC":
+            case "KCS":
                 defaultImage = "ic_kcc"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "OKC":
+            case "OKT":
                 defaultImage = "ic_okc"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
