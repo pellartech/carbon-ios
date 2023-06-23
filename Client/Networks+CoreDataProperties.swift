@@ -16,6 +16,7 @@ extension Networks {
     @NSManaged public var name: String?
     @NSManaged public var isDefault: Bool
     @NSManaged public var isTest: Bool
+    @NSManaged public var nativeSymbol: String?
     @NSManaged public var tokens: NSSet?
 
 }

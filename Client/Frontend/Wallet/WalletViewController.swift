@@ -735,10 +735,7 @@ class WalletViewController: UIViewController {
     }
     func fetchDefaultNetwork() -> Networks{
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkSymbolEnum.Ethereum.rawValue:  return networkData[0]
-        default: return networkData[1]
-        }
+        return networkData.filter{$0.nativeSymbol ==  ParticleNetwork.getChainInfo().nativeSymbol}.first ?? networkData[0]
     }
     
     func addCarbonToken(tokens : [String]){
@@ -756,7 +753,7 @@ class WalletViewController: UIViewController {
     }
     func fetchUserTokensEVM(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenListsEVM( address: publicAddress, tokenArray: tokens) { result in
-            if (selectedNetwork == networks[1]){
+            if (selectedNetwork == networks.filter{$0.isDefault == true}.first){
                 self.helperMethodToUpdateUIWithCarbonToken(result: result)
             }else{
                 self.helperMethodToUpdateUI(result: result)
@@ -892,7 +889,7 @@ class WalletViewController: UIViewController {
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
         for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest))
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol))
         }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.delegate = self

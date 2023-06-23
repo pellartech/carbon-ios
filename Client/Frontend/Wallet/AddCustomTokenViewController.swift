@@ -709,11 +709,9 @@ class AddCustomTokenViewController: UIViewController {
     
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkSymbolEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
-        default: selectedNetwork  = networkData[1]
-        }
+        selectedNetwork = networkData.filter{$0.nativeSymbol ==  ParticleNetwork.getChainInfo().nativeSymbol}.first ?? networkData[0]
     }
+    
     func fetchTokenInfo(token : Tokens){
         SVProgressHUD.show()
         WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
@@ -736,7 +734,7 @@ class AddCustomTokenViewController: UIViewController {
     
     func setUpData(){
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
-            self.platforms.append(Platforms(name: key, address: value, isTest: false))
+            self.platforms.append(Platforms(name: key, address: value, isTest: false, nativeSymbol: ""))
         }
         self.platforms =  self.platforms.filter { $0.name?.uppercased() == NetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == NetworkEnum.BinanceSmartChain.rawValue.uppercased() }
         if (self.platforms.count > 1 ){

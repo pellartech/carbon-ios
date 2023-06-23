@@ -108,7 +108,7 @@ class ChangeNetworkViewController: UIViewController {
             static let common: CGFloat = 15
             static let leading: CGFloat = 10
             static let top: CGFloat = 15
-            static let trailing: CGFloat = -10
+            static let trailing: CGFloat = -20
             static let bottom: CGFloat = -30
             static let height: CGFloat = 500
         }
@@ -428,7 +428,7 @@ class ChangeNetworkViewController: UIViewController {
             ///UserTokenView TableView
             tableView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: UX.TableView.trailing),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
@@ -674,7 +674,7 @@ class NetworkTVCell: UITableViewCell {
             //Gradient view
             gradientView.topAnchor.constraint(equalTo: contentView.topAnchor),
             gradientView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.GradientView.common),
-            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.GradientView.common),
+            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             gradientView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             ///UILabel

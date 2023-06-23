@@ -19,7 +19,7 @@ enum NetworkEnum : String,CaseIterable {
     
     //KucoinCommunityChain
     case KucoinCommunityChain = "Kucoin Community Chain"
-
+    
     //OkexChain
     case OkexChain = "Okex Chain"
     
@@ -31,26 +31,34 @@ enum NetworkEnum : String,CaseIterable {
     case Solana = "Solana"
     
     func isTest() -> Bool {
-           switch self {
-           case .EthereumGoerliTest, .EthereumSepoliaTest, .BinanceSmartChainTest, .PolygonTest:
-               return  true
-           default:
-               return false
-           }
+        switch self {
+        case .EthereumGoerliTest, .EthereumSepoliaTest, .BinanceSmartChainTest, .PolygonTest:
+            return  true
+        default:
+            return false
         }
-
-}
-
-enum NetworkSymbolEnum : String {
-    case Ethereum = "ETH"
-    case EthereumGoerliTest = "GETH"
-    case EthereumSepoliaTest = "SETH"
-    case BinanceSmartChain = "BNB"
-    case BinanceSmartChainTest = "TBNB"
-    case Solana = "SOL"
-    case KucoinCommunityChain = "KCC"
-    case OkexChain = "OKC"
-    case OkexChainTest = "OKT"
-    case Polygon = "MATIC"
-
+    }
+    
+    func nativeSymbol() -> String {
+        switch self {
+        case .BinanceSmartChain:
+            return "BNB"
+        case .BinanceSmartChainTest:
+            return "TBNB"
+        case .Ethereum:
+            return "ETH"
+        case .EthereumGoerliTest:
+            return "GETH"
+        case .EthereumSepoliaTest:
+            return "SETH"
+        case .KucoinCommunityChain:
+            return "KCC"
+        case .OkexChain:
+            return "OKC"
+        case .Polygon, .PolygonTest:
+            return "MATIC"
+        case .Solana:
+            return "SOL"
+        }
+    }
 }

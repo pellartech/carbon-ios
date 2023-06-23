@@ -4,6 +4,7 @@
         <attribute name="isDefault" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isTest" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nativeSymbol" optional="YES" attributeType="String"/>
         <relationship name="tokens" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tokens" inverseName="network" inverseEntity="Tokens"/>
     </entity>
     <entity name="Tokens" representedClassName="Tokens" syncable="YES">

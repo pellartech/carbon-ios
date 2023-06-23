@@ -182,7 +182,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         networks = CoreDataManager.shared.fetchNetworks()
         if (networks.count == 0){
             for network in NetworkEnum.allCases{
-                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue,isTest: network.isTest())
+                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue,isTest: network.isTest(),nativeSymbol: network.nativeSymbol(), isDefault: network == NetworkEnum.BinanceSmartChain ? true : false)
                 networks.append(network)
                 CoreDataManager.shared.save()
             }
