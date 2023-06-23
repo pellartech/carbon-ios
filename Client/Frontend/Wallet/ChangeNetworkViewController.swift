@@ -151,6 +151,8 @@ class ChangeNetworkViewController: UIViewController {
             static let valueHeight: CGFloat = 30
             static let chevronWidth: CGFloat = 12
             static let chevronHeight: CGFloat = 8
+            static let corner: CGFloat = 15
+
         }
     }
     
@@ -255,6 +257,19 @@ class ChangeNetworkViewController: UIViewController {
         return button
     }()
     
+    private lazy var switchView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = UX.Value.corner
+        view.clipsToBounds = true
+        return view
+    }()
+
+    var switchButton : SwitchButton = {
+        let switchButton = SwitchButton()
+        return switchButton
+    }()
+    
     ///UITableView
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -295,16 +310,21 @@ class ChangeNetworkViewController: UIViewController {
     }
     
     func setUpView(){
+        switchButton = SwitchButton(frame: CGRect(x: contentView.frame.origin.x, y: contentView.frame.origin.y, width: 50, height: 30))
+        switchButton.delegate = self
         navigationController?.isNavigationBarHidden = true
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
+        switchView.addSubview(switchButton)
         actionsView.addSubview(settingsIcon)
         actionsView.addSubview(infoIcon)
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
         contentView.addSubview(networkLabel)
+        contentView.addSubview(switchView)
+
         view.addSubview(contentView)
         view.addSubview(tableView)
         view.addSubview(logoBackgroundView)
@@ -347,6 +367,11 @@ class ChangeNetworkViewController: UIViewController {
             networkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
             networkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
+            //Network switch
+            switchView.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.NetworkView.top),
+            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
+            switchView.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            switchView.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -435,7 +460,13 @@ class ChangeNetworkViewController: UIViewController {
                                         theme: themeManager!.currentTheme)
     }
 }
-
+// MARK: - Extension - NetworkSwitchDelegate
+extension ChangeNetworkViewController : NetworkSwitchDelegate{
+    func networkSwitchTapped(value: Bool) {
+        
+    }
+    
+}
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -464,59 +495,73 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexes = indexPath
         tableView.reloadData()
+        self.setUpNetworkDAppBrowsing(platform:self.platforms[indexPath.row])
         self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
         self.dismissVC()
     }
     
-    func setUpdAppBrowsing(platform : Platforms){
-        
+    func setUpNetworkDAppBrowsing(platform : Platforms){
+        var chainInfo : Chain?
+
         switch platform.name?.uppercased(){
+          
+        //Ethereum
         case NetworkEnum.Ethereum.rawValue.uppercased():
-            server = RPCServer.allCases[0] //Ethereum
+            server = RPCServer.allCases[0]
+            chainInfo  = .bsc(BscNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+            
+       //Goerli-Ethereum Testnet
         case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():
-            server = RPCServer.allCases[3] //Goerli-Ethereum Testnet
+            server = RPCServer.allCases[3]
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.goerli.rawValue)!)
+           
+       //Sepolia-Ethereum Testnet
         case NetworkEnum.EthereumSepoliaTest.rawValue.uppercased():
-            server = RPCServer.allCases[25] //Sepolia-Ethereum Testnet
-            
+            server = RPCServer.allCases[25]
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+
+        //BinanceSmartChain
         case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
-            server = RPCServer.allCases[5] //BinanceSmartChain
+            server = RPCServer.allCases[5]
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+
+        //BinanceSmartChain Testnet
         case NetworkEnum.BinanceSmartChainTest.rawValue.uppercased():
-            server = RPCServer.allCases[4] //BinanceSmartChain Testnet
+            server = RPCServer.allCases[4]
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.testnet.rawValue)!)
             
+        //Solana
         case NetworkEnum.Solana.rawValue.uppercased():
             server = RPCServer.allCases[0] //Solana
-            
+            chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+
+        //KucoinCommunityChain
         case NetworkEnum.KucoinCommunityChain.rawValue.uppercased():
-            server = RPCServer.allCases[0] //KucoinCommunityChain
-            
+            server = RPCServer.allCases[0]
+            chainInfo  = .kcc(KccNetwork(rawValue: KccNetwork.mainnet.rawValue)!)
+
+        //OkexChain
         case NetworkEnum.OkexChain.rawValue.uppercased():
-            server = RPCServer.allCases[0] //OkexChain
-            
+            server = RPCServer.allCases[24]
+            chainInfo  = .okc(OKCNetwork(rawValue: OKCNetwork.mainnet.rawValue)!)
+
+         //Polygon
         case NetworkEnum.Polygon.rawValue.uppercased():
-            server = RPCServer.allCases[11] //Polygon
-            
-        case NetworkEnum.PolygonTest.rawValue.uppercased():
-            server = RPCServer.allCases[13] //Polygon-Mumbai Testnet
-        default:
-            server = RPCServer.allCases[0] //Ethereum
-        }
-        let alert = UIAlertController(title: "DApp",message: "Select your network for dApp browsing",preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Main", style: .default,handler: { _ in
+            server = RPCServer.allCases[11]
+            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
           
-        }))
-        alert.addAction(UIAlertAction(title: "Goerli",style: .default,handler: { _ in
-            server = RPCServer.allCases[3] //Goerli
-            tabManager.addTab()
-        }))
-        alert.addAction(UIAlertAction(title: "Sepolia",style: .default,handler: { _ in
-            //Sepolia
-            tabManager.addTab()
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel, handler: { _ in
-            server = RPCServer.allCases[0] //Main
-            tabManager.addTab()
-        }))
-        present(alert, animated: true, completion: nil)
+        //Polygon-Mumbai Testnet
+        case NetworkEnum.PolygonTest.rawValue.uppercased():
+            server = RPCServer.allCases[13]
+            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
+
+        default:
+            server = RPCServer.allCases[0]
+            chainInfo  = .bsc(BscNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+        }
+        
+        ParticleNetwork.setChainInfo(chainInfo!)
+        tabManager.addTab()
     }
 }
 
@@ -649,4 +694,53 @@ class NetworkTVCell: UITableViewCell {
     func setUI(platforms : Platforms){
         titleLabel.text = platforms.name?.capitalized
     }
+}
+
+class SwitchButton: UIButton {
+
+    var status: Bool = false {
+        didSet {
+            self.update()
+        }
+    }
+    var onImage = UIImage(named: "switch_on")
+    var offImage = UIImage(named: "switch_off")
+    var delegate : NetworkSwitchDelegate?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setStatus(false)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func update() {
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.status ? self.setImage(self.onImage, for: .normal) : self.setImage(self.offImage, for: .normal)
+        }, completion:{_ in
+        })
+    }
+    func toggle() {
+        self.status ? self.setStatus(false) : self.setStatus(true)
+        self.delegate?.networkSwitchTapped(value: self.status)
+    }
+    
+    func setStatus(_ status: Bool) {
+        self.status = status
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        self.sendHapticFeedback()
+        self.toggle()
+    }
+    
+    func sendHapticFeedback() {
+        let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+        impactFeedbackgenerator.prepare()
+        impactFeedbackgenerator.impactOccurred()
+    }
+    
 }

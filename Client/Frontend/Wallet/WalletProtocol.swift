@@ -17,8 +17,8 @@ protocol AddWalletProtocol{
 }
 
 /// Token enable protocol
-protocol SwitchDelegate{
-    func switchTapped(value: Bool,index:Int)
+protocol NetworkSwitchDelegate{
+    func networkSwitchTapped(value: Bool)
     
 }
 /// Add token protocol

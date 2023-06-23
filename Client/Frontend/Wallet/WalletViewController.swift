@@ -24,6 +24,9 @@ typealias Chain = ParticleNetwork.ChainInfo
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
+typealias PolygonNetwork = ParticleNetwork.PolygonNetwork
+typealias KccNetwork = ParticleNetwork.KccNetwork
+typealias OKCNetwork = ParticleNetwork.OKCNetwork
 
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 var publicAddress = String()
@@ -950,15 +953,6 @@ extension WalletViewController : ConnectProtocol{
 // MARK: - Extension - ChangeNetwork
 extension WalletViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
-        var chainInfo : Chain?
-        switch platforms.name!.uppercased(){
-        case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
-            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-        default:
-            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-        }
-        ParticleNetwork.setChainInfo(chainInfo!)
-        self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)
         self.fetchTokens()
         self.getLocalUserData()
     }

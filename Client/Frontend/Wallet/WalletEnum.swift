@@ -9,25 +9,25 @@ import Foundation
 enum NetworkEnum : String,CaseIterable {
     //Ethereum
     case Ethereum = "Ethereum"
-    case EthereumGoerliTest = "Ethereum-Goerli Testnet"
-    case EthereumSepoliaTest = "Ethereum-Sepolia Testnet"
+    case EthereumGoerliTest = "Ethereum Goerli Testnet"
+    case EthereumSepoliaTest = "Ethereum Sepolia Testnet"
 
     //BinanceSmartChain
-    case BinanceSmartChain = "BinanceSmartChain"
-    case BinanceSmartChainTest = "BinanceSmartChain Testnet"
+    case BinanceSmartChain = "Binance Smart Chain"
+    case BinanceSmartChainTest = "Binance Smart Chain Testnet"
     
     //Solana
     case Solana = "Solana"
     
     //KucoinCommunityChain
-    case KucoinCommunityChain = "KucoinCommunityChain"
+    case KucoinCommunityChain = "Kucoin Community Chain"
 
     //OkexChain
-    case OkexChain = "OkexChain"
+    case OkexChain = "Okex Chain"
 
     //Polygon
-    case Polygon = "Polygon Mainnet"
-    case PolygonTest = "Polygon-Mumbai Testnet"
+    case Polygon = "Polygon"
+    case PolygonTest = "Polygon Mumbai Testnet"
 
 }
 
