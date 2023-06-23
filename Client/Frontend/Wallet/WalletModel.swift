@@ -134,10 +134,11 @@ struct TokenDescrip : Decodable{
 class Platforms {
     var name: String?
     var address : String?
-
-    init(name: String?,address: String?){
+    var isTest : Bool?
+    init(name: String?,address: String?,isTest:Bool?){
         self.name = name
         self.address = address
+        self.isTest = isTest
     }
     // MARK: - Helper method: Convert managed objects to objects
     func toManagedObject(in context: NSManagedObjectContext) -> Networks? {

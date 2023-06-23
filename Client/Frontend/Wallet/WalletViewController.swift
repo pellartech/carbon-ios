@@ -892,7 +892,7 @@ class WalletViewController: UIViewController {
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
         for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: ""))
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest))
         }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.delegate = self

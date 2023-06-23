@@ -7,27 +7,37 @@
 
 import Foundation
 enum NetworkEnum : String,CaseIterable {
-    //Ethereum
-    case Ethereum = "Ethereum"
-    case EthereumGoerliTest = "Ethereum Goerli Testnet"
-    case EthereumSepoliaTest = "Ethereum Sepolia Testnet"
-
+    
     //BinanceSmartChain
     case BinanceSmartChain = "Binance Smart Chain"
     case BinanceSmartChainTest = "Binance Smart Chain Testnet"
     
-    //Solana
-    case Solana = "Solana"
+    //Ethereum
+    case Ethereum = "Ethereum"
+    case EthereumGoerliTest = "Ethereum Goerli Testnet"
+    case EthereumSepoliaTest = "Ethereum Sepolia Testnet"
     
     //KucoinCommunityChain
     case KucoinCommunityChain = "Kucoin Community Chain"
 
     //OkexChain
     case OkexChain = "Okex Chain"
-
+    
     //Polygon
     case Polygon = "Polygon"
     case PolygonTest = "Polygon Mumbai Testnet"
+    
+    //Solana
+    case Solana = "Solana"
+    
+    func isTest() -> Bool {
+           switch self {
+           case .EthereumGoerliTest, .EthereumSepoliaTest, .BinanceSmartChainTest, .PolygonTest:
+               return  true
+           default:
+               return false
+           }
+        }
 
 }
 

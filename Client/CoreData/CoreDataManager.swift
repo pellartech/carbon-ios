@@ -14,9 +14,10 @@ class CoreDataManager {
     }()
     
     // MARK: - Save network
-    func saveNetwork(name: String) -> Networks {
+    func saveNetwork(name: String, isTest: Bool) -> Networks {
         let network = Networks(context: persistentContainer.viewContext)
         network.name = name
+        network.isTest = isTest
         return network
     }
     

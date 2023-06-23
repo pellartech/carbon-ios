@@ -243,6 +243,16 @@ class ChangeNetworkViewController: UIViewController {
         return label
     }()
     
+    private lazy var testNetworkLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
+        label.textAlignment = .center
+        label.text = "Test Network"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -267,6 +277,7 @@ class ChangeNetworkViewController: UIViewController {
 
     var switchButton : SwitchButton = {
         let switchButton = SwitchButton()
+        switchButton.setStatus(true)
         return switchButton
     }()
     
@@ -292,6 +303,7 @@ class ChangeNetworkViewController: UIViewController {
     var selectedIndexes = IndexPath.init(row: 0, section: 0)
     var delegate :  ChangeNetwork?
     var platforms = [Platforms]()
+    var copyPlatforms = [Platforms]()
     var isSettings = false
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -323,6 +335,7 @@ class ChangeNetworkViewController: UIViewController {
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
         contentView.addSubview(networkLabel)
+        contentView.addSubview(testNetworkLabel)
         contentView.addSubview(switchView)
 
         view.addSubview(contentView)
@@ -370,8 +383,13 @@ class ChangeNetworkViewController: UIViewController {
             //Network switch
             switchView.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.NetworkView.top),
             switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            switchView.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            switchView.widthAnchor.constraint(equalToConstant: UX.Value.width),
             switchView.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
+            
+            //Test Network
+            testNetworkLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.NetworkView.top),
+            testNetworkLabel.trailingAnchor.constraint(equalTo: switchView.leadingAnchor,constant: -UX.NetworkView.corner),
+            testNetworkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -417,13 +435,8 @@ class ChangeNetworkViewController: UIViewController {
     
     func setUpNetwork(){
         if isSettings{
-            let chainName = ParticleNetwork.getChainInfo()
-            switch chainName.name{
-            case "BSC":
-                selectedIndexes = IndexPath.init(row: 1, section: 0)
-            default:
-                selectedIndexes = IndexPath.init(row: 0, section: 0)
-            }
+            self.copyPlatforms = self.platforms
+            self.platforms = self.copyPlatforms.filter{$0.isTest == false}
             self.tableView.reloadData()
         }
     }
@@ -463,7 +476,13 @@ class ChangeNetworkViewController: UIViewController {
 // MARK: - Extension - NetworkSwitchDelegate
 extension ChangeNetworkViewController : NetworkSwitchDelegate{
     func networkSwitchTapped(value: Bool) {
-        
+        if (value){
+        self.platforms = self.copyPlatforms
+        }else{
+          self.platforms = self.copyPlatforms.filter{$0.isTest == false}
+        }
+
+        self.tableView.reloadData()
     }
     
 }
