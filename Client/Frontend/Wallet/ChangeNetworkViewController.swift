@@ -527,7 +527,7 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
         //Ethereum
         case NetworkEnum.Ethereum.rawValue.uppercased():
             server = RPCServer.allCases[0]
-            chainInfo  = .bsc(BscNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+            chainInfo  = .ethereum(EthereumNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
             
        //Goerli-Ethereum Testnet
         case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():

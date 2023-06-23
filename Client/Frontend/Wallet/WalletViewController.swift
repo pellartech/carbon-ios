@@ -1092,17 +1092,26 @@ class TokensTVCell: UITableViewCell {
         }else{
             var defaultImage = ""
             switch token.tokenInfo.symbol {
+            case "BNB","TBNB" :
+                defaultImage = "ic_binance"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "ETH","GETH", "SETH":
+                defaultImage = "ic_eth"
+                iconImageView.image = UIImage(named: defaultImage)
             case "SOL":
                 defaultImage = "ic_sol"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "ETH":
-                defaultImage = "ic_eth"
                 iconImageView.image = UIImage(named: defaultImage)
             case "CSIX":
                 defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "BNB":
-                defaultImage = "ic_binance"
+            case "MATIC":
+                defaultImage = "ic_matic"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "KCC":
+                defaultImage = "ic_kcc"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "OKC":
+                defaultImage = "ic_okc"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
             }
