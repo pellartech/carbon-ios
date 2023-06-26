@@ -822,7 +822,7 @@ class WalletViewController: UIViewController {
     }
     
     @objc func settingsIconTapped (){
-       initiateChangeNetworkVC()
+        initiateSettingsVC()
     }
     
     @objc func infoIconTapped (){
@@ -886,15 +886,10 @@ class WalletViewController: UIViewController {
         drawerController.delegate = self
         present(drawerController, animated: true)
     }
-    func initiateChangeNetworkVC(){
-        let changeNetworkVC = ChangeNetworkViewController()
-        for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
-        }
-        changeNetworkVC.modalPresentationStyle = .overCurrentContext
-        changeNetworkVC.delegate = self
-        changeNetworkVC.isSettings = true
-        self.present(changeNetworkVC, animated: true)
+    func initiateSettingsVC(){
+        let settingsVC = WalletSettingsViewController()
+        settingsVC.modalPresentationStyle = .overCurrentContext
+        self.present(settingsVC, animated: true)
     }
     
     func initiateReceiveVC(){

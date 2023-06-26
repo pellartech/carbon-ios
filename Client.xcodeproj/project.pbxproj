@@ -1203,6 +1203,7 @@
 		F91ABAA229F1A17F0060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
+		F95B0B252A49E05000BC0823 /* WalletSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */; };
 		F95C23202A3F3DDD00B956B7 /* RPCServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */; };
 		F95C23232A3F445200B956B7 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23222A3F445200B956B7 /* Enum.swift */; };
 		F95C23252A3F44AA00B956B7 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23242A3F44AA00B956B7 /* Helper.swift */; };
@@ -5085,6 +5086,7 @@
 		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
+		F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsViewController.swift; sourceTree = "<group>"; };
 		F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCServer.swift; sourceTree = "<group>"; };
 		F95C23222A3F445200B956B7 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		F95C23242A3F44AA00B956B7 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -8196,6 +8198,7 @@
 				F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */,
 				F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */,
 				F9DDF8362A393DEA006AAADE /* WalletEnum.swift */,
+				F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -10302,6 +10305,7 @@
 				9636D92A27F767EC00771F5E /* GleanPlumbMessageUtility.swift in Sources */,
 				E127313F28B6C194006F39D2 /* WallpaperSettingsHeaderView.swift in Sources */,
 				2FDE87FE1ABB3817005317B1 /* RemoteTabsPanel.swift in Sources */,
+				F95B0B252A49E05000BC0823 /* WalletSettingsViewController.swift in Sources */,
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				96EB6C3E27D9266500A9D159 /* HistoryActionables.swift in Sources */,
 				C4F3B29A1CFCF93A00966259 /* ButtonToast.swift in Sources */,
