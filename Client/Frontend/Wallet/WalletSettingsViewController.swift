@@ -196,25 +196,6 @@ class WalletSettingsViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    private lazy var settingsIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_wallet_settings")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.settingsIconTapped))
-        imageView.addGestureRecognizer(tapGesture)
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
-    private lazy var infoIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_wallet_info")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.infoIconTapped))
-        imageView.addGestureRecognizer(tapGesture)
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
-    
     ///UILabel
     private lazy var walletLabel: GradientLabel = {
         let label = GradientLabel()
@@ -242,17 +223,6 @@ class WalletSettingsViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private lazy var testNetworkLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
-        label.textAlignment = .center
-        label.text = "Test Network"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -273,12 +243,6 @@ class WalletSettingsViewController: UIViewController {
         view.layer.cornerRadius = UX.Value.corner
         view.clipsToBounds = true
         return view
-    }()
-
-    var switchButton : SwitchButton = {
-        let switchButton = SwitchButton()
-        switchButton.setStatus(true)
-        return switchButton
     }()
     
     ///UITableView
@@ -322,21 +286,14 @@ class WalletSettingsViewController: UIViewController {
     }
     
     func setUpView(){
-        switchButton = SwitchButton(frame: CGRect(x: contentView.frame.origin.x, y: contentView.frame.origin.y, width: 50, height: 30))
-        switchButton.delegate = self
         navigationController?.isNavigationBarHidden = true
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
-        switchView.addSubview(switchButton)
-        actionsView.addSubview(settingsIcon)
-        actionsView.addSubview(infoIcon)
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
         contentView.addSubview(networkLabel)
-        contentView.addSubview(testNetworkLabel)
-        contentView.addSubview(switchView)
 
         view.addSubview(contentView)
         view.addSubview(tableView)
@@ -380,17 +337,6 @@ class WalletSettingsViewController: UIViewController {
             networkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
             networkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
-            //Network switch
-            switchView.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.NetworkView.top),
-            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            switchView.widthAnchor.constraint(equalToConstant: UX.Value.width),
-            switchView.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
-            
-            //Test Network
-            testNetworkLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.NetworkView.top),
-            testNetworkLabel.trailingAnchor.constraint(equalTo: switchView.leadingAnchor,constant: -UX.NetworkView.corner),
-            testNetworkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
-            
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
             logoImageView.topAnchor.constraint(equalTo: logoView.topAnchor),
@@ -402,18 +348,6 @@ class WalletSettingsViewController: UIViewController {
             carbonImageView.topAnchor.constraint(equalTo: logoView.topAnchor),
             carbonImageView.widthAnchor.constraint(equalToConstant: UX.CarbonImageView.width),
             carbonImageView.heightAnchor.constraint(equalToConstant: UX.CarbonImageView.height),
-            
-            ///ActionView settings ImageView
-            settingsIcon.leadingAnchor.constraint(equalTo: actionsView.leadingAnchor,constant: UX.ActionIcon.leading),
-            settingsIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
-            settingsIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
-            settingsIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
-            
-            ///ActionView info ImageView
-            infoIcon.trailingAnchor.constraint(equalTo: actionsView.trailingAnchor,constant: UX.ActionIcon.trailing),
-            infoIcon.topAnchor.constraint(equalTo: actionsView.topAnchor),
-            infoIcon.widthAnchor.constraint(equalToConstant: UX.ActionIcon.width),
-            infoIcon.heightAnchor.constraint(equalToConstant: UX.ActionIcon.height),
             
             ///Wallet Label
             walletLabel.leadingAnchor.constraint(equalTo: carbonImageView.trailingAnchor,constant: UX.Wallet.leading),
@@ -436,10 +370,6 @@ class WalletSettingsViewController: UIViewController {
     func setUpNetwork(){
         if isSettings{
             self.copyPlatforms = self.platforms
-            if  let isSwitch = UserDefaults.standard.value(forKey: "NetworkSwitch") as? Bool{
-            switchButton.status = isSwitch
-            self.platforms = isSwitch ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
-            }
             let selectedIndex = self.platforms.firstIndex{$0.isSelected == true}
             selectedIndexes = IndexPath(row: selectedIndex ?? 0, section: 0)
             self.tableView.reloadData()
@@ -450,19 +380,6 @@ class WalletSettingsViewController: UIViewController {
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
     }
-    
-    @objc func settingsIconTapped (){
-        initiateDrawerVC()
-    }
-    
-    @objc func infoIconTapped (){
-        showToast(message: "Stay tunned! Dev in progress...")
-    }
-    @objc func addTokenBtnTapped (){
-        showToast(message: "Stay tunned! Dev in progress...")
-
-    }
-    
     
     // MARK: - Helper Methods - Initiate view controller
     
@@ -486,17 +403,6 @@ class WalletSettingsViewController: UIViewController {
         SimpleToast().showAlertWithText(message,
                                         bottomContainer: self.view,
                                         theme: themeManager!.currentTheme)
-    }
-}
-// MARK: - Extension - NetworkSwitchDelegate
-extension WalletSettingsViewController : NetworkSwitchDelegate{
-    func networkSwitchTapped(value: Bool) {
-        if selectedIndexes.row > 0{
-            selectedIndexes = IndexPath(row: 0, section: 0)
-        }
-        self.platforms = value ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
-        UserDefaults.standard.setValue(value, forKey: "NetworkSwitch")
-        self.tableView.reloadData()
     }
 }
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
