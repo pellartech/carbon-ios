@@ -6,15 +6,6 @@
 //
 import Foundation
 import UIKit
-import ParticleConnect
-import ConnectCommon
-import ParticleWalletAPI
-import RxSwift
-import ParticleNetworkBase
-import SVProgressHUD
-import ParticleAuthService
-import SVProgressHUD
-import SDWebImage
 import Common
 import Shared
 
@@ -152,7 +143,6 @@ class WalletSettingsViewController: UIViewController {
             static let chevronWidth: CGFloat = 12
             static let chevronHeight: CGFloat = 8
             static let corner: CGFloat = 15
-
         }
     }
     
@@ -214,12 +204,22 @@ class WalletSettingsViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private lazy var networkLabel: UILabel = {
+    private lazy var walletDetailsLabel: UILabel = {
         let label = UILabel()
         label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
         label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
         label.textAlignment = .center
-        label.text = "NETWORKS:"
+        label.text = "WALLET DETAILS"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var securityDetailsLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
+        label.textAlignment = .center
+        label.text = "SECURITY"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -237,45 +237,67 @@ class WalletSettingsViewController: UIViewController {
         return button
     }()
     
-    private lazy var switchView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = UX.Value.corner
-        view.clipsToBounds = true
-        return view
-    }()
-    
     ///UITableView
-    private lazy var tableView: UITableView = {
+    private lazy var walletTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .clear
         tableView.isUserInteractionEnabled = true
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorStyle = .singleLine
-        tableView.allowsSelection = true
-        tableView.isScrollEnabled = true
+        tableView.allowsSelection = false
+        tableView.separatorStyle = .none
+        tableView.isScrollEnabled = false
         tableView.showsVerticalScrollIndicator = false
-        tableView.register(NetworkTVCell.self, forCellReuseIdentifier:"NetworkTVCell")
+        tableView.register(SettingsChevronTVCell.self, forCellReuseIdentifier:"SettingsChevronTVCell")
         return tableView
     }()
     
+    private lazy var securityTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.isUserInteractionEnabled = true
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.isScrollEnabled = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(SettingsSecurityTVCell.self, forCellReuseIdentifier:"SettingsSecurityTVCell")
+        tableView.register(SettingsChevronTVCell.self, forCellReuseIdentifier:"SettingsChevronTVCell")
+        return tableView
+    }()
+    
+    ///UIScrollView
+    private lazy var scrollView : UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
+    private lazy var scrollContentView : UIView = {
+        let contentView = UIView()
+        contentView.backgroundColor = .clear
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        return contentView
+    }()
+    
+    
     // MARK: - UI Properties
-    let bag = DisposeBag()
+    //    let bag = DisposeBag()
     var themeManager :  ThemeManager?
-    var selectedIndexes = IndexPath.init(row: 0, section: 0)
-    var delegate :  ChangeNetwork?
-    var platforms = [Platforms]()
-    var copyPlatforms = [Platforms]()
-    var isSettings = false
+    private let walletDetails = ["Your Carbon Wallet","Change Network","Connect Wallet","Add Token"]
+    private let security = ["Wallet Seed Phrase","Allow scan QR Codes","Save Transaction History","Allow Push Notifications"]
+    
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
         applyTheme()
         setUpView()
         setUpViewContraint()
-        setUpNetwork()
     }
     
     // MARK: - UI Methods
@@ -293,16 +315,30 @@ class WalletSettingsViewController: UIViewController {
         logoBackgroundView.addSubview(logoView)
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
-        contentView.addSubview(networkLabel)
-
-        view.addSubview(contentView)
-        view.addSubview(tableView)
+        contentView.addSubview(walletDetailsLabel)
+        contentView.addSubview(walletTableView)
+        contentView.addSubview(securityTableView)
+        contentView.addSubview(securityDetailsLabel)
+        scrollContentView.addSubview(contentView)
+        scrollView.addSubview(scrollContentView)
+        view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
         view.addSubview(closeButton)
     }
     
     func setUpViewContraint(){
         NSLayoutConstraint.activate([
+            ///Scroll
+            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor,constant: UX.ScrollView.constant),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            scrollContentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            scrollContentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollContentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
             ///Close Button
             closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant:UX.CloseButton.leading),
             closeButton.topAnchor.constraint(equalTo: view.topAnchor,constant:UX.CloseButton.top),
@@ -321,10 +357,11 @@ class WalletSettingsViewController: UIViewController {
             logoBackgroundView.heightAnchor.constraint(equalToConstant: UX.LogoView.heightBg),
             
             ///Content view
-            contentView.topAnchor.constraint(equalTo: logoBackgroundView.bottomAnchor,constant: UX.ContentView.top),
-            contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: UX.ContentView.heightBackGround),
+            contentView.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
+            contentView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
+            contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 100),
+            contentView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
             
             ///Action View
             actionsView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -333,9 +370,9 @@ class WalletSettingsViewController: UIViewController {
             actionsView.heightAnchor.constraint(equalToConstant: UX.ActionView.heightActionBg),
             
             ///Network Label
-            networkLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.NetworkView.top),
-            networkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
-            networkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
+            walletDetailsLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.NetworkView.top),
+            walletDetailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
+            walletDetailsLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -360,22 +397,23 @@ class WalletSettingsViewController: UIViewController {
             addTokenTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
             ///UserTokenView TableView
-            tableView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: UX.TableView.trailing),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            walletTableView.topAnchor.constraint(equalTo: walletDetailsLabel.bottomAnchor),
+            walletTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            walletTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            walletTableView.heightAnchor.constraint(equalToConstant: 270),
+            
+            ///Network Label
+            securityDetailsLabel.topAnchor.constraint(equalTo: walletTableView.bottomAnchor,constant:  UX.NetworkView.top),
+            securityDetailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
+            securityDetailsLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
+            
+            securityTableView.topAnchor.constraint(equalTo: securityDetailsLabel.bottomAnchor),
+            securityTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            securityTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            securityTableView.heightAnchor.constraint(equalToConstant: 600),
         ])
     }
     
-    func setUpNetwork(){
-        if isSettings{
-            self.copyPlatforms = self.platforms
-            let selectedIndex = self.platforms.firstIndex{$0.isSelected == true}
-            selectedIndexes = IndexPath(row: selectedIndex ?? 0, section: 0)
-            self.tableView.reloadData()
-        }
-    }
-
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -383,147 +421,264 @@ class WalletSettingsViewController: UIViewController {
     
     // MARK: - Helper Methods - Initiate view controller
     
-    func initiateDrawerVC(){
-        let drawerController = DrawerMenuViewController()
-        drawerController.delegate = self
-        self.present(drawerController, animated: true)
-    }
-    func initiateChangeNetworkVC(){
-        let changeNetworkVC = ChangeNetworkViewController()
-        for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
-        }
-        changeNetworkVC.modalPresentationStyle = .overCurrentContext
-        changeNetworkVC.delegate = self
-        changeNetworkVC.isSettings = true
-        self.present(changeNetworkVC, animated: true)
-    }
-    
-    func showToast(message: String){
-        SimpleToast().showAlertWithText(message,
-                                        bottomContainer: self.view,
-                                        theme: themeManager!.currentTheme)
-    }
 }
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension WalletSettingsViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  self.platforms.count
+        return  tableView == walletTableView ? walletDetails.count : security.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NetworkTVCell", for: indexPath) as! NetworkTVCell
-        cell.setUI(platforms:self.platforms[indexPath.row])
-        cell.selectionStyle = .none
-        if (self.selectedIndexes == indexPath) {
-            cell.iconView.isHidden = false
-            cell.gradientView.isHidden = false
+        if (tableView == walletTableView){
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsChevronTVCell", for: indexPath) as! SettingsChevronTVCell
+            cell.setUI(title: walletDetails[indexPath.row], subTitle: indexPath.row == 1 ? "BEP20" : "" , isScan: indexPath.row == 2 ? true : false)
+            return cell
+        }else{
+            if (indexPath.row == 0){
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsChevronTVCell", for: indexPath) as! SettingsChevronTVCell
+                cell.setUI(title:security[indexPath.row], subTitle: "", isScan:false)
+                return cell
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsSecurityTVCell", for: indexPath) as! SettingsSecurityTVCell
+                cell.setUI(title:security[indexPath.row])
+                return cell
+            }
         }
-        else {
-            cell.iconView.isHidden = true
-            cell.gradientView.isHidden = true
-        }
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 54
+        return  tableView == walletTableView ? 66 : indexPath.row == 0 ? 66 : 90
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.selectedIndexes = indexPath
-        tableView.reloadData()
-        networks.forEach( { network in
-            network.isSelected = ( network.name?.uppercased() == self.platforms[indexPath.row].name?.uppercased() ) ? true : false
-        })
-        self.setUpNetworkDAppBrowsing(platform:self.platforms[indexPath.row])
-        self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
-        self.dismissVC()
+        
     }
     
-    func setUpNetworkDAppBrowsing(platform : Platforms){
-        var chainInfo : Chain?
-
-        switch platform.name?.uppercased(){
-          
-        //Ethereum
-        case NetworkEnum.Ethereum.rawValue.uppercased():
-            server = RPCServer.allCases[0]
-            chainInfo  = .ethereum(EthereumNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+    
+}
+class SettingsChevronTVCell: UITableViewCell {
+    private struct UX {
+        struct Title {
+            static let font: CGFloat = 14
+            static let top: CGFloat = 20
+            static let leading: CGFloat = 20
+            static let height: CGFloat = 30
+        }
+        struct Value {
+            static let font: CGFloat = 15
+            static let fontAt: CGFloat = 12
+            static let top: CGFloat = 10
+            static let topAt: CGFloat = 0
+            static let trailing: CGFloat = -20
+            static let height: CGFloat = 20
+            static let width: CGFloat = 20
+            static let valueWidth: CGFloat = 50
+            static let valueHeight: CGFloat = 30
+            static let chevronWidth: CGFloat = 12
+            static let chevronHeight: CGFloat = 8
+            static let corner: CGFloat = 15
+        }
+    }
+    private lazy var tokenNetworktitleLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Token Network"
+        label.isUserInteractionEnabled = true
+        return label
+    }()
+    private lazy var tokenNetworkValueLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 3
+        label.adjustsFontSizeToFitWidth = true
+        label.isUserInteractionEnabled = true
+        return label
+    }()
+    private lazy var chevronImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 12, left: 10, bottom: 0, right: 10))
+    }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.addSubview(tokenNetworktitleLabel)
+        contentView.addSubview(tokenNetworkValueLabel)
+        contentView.addSubview(chevronImageView)
+        backgroundColor = .clear
+        contentView.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        layer.cornerRadius = 10
+        contentView.layer.cornerRadius = 10
+        NSLayoutConstraint.activate([
+            tokenNetworktitleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            tokenNetworktitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
+            tokenNetworktitleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
-       //Goerli-Ethereum Testnet
-        case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():
-            server = RPCServer.allCases[3]
-            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.goerli.rawValue)!)
-           
-       //Sepolia-Ethereum Testnet
-        case NetworkEnum.EthereumSepoliaTest.rawValue.uppercased():
-            server = RPCServer.allCases[25]
-            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-
-        //BinanceSmartChain
-        case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
-            server = RPCServer.allCases[5]
-            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-
-        //BinanceSmartChain Testnet
-        case NetworkEnum.BinanceSmartChainTest.rawValue.uppercased():
-            server = RPCServer.allCases[4]
-            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.testnet.rawValue)!)
+            chevronImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
             
-        //Solana
-        case NetworkEnum.Solana.rawValue.uppercased():
-            server = RPCServer.allCases[0] //Solana
-            chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
-
-        //KucoinCommunityChain
-        case NetworkEnum.KucoinCommunityChain.rawValue.uppercased():
-            server = RPCServer.allCases[0]
-            chainInfo  = .kcc(KccNetwork(rawValue: KccNetwork.mainnet.rawValue)!)
-
-        //OkexChain
-        case NetworkEnum.OkexChain.rawValue.uppercased():
-            server = RPCServer.allCases[24]
-            chainInfo  = .okc(OKCNetwork(rawValue: OKCNetwork.mainnet.rawValue)!)
-
-         //Polygon
-        case NetworkEnum.Polygon.rawValue.uppercased():
-            server = RPCServer.allCases[11]
-            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
-          
-        //Polygon-Mumbai Testnet
-        case NetworkEnum.PolygonTest.rawValue.uppercased():
-            server = RPCServer.allCases[13]
-            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
-
-        default:
-            server = RPCServer.allCases[0]
-            chainInfo  = .bsc(BscNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+            tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.Value.valueWidth),
+            tokenNetworkValueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            tokenNetworkValueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
+        ]
+        )
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setUI(title:String,subTitle:String ,isScan: Bool){
+        tokenNetworktitleLabel.text = title
+        tokenNetworkValueLabel.text = subTitle
+        chevronImageView.image = UIImage(named: isScan ? "ic_scan":"ic_chevron")
+    }
+    
+}
+class SettingsSecurityTVCell: UITableViewCell {
+    
+    private struct UX {
+        struct Icon {
+            static let font: CGFloat = 10
+            static let top: CGFloat = 12
+            static let leading: CGFloat = 10
+            static let height: CGFloat = 53
+            static let width: CGFloat = 53
+            static let corner: CGFloat = 15
+            
+        }
+        struct Title {
+            static let font: CGFloat = 14
+            static let top: CGFloat = 8
+            static let leading: CGFloat = 80
+            static let height: CGFloat = 30
+        }
+        struct Value {
+            static let font: CGFloat = 15
+            static let fontAt: CGFloat = 12
+            static let top: CGFloat = 20
+            static let topAt: CGFloat = 0
+            static let trailing: CGFloat = -10
+            static let height: CGFloat = 20
+            static let width: CGFloat = 50
+            static let valueWidth: CGFloat = 50
+            static let valueHeight: CGFloat = 30
+            static let leading: CGFloat = 20
+            
+        }
+        struct Switch {
+            static let top: CGFloat = 20
+            static let trailing: CGFloat = -10
+            static let height: CGFloat = 20
+            static let width: CGFloat = 41
         }
         
-        ParticleNetwork.setChainInfo(chainInfo!)
-        tabManager.addTab()
+    }
+    
+    ///UIView
+    private lazy var switchView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = UX.Icon.corner
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    ///UILabel
+    private lazy var titleLabel : UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
+        label.textAlignment = .left
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var symbolLabel : UILabel = {
+        let label = UILabel()
+        label.text = "You can turn off this in settings"
+        label.textColor = Utilities().hexStringToUIColor(hex: "#818181")
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.fontAt)
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    var switchButton : SwitchButton = {
+        let switchButton = SwitchButton()
+        return switchButton
+    }()
+    
+    var tokenAddress = String()
+    
+    //    private var wallpaperManager =  WallpaperManager()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        switchButton = SwitchButton(frame: CGRect(x: contentView.frame.origin.x, y: contentView.frame.origin.y, width: 50, height: 30))
+        switchButton.delegate = self
+        switchView.addSubview(switchButton)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(symbolLabel)
+        contentView.addSubview(switchView)
+        
+        backgroundColor = .clear
+        contentView.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        layer.cornerRadius = 10
+        contentView.layer.cornerRadius = 10
+        NSLayoutConstraint.activate([
+            
+            ///UILabel
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: UX.Title.top),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:UX.Value.leading),
+            titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
+            
+            symbolLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,constant: UX.Value.topAt),
+            symbolLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Value.leading),
+            
+            switchView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
+            switchView.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
+            switchView.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
+        ]
+                                    
+        )
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 12, left: 10, bottom: 0, right: 10))
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func switchStateDidChange(_ sender:UISwitch!)
+    {
+        if (sender.isOn == true){
+            print("UISwitch state is now ON")
+        }
+        else{
+            print("UISwitch state is now Off")
+        }
+    }
+    func setUI(title:String){
+        titleLabel.text = title
     }
 }
 
-// MARK: - Extension - ConnectProtocol
-extension WalletSettingsViewController : ConnectProtocol{
-    func accountPublicAddress(address: String) {
+extension SettingsSecurityTVCell : NetworkSwitchDelegate{
+    func networkSwitchTapped(value: Bool) {
         
-    }
-    func logout() {
-        self.dismiss(animated: true)
-    }
-}
-// MARK: - Extension - AddTokenDelegate
-extension WalletSettingsViewController: AddTokenDelegate{
-    func initiateAddToken() {
-        
-    }
-}
-// MARK: - Extension - ChangeNetwork
-extension WalletSettingsViewController :  ChangeNetwork{
-    func changeNetworkDelegate(platforms: Platforms) {
-
     }
 }
