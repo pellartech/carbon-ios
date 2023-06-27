@@ -294,17 +294,19 @@ class WalletSettingsViewController: UIViewController {
     var themeManager :  ThemeManager?
     private let walletDetails = ["Your Carbon Wallet","Change Network","Connect Wallet","Add Token"]
     private let security = ["Wallet Seed Phrase","Allow scan QR Codes","Save Transaction History","Allow Push Notifications"]
-    var present : UIViewController?
     private var networkName = String()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
         networkName = ParticleNetwork.getChainInfo().name
-        present  = self.presentingViewController!
         applyTheme()
         setUpView()
         setUpViewContraint()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        navigationController?.isNavigationBarHidden = true
     }
     
     // MARK: - UI Methods
@@ -315,7 +317,6 @@ class WalletSettingsViewController: UIViewController {
     }
     
     func setUpView(){
-        navigationController?.isNavigationBarHidden = true
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
@@ -452,11 +453,7 @@ class WalletSettingsViewController: UIViewController {
 // MARK: - Extension - AddWalletProtocol
 extension WalletSettingsViewController : AddWalletProtocol{
     func addWalletDelegate() {
-        self.dismiss(animated: true, completion: {
-            let walletVC = WalletViewController()
-            walletVC.modalPresentationStyle = .fullScreen
-            self.present?.present(walletVC, animated: true, completion: nil)
-        })
+        self.dismissVC()
     }
 }
 // MARK: - Extension - ConnectProtocol
