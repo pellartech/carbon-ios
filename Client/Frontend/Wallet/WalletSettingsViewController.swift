@@ -8,6 +8,7 @@ import Foundation
 import UIKit
 import Common
 import Shared
+import ParticleNetworkBase
 
 class WalletSettingsViewController: UIViewController {
     
@@ -245,7 +246,7 @@ class WalletSettingsViewController: UIViewController {
         tableView.isUserInteractionEnabled = true
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         tableView.separatorStyle = .none
         tableView.isScrollEnabled = false
         tableView.showsVerticalScrollIndicator = false
@@ -263,6 +264,8 @@ class WalletSettingsViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
+        tableView.alpha = 0.4
+        tableView.isUserInteractionEnabled = false
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SettingsSecurityTVCell.self, forCellReuseIdentifier:"SettingsSecurityTVCell")
         tableView.register(SettingsChevronTVCell.self, forCellReuseIdentifier:"SettingsChevronTVCell")
@@ -291,10 +294,14 @@ class WalletSettingsViewController: UIViewController {
     var themeManager :  ThemeManager?
     private let walletDetails = ["Your Carbon Wallet","Change Network","Connect Wallet","Add Token"]
     private let security = ["Wallet Seed Phrase","Allow scan QR Codes","Save Transaction History","Allow Push Notifications"]
+    var present : UIViewController?
+    private var networkName = String()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
+        networkName = ParticleNetwork.getChainInfo().name
+        present  = self.presentingViewController!
         applyTheme()
         setUpView()
         setUpViewContraint()
@@ -413,14 +420,52 @@ class WalletSettingsViewController: UIViewController {
             securityTableView.heightAnchor.constraint(equalToConstant: 600),
         ])
     }
-    
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
     }
     
     // MARK: - Helper Methods - Initiate view controller
+    func initiateChangeNetworkVC(){
+        let changeNetworkVC = ChangeNetworkViewController()
+        for each in networks{
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
+        }
+        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.isSettings = true
+        self.present(changeNetworkVC, animated: true)
+    }
     
+    func initiateAddWalletVC(){
+        let addWalletVC = AddWalletViewController()
+        addWalletVC.delegate = self
+        self.navigationController?.pushViewController(addWalletVC, animated: true)
+    }
+    func initiateAddTokenVC(){
+        let vc = AddCustomTokenViewController()
+        vc.delegate = self
+        vc.modalPresentationStyle = .overCurrentContext
+        self.present(vc, animated: false)
+    }
+}
+
+// MARK: - Extension - AddWalletProtocol
+extension WalletSettingsViewController : AddWalletProtocol{
+    func addWalletDelegate() {
+        self.dismiss(animated: true, completion: {
+            let walletVC = WalletViewController()
+            walletVC.modalPresentationStyle = .fullScreen
+            self.present?.present(walletVC, animated: true, completion: nil)
+        })
+    }
+}
+// MARK: - Extension - ConnectProtocol
+extension WalletSettingsViewController : ConnectProtocol{
+    func accountPublicAddress(address: String) {
+    }
+    func logout() {
+        self.dismiss(animated: true)
+    }
 }
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension WalletSettingsViewController : UITableViewDelegate, UITableViewDataSource{
@@ -431,7 +476,7 @@ extension WalletSettingsViewController : UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (tableView == walletTableView){
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsChevronTVCell", for: indexPath) as! SettingsChevronTVCell
-            cell.setUI(title: walletDetails[indexPath.row], subTitle: indexPath.row == 1 ? "BEP20" : "" , isScan: indexPath.row == 2 ? true : false)
+            cell.setUI(title: walletDetails[indexPath.row], subTitle: indexPath.row == 1 ? networkName : "" , isScan: indexPath.row == 2 ? true : false)
             return cell
         }else{
             if (indexPath.row == 0){
@@ -451,7 +496,20 @@ extension WalletSettingsViewController : UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        if (tableView == walletTableView){
+            switch indexPath.row{
+            case 0: self.dismissVC()
+            case 1 : initiateChangeNetworkVC()
+            case 2:  initiateAddWalletVC()
+            case 3: initiateAddTokenVC()
+            default: break
+            }
+        }else{
+            switch indexPath.row{
+            case 1 : initiateChangeNetworkVC()
+            default: break
+            }
+        }
     }
     
     
@@ -512,6 +570,7 @@ class SettingsChevronTVCell: UITableViewCell {
     }
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         contentView.addSubview(tokenNetworktitleLabel)
         contentView.addSubview(tokenNetworkValueLabel)
         contentView.addSubview(chevronImageView)
@@ -625,6 +684,7 @@ class SettingsSecurityTVCell: UITableViewCell {
     //    private var wallpaperManager =  WallpaperManager()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         switchButton = SwitchButton(frame: CGRect(x: contentView.frame.origin.x, y: contentView.frame.origin.y, width: 50, height: 30))
         switchButton.delegate = self
         switchView.addSubview(switchButton)

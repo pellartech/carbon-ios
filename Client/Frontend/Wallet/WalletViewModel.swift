@@ -37,7 +37,6 @@ public class WalletViewModel {
     
     ///Wallet Login
     func walletLogin(vc: UIViewController, walletType: WalletType, completed : @escaping (Result<ConnectWalletModel, Error>) -> Void) {
-        print(ParticleNetwork.getChainInfo().name)
         let adapters = ParticleConnect.getAdapters(chainType: .solana) + ParticleConnect.getAdapters(chainType: .evm)
         var single: Single<Account?>
         var adapter: ConnectAdapter = adapters[0]

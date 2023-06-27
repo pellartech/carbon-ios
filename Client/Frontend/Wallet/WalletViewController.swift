@@ -888,9 +888,10 @@ class WalletViewController: UIViewController {
     }
     func initiateSettingsVC(){
         let settingsVC = WalletSettingsViewController()
-        settingsVC.modalPresentationStyle = .overCurrentContext
-        self.present(settingsVC, animated: true)
+        let navController = ThemedNavigationController(rootViewController: settingsVC)
+        self.present(navController, animated: true)
     }
+    
     
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
