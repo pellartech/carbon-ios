@@ -299,14 +299,15 @@ class WalletSettingsViewController: UIViewController {
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        networkName = ParticleNetwork.getChainInfo().name
         applyTheme()
         setUpView()
         setUpViewContraint()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        networkName = ParticleNetwork.getChainInfo().name
         navigationController?.isNavigationBarHidden = true
+        self.walletTableView.reloadData()
     }
     
     // MARK: - UI Methods
@@ -434,7 +435,7 @@ class WalletSettingsViewController: UIViewController {
         }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.isSettings = true
-        self.present(changeNetworkVC, animated: true)
+        self.navigationController?.pushViewController(changeNetworkVC, animated: true)
     }
     
     func initiateAddWalletVC(){
@@ -585,7 +586,6 @@ class SettingsChevronTVCell: UITableViewCell {
             
             tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.Value.valueWidth),
-            tokenNetworkValueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
             tokenNetworkValueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
         ]
         )
@@ -731,6 +731,7 @@ class SettingsSecurityTVCell: UITableViewCell {
     }
     func setUI(title:String){
         titleLabel.text = title
+        switchButton.status = true
     }
 }
 

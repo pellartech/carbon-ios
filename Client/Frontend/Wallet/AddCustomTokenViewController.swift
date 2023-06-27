@@ -682,7 +682,24 @@ class AddCustomTokenViewController: UIViewController {
     func checkCoreDataValue() {
         tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
         tokens = tokens.filter{$0.isAdded == false}
-        self.tokensTableView.reloadData()
+        if (tokens.count == 0){
+            SVProgressHUD.show()
+            WalletViewModel.shared.getTokenList{result in
+                switch result {
+                case .success(let tokensList):
+                    CoreDataManager.shared.saveToken(tokensData: tokensList, network: selectedNetwork)
+                    tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
+                    SVProgressHUD.dismiss()
+                    DispatchQueue.global().async {
+                        DispatchQueue.main.async {
+                            self.tokensTableView.reloadData()
+                        }
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
     }
     
     // MARK: - View Model Methods - Network actions
