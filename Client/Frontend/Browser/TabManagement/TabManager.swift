@@ -174,7 +174,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
     }
 
     // MARK: - Webview configuration
-    public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?,forType type: WebViewType) -> WKWebViewConfiguration {
+    public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?,forType type: WebViewType, messageHandler: WKScriptMessageHandler) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.dataDetectorTypes = [.phoneNumber]
         configuration.processPool = WKProcessPool()
@@ -232,6 +232,16 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         }
         
         HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: configuration)
+        configuration.userContentController.add(messageHandler, name: Method.sendTransaction.rawValue)
+        configuration.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
+        configuration.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
+        configuration.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
+        configuration.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
+        configuration.userContentController.add(messageHandler, name: AddCustomChainCommand.Method.walletAddEthereumChain.rawValue)
+        configuration.userContentController.add(messageHandler, name: SwitchChainCommand.Method.walletSwitchEthereumChain.rawValue)
+        configuration.userContentController.add(messageHandler, name: Browser.locationChangedEventName)
+        //TODO extract like `Method.signTypedMessage.rawValue` when we have more than 1
+        configuration.userContentController.add(messageHandler, name: TokenScript.SetProperties.setActionProps)
         return configuration
     }
     
@@ -424,12 +434,12 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
 
     // A WKWebViewConfiguration used for normal tabs
     lazy private var configuration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server))
+        return TabManager.makeWebViewConfig(isPrivate: false, prefs: profile.prefs,forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
     }()
 
     // A WKWebViewConfiguration used for private mode tabs
     lazy private var privateConfiguration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server))
+        return TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs,forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
     }()
 
     // MARK: Get tabs
@@ -683,8 +693,18 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         let configuration: WKWebViewConfiguration = configuration ?? (isPrivate ? privateConfiguration : self.configuration)
 
         let tab = Tab(profile: profile, configuration: configuration, isPrivate: isPrivate)
+        tab.delegate = self
         configureTab(tab, request: request, afterTab: afterTab, flushToDisk: flushToDisk, zombie: zombie)
         return tab
+    }
+    
+    func notifyFinish(callbackId: Int, value: Swift.Result<DappCallback, JsonRpcError>) {
+        switch value {
+        case .success(let result):
+            self.selectedTab?.webView?.evaluateJavaScript("executeCallback(\(callbackId), null, \"\(result.value.object)\")")
+        case .failure(let error):
+            self.selectedTab?.webView?.evaluateJavaScript("executeCallback(\(callbackId), {message: \"\(error.message)\", code: \(error.code)}, null)")
+        }
     }
 
     func addPopupForParentTab(profile: Profile, parentTab: Tab, configuration: WKWebViewConfiguration) -> Tab {
@@ -865,7 +885,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
         if tab.isPrivate && privateTabs.count < 1 {
-            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server))
+            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
         }
 
         tab.close()
@@ -901,7 +921,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                 // Bugzilla 1646756: close last private tab clears the WKWebViewConfiguration (#6827)
                 DispatchQueue.main.async { [unowned self] in
                     self.privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true,
-                                                                             prefs: self.profile.prefs, forType: .dappBrowser(server))
+                                                                             prefs: self.profile.prefs, forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
                 }
             }
 
@@ -1074,7 +1094,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
         privateTabs.forEach { $0.close() }
         tabs = normalTabs
 
-        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server))
+        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true, prefs: profile.prefs, forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
     }
 
     // MARK: - Start at Home
@@ -1207,5 +1227,20 @@ extension TabManager {
     func testClearArchive() {
         assert(AppConstants.isRunningTest)
         store.clearArchive()
+    }
+}
+extension TabManager: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard let command = DappAction.fromMessage(message) else {
+            if message.name == Browser.locationChangedEventName {
+                recordUrlSubject.send(())
+            }
+            return
+        }
+        print("[Browser] dapp command: \(command)")
+        let action = DappAction.fromCommand(command, server: server)
+
+        print("[Browser] dapp action: \(action)")
+        dappActionSubject.send((action: action, callbackId: command.id))
     }
 }

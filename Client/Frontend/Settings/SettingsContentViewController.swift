@@ -116,7 +116,7 @@ class SettingsContentViewController: UIViewController, WKNavigationDelegate, The
     }
 
     func makeWebView() -> WKWebView {
-        let config = TabManager.makeWebViewConfig(isPrivate: true, prefs: nil,forType: .dappBrowser(server))
+        let config = TabManager.makeWebViewConfig(isPrivate: true, prefs: nil,forType: .dappBrowser(server), messageHandler:  ScriptMessageProxy(delegate: self))
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
 
         let webView = WKWebView(
@@ -190,5 +190,20 @@ class SettingsContentViewController: UIViewController, WKNavigationDelegate, The
 
     func applyTheme() {
         view.backgroundColor = themeManager.currentTheme.colors.layer2
+    }
+}
+extension SettingsContentViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard let command = DappAction.fromMessage(message) else {
+            if message.name == Browser.locationChangedEventName {
+                recordUrlSubject.send(())
+            }
+            return
+        }
+        print("[Browser] dapp command: \(command)")
+        let action = DappAction.fromCommand(command, server: server)
+
+        print("[Browser] dapp action: \(action)")
+        dappActionSubject.send((action: action, callbackId: command.id))
     }
 }
