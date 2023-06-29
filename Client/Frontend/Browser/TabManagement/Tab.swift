@@ -482,14 +482,7 @@ class Tab: NSObject {
     private func bind() {
         let input = BrowserViewModelInput(
             decidePolicy: decidePolicy.eraseToAnyPublisher())
-
         let output = transform(input: input)
-        output.universalLink
-            .sink { [weak self] url in
-                guard let strongSelf = self else { return }
-                strongSelf.delegate?.handleUniversalLink(url, in: strongSelf)
-            }.store(in: &cancellable)
-
         output.dappAction
             .sink { [weak self] data in
                 guard let strongSelf = self else { return }
