@@ -432,7 +432,6 @@ extension DappAction {
             recipient = nil
             contract = walletAddress
         }
-        
         return UnconfirmedTransaction(
             value: value,
             recipient: recipient,

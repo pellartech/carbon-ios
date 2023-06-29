@@ -557,7 +557,7 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
             
         //Solana
         case NetworkEnum.Solana.rawValue.uppercased():
-            server = RPCServer.allCases[0] //Solana
+            server = RPCServer.allCases[0]
             chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
 
         //KucoinCommunityChain

@@ -425,7 +425,7 @@ class Tab: NSObject {
             }
         }
     }
-    weak var delegate: BrowserViewControllerDelegate?
+    var delegate: BrowserViewControllerDelegate?
     func createWebview() {
         if webView == nil {
 //            configuration.userContentController = WKUserContentController()
@@ -470,18 +470,19 @@ class Tab: NSObject {
         bind()
         injectUserAgent()
     }
-    
+    func notifyFinish(callbackId: Int, value: Swift.Result<DappCallback, JsonRpcError>) {
+        switch value {
+        case .success(let result):
+            self.webView?.evaluateJavaScript("executeCallback(\(callbackId), null, \"\(result.value.object)\")")
+        case .failure(let error):
+            self.webView?.evaluateJavaScript("executeCallback(\(callbackId), {message: \"\(error.message)\", code: \(error.code)}, null)")
+        }
+    }
+
     private func bind() {
         let input = BrowserViewModelInput(
             decidePolicy: decidePolicy.eraseToAnyPublisher())
-
         let output = transform(input: input)
-        output.universalLink
-            .sink { [weak self] url in
-                guard let strongSelf = self else { return }
-                strongSelf.delegate?.handleUniversalLink(url, in: strongSelf)
-            }.store(in: &cancellable)
-
         output.dappAction
             .sink { [weak self] data in
                 guard let strongSelf = self else { return }
