@@ -19,8 +19,7 @@ let recordUrlSubject = PassthroughSubject<Void, Never>()
 let decidePolicy = PassthroughSubject<DecidePolicy, Never>()
 var cancellable = Set<AnyCancellable>()
 let universalLinkSubject = PassthroughSubject<URL, Never>()
-var server = RPCServer.allCases[0]
-
+var server = RPCServer.allCases[5]
 extension TabManager: BrowserViewControllerDelegate {
     func didCall(action: DappAction, callbackId: Int, in viewController: Tab) {
         switch action {
@@ -29,9 +28,17 @@ extension TabManager: BrowserViewControllerDelegate {
         case .walletAddEthereumChain, .ethCall:
             self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
         case .walletSwitchEthereumChain(let chain):
-        print("=============================Switch-chain-call-back============================")
-        print(chain.server?.name ?? "")
-        print(chain.server?.chainID ?? "")
+            switch chain.server?.chainID {
+            case 1 : server = RPCServer.allCases[0]
+            case 56 :server = RPCServer.allCases[5]
+            default : break
+            }
+                guard let currentTab = self.selectedTab else { return }
+                let request = URLRequest(url:currentTab.url!)
+                self.removeTab(currentTab)
+                let closedTab = self.addTab(request, afterTab: selectedTab, isPrivate: false)
+                self.selectTab(closedTab)
+                self.selectedTab?.reloadPage()
         }
     }
 }
