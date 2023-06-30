@@ -59,4 +59,18 @@ enum NetworkEnum : String,CaseIterable {
             return "SOL"
         }
     }
+    func chainID() -> Int32 {
+        switch self {
+        case .BinanceSmartChain: return 56
+        case .BinanceSmartChainTest:return 97
+        case .Ethereum: return 1
+        case .EthereumGoerliTest: return 5
+        case .EthereumSepoliaTest: return 11155111
+        case .KucoinCommunityChain: return 1
+        case .OkexChain: return 66
+        case .Polygon:  return 137
+        case .PolygonTest:  return 80001
+        case .Solana: return 1
+        }
+    }
 }

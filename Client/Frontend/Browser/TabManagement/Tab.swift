@@ -1034,3 +1034,15 @@ class TabWebView: WKWebView, MenuHelperInterface {
         super.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
     }
 }
+extension Tab: BrowserViewControllerDelegate {
+    func didCall(action: DappAction, callbackId: Int, in viewController: Tab) {
+        switch action {
+        case .signTransaction, .sendTransaction, .signMessage, .signPersonalMessage, .unknown, .sendRawTransaction:
+            self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
+        case .walletAddEthereumChain, .ethCall:
+            self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
+        case .walletSwitchEthereumChain(let chain):
+        print(chain.server?.name ?? "")
+        }
+    }
+}

@@ -137,13 +137,15 @@ class Platforms {
     var isTest : Bool?
     var nativeSymbol : String?
     var isSelected : Bool?
+    var chainID : Int32?
 
-    init(name: String?,address: String?,isTest:Bool?,nativeSymbol : String?,isSelected:Bool?){
+    init(name: String?,address: String?,chainID:Int32?,isTest:Bool?,nativeSymbol : String?,isSelected:Bool?){
         self.name = name
         self.address = address
         self.isTest = isTest
         self.nativeSymbol = nativeSymbol
         self.isSelected = isSelected
+        self.chainID = chainID
     }
     // MARK: - Helper method: Convert managed objects to objects
     func toManagedObject(in context: NSManagedObjectContext) -> Networks? {
@@ -153,6 +155,7 @@ class Platforms {
         network.isTest = isTest ?? false
         network.nativeSymbol = nativeSymbol
         network.isSelected = isSelected ?? false
+        network.chainID = chainID ?? 0
         return network
     }
 }
