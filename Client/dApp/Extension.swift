@@ -466,7 +466,7 @@ extension DappAction {
         } else if let command = try? decoder.decode(AddCustomChainCommand.self, from: data) {
             return .walletAddEthereumChain(command)
         } else if let command = try? decoder.decode(SwitchChainCommand.self, from: data) {
-            UserDefaults.standard.set(false, forKey: "ExecuteOnce")
+            UserDefaults.standard.set(false, forKey: WALLET_SWITCH)
             return .walletSwitchEthereumChain(command)
         } else {
             print("[Browser] failed to parse dapp command with JSON: \(jsonString)")

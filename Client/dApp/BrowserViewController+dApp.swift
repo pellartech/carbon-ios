@@ -21,9 +21,11 @@ let decidePolicy = PassthroughSubject<DecidePolicy, Never>()
 var cancellable = Set<AnyCancellable>()
 let universalLinkSubject = PassthroughSubject<URL, Never>()
 var server = RPCServer.allCases[5]
+let WALLET_SWITCH = "wallet-switch"
+
 extension TabManager: BrowserViewControllerDelegate {
     func didCall(action: DappAction, callbackId: Int, in viewController: Tab) {
-        if !UserDefaults.standard.bool(forKey: "ExecuteOnce") {
+        if !UserDefaults.standard.bool(forKey: WALLET_SWITCH) {
             var chainInfo : Chain?
             switch action {
             case .signTransaction, .sendTransaction, .signMessage, .signPersonalMessage, .unknown, .sendRawTransaction:
@@ -65,14 +67,17 @@ extension TabManager: BrowserViewControllerDelegate {
                     server = RPCServer.allCases[13]
                     chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mumbai.rawValue)!)
                     
-                default : break
+                default :
+                    server = RPCServer.allCases[5]
+                    chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
                 }
-                guard let currentTab = tabManager.selectedTab else { return }
-                tabManager.removeTab(currentTab)
-                
-                tabManager.selectTab(tabManager.addTab(URLRequest(url: currentTab.url!), isPrivate: false))
-                ParticleNetwork.setChainInfo(chainInfo!)
-                UserDefaults.standard.set(true, forKey: "ExecuteOnce")
+                if let chainInfoDetails = chainInfo{
+                    guard let currentTab = tabManager.selectedTab else { return }
+                    tabManager.removeTab(currentTab)
+                    tabManager.selectTab(tabManager.addTab(URLRequest(url: currentTab.url!), isPrivate: false))
+                    ParticleNetwork.setChainInfo(chainInfoDetails)
+                    UserDefaults.standard.set(true, forKey: WALLET_SWITCH)
+                }
             }
         }
     }
