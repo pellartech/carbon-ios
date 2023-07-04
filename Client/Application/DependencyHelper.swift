@@ -13,10 +13,10 @@ class DependencyHelper {
             fatalError("Failed to register any dependencies")
         }
 
-        let profile: Profile = appDelegate.profile
+        let profile: Profile = profile
         AppContainer.shared.register(service: profile)
 
-        let tabManager: TabManager = appDelegate.tabManager
+        let tabManager: TabManager = tabManager
         AppContainer.shared.register(service: tabManager)
 
         let appSessionProvider: AppSessionProvider = appDelegate.appSessionManager

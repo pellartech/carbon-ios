@@ -587,11 +587,8 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
         
         ParticleNetwork.setChainInfo(chainInfo!)
         guard let currentTab = tabManager.selectedTab else { return }
-        let request = URLRequest(url:currentTab.url!)
         tabManager.removeTab(currentTab)
-        let closedTab = tabManager.addTab(request, afterTab: tabManager.selectedTab, isPrivate: false)
-        tabManager.selectTab(closedTab)
-        tabManager.selectedTab?.reloadPage()
+        tabManager.selectTab(tabManager.addTab(URLRequest(url: currentTab.url!), isPrivate: false))
     }
 }
 
