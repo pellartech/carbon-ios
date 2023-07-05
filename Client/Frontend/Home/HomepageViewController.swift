@@ -657,9 +657,9 @@ private extension HomepageViewController {
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
                 walletAddress = filterData[0].publicAddress
-                if let currentTab = tabManager.selectedTab{
-                    tabManager.removeTab(currentTab)
-                    tabManager.selectTab(tabManager.addTab(URLRequest(url: currentTab.url!), isPrivate: false))
+                if let currentTab = tabManager.selectedTab, let url =  currentTab.url{
+                        tabManager.removeTab(currentTab)
+                        tabManager.selectTab(tabManager.addTab(URLRequest(url: url), isPrivate: false))
                 }else{
                     tabManager.addTab()
                 }
