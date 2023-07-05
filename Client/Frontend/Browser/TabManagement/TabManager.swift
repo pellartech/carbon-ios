@@ -177,35 +177,36 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
     public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?,forType type: WebViewType, messageHandler: WKScriptMessageHandler) -> WKWebViewConfiguration {
 
         let configuration = WKWebViewConfiguration()
-        configuration.dataDetectorTypes = [.phoneNumber]
-        configuration.processPool = WKProcessPool()
-        let blockPopups = prefs?.boolForKey(PrefsKeys.KeyBlockPopups) ?? true
-        configuration.preferences.javaScriptCanOpenWindowsAutomatically = !blockPopups
-        // We do this to go against the configuration of the <meta name="viewport">
-        // tag to behave the same way as Safari :-(
-        configuration.ignoresViewportScaleLimits = true
-        if isPrivate {
-            configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
-        }else{
-            configuration.websiteDataStore = WKWebsiteDataStore.default()
-        }
-        configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
-        
-        //dApp
-        var js = ""
-        
-        switch type {
-        case .dappBrowser(let server):
-            
-            if let filepath = Bundle.main.path(forResource: "Carbon-min", ofType: "js") {
-                do {
-                    js += try String(contentsOfFile: filepath)
-                } catch { }
+        if (walletAddress != ""){
+            configuration.dataDetectorTypes = [.phoneNumber]
+            configuration.processPool = WKProcessPool()
+            let blockPopups = prefs?.boolForKey(PrefsKeys.KeyBlockPopups) ?? true
+            configuration.preferences.javaScriptCanOpenWindowsAutomatically = !blockPopups
+            // We do this to go against the configuration of the <meta name="viewport">
+            // tag to behave the same way as Safari :-(
+            configuration.ignoresViewportScaleLimits = true
+            if isPrivate {
+                configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+            }else{
+                configuration.websiteDataStore = WKWebsiteDataStore.default()
             }
-            js += javaScriptForDappBrowser(server: server)
-        case .tokenScriptRenderer:
-            js += javaScriptForTokenScriptRenderer()
-            js += """
+            configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
+            
+            //dApp
+            var js = ""
+            
+            switch type {
+            case .dappBrowser(let server):
+                
+                if let filepath = Bundle.main.path(forResource: "Carbon-min", ofType: "js") {
+                    do {
+                        js += try String(contentsOfFile: filepath)
+                    } catch { }
+                }
+                js += javaScriptForDappBrowser(server: server)
+            case .tokenScriptRenderer:
+                js += javaScriptForTokenScriptRenderer()
+                js += """
                   \n
                   web3.tokens = {
                       data: {
@@ -221,28 +222,29 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                       }
                   }
                   """
+            }
+            let userScript = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
+            configuration.userContentController.addUserScript(userScript)
+            
+            switch type {
+            case .dappBrowser:
+                break
+            case .tokenScriptRenderer:
+                configuration.setURLSchemeHandler(configuration, forURLScheme: "tokenscript-resource")
+            }
+            
+            HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: configuration)
+            configuration.userContentController.add(messageHandler, name: Method.sendTransaction.rawValue)
+            configuration.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
+            configuration.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
+            configuration.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
+            configuration.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
+            configuration.userContentController.add(messageHandler, name: AddCustomChainCommand.Method.walletAddEthereumChain.rawValue)
+            configuration.userContentController.add(messageHandler, name: SwitchChainCommand.Method.walletSwitchEthereumChain.rawValue)
+            configuration.userContentController.add(messageHandler, name: Browser.locationChangedEventName)
+            //TODO extract like `Method.signTypedMessage.rawValue` when we have more than 1
+            configuration.userContentController.add(messageHandler, name: TokenScript.SetProperties.setActionProps)
         }
-        let userScript = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-        configuration.userContentController.addUserScript(userScript)
-        
-        switch type {
-        case .dappBrowser:
-            break
-        case .tokenScriptRenderer:
-            configuration.setURLSchemeHandler(configuration, forURLScheme: "tokenscript-resource")
-        }
-        
-        HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: configuration)
-        configuration.userContentController.add(messageHandler, name: Method.sendTransaction.rawValue)
-        configuration.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
-        configuration.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
-        configuration.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
-        configuration.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
-        configuration.userContentController.add(messageHandler, name: AddCustomChainCommand.Method.walletAddEthereumChain.rawValue)
-        configuration.userContentController.add(messageHandler, name: SwitchChainCommand.Method.walletSwitchEthereumChain.rawValue)
-        configuration.userContentController.add(messageHandler, name: Browser.locationChangedEventName)
-        //TODO extract like `Method.signTypedMessage.rawValue` when we have more than 1
-        configuration.userContentController.add(messageHandler, name: TokenScript.SetProperties.setActionProps)
         return configuration
     }
     

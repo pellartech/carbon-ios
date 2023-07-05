@@ -29,7 +29,7 @@ class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, The
 
     private var viewModel: HomepageViewModel
     private var contextMenuHelper: HomepageContextMenuHelper
-    private var tabManager: TabManagerProtocol
+    private var tabsManager: TabManagerProtocol
     private var urlBar: URLBarViewProtocol
     private var userDefaults: UserDefaultsInterface
     private lazy var wallpaperView: WallpaperBackgroundView = .build { _ in }
@@ -41,7 +41,7 @@ class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, The
     var themeManager: ThemeManager
     var notificationCenter: NotificationProtocol
     var themeObserver: NSObjectProtocol?
-
+    var isWalletAdded = false
     // Background for status bar
     private lazy var statusBarView: UIView = {
         let statusBarFrame = statusBarFrame ?? CGRect.zero
@@ -57,7 +57,7 @@ class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, The
     }
 
     var currentTab: Tab? {
-        return tabManager.selectedTab
+        return tabsManager.selectedTab
     }
 
     // MARK: - Initializers
@@ -70,7 +70,7 @@ class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, The
          logger: Logger = DefaultLogger.shared
     ) {
         self.urlBar = urlBar
-        self.tabManager = tabManager
+        self.tabsManager = tabManager
         self.userDefaults = userDefaults
         let isPrivate = tabManager.selectedTab?.isPrivate ?? true
         self.viewModel = HomepageViewModel(profile: profile,
@@ -135,7 +135,10 @@ class HomepageViewController: UIViewController, HomePanel, FeatureFlaggable, The
         listenForThemeChange(view)
         applyTheme()
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+      isWalletAdded = self.isWalletAuthenticationDone()
+    }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         jumpBackInContextualHintViewController.stopTimer()
@@ -503,7 +506,7 @@ private extension HomepageViewController {
                 self.contextMenuHelper.presentContextMenu(for: site, with: self.collectionView, sectionType: .topSites,isFeature: true)
             }else{
                 if (data.title == "Wallet"){
-                    if (self.isWalletAuthenticationDone()){
+                    if self.isWalletAdded{
                         let rootViewController = WalletViewController()
                         let navController = ThemedNavigationController(rootViewController: rootViewController)
                         self.presentWithModalDismissIfNeeded(navController, animated: true)
@@ -649,6 +652,18 @@ private extension HomepageViewController {
                 $0.isConnected(publicAddress: connectWalletModel.publicAddress) && $0.walletType == connectWalletModel.walletType
             }
             return !adapters.isEmpty
+        }
+        if(data.count > 0){
+             let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
+            if (filterData.count > 0){
+                walletAddress = filterData[0].publicAddress
+                if let currentTab = tabManager.selectedTab{
+                    tabManager.removeTab(currentTab)
+                    tabManager.selectTab(tabManager.addTab(URLRequest(url: currentTab.url!), isPrivate: false))
+                }else{
+                    tabManager.addTab()
+                }
+            }
         }
         return data.count > 0 ? true : false
     }

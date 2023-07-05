@@ -9,7 +9,7 @@ import WebKit
 import Combine
 import ParticleNetworkBase
 
-var walletAddress = "0xe2B3BD7174B6069C892448AdCC539392E936DAE0"
+var walletAddress = ""
 protocol BrowserViewControllerDelegate: AnyObject {
     func didCall(action: DappAction, callbackId: Int, in viewController: Tab)
 }
