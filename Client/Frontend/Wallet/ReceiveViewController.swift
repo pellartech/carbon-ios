@@ -353,6 +353,8 @@ class ReceiveViewController: UIViewController {
     }
     
     func setUpView(){
+        shareBtnView.alpha = 0
+        copyBtnView.alpha = 0
         navigationController?.isNavigationBarHidden = true
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
@@ -376,11 +378,11 @@ class ReceiveViewController: UIViewController {
         view.addSubview(scrollView)
         view.addSubview(logoBackgroundView)
         view.addSubview(closeButton)
-        qrImageView.image = generateQRcode(value:"jfdijovfbjhdvdjkcnsvbddsndcs v")
+        qrImageView.image = generateQRcode()
     }
     
-    func generateQRcode(value:String) -> UIImage?{
-        let doc = QRCode.Document(utf8String: "QR Code with overlaid logo", errorCorrection: .high)
+    func generateQRcode() -> UIImage?{
+        let doc = QRCode.Document(utf8String: self.address, errorCorrection: .high)
         doc.design.additionalQuietZonePixels = 0
         doc.design.backgroundColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0))
         doc.design.style.onPixels = QRCode.FillStyle.Solid(1, 1, 1, alpha: 1.000)
@@ -543,21 +545,19 @@ class ReceiveViewController: UIViewController {
     
     
     @objc func copyBtnTapped (){
+        helperMethodToAnimate(view: copyBtnView, button: copyButton)
         UIPasteboard.general.string = self.address
         SimpleToast().showAlertWithText("Copied!", bottomContainer: view, theme: themeManager!.currentTheme)
     }
     
     @objc func shareBtnTapped (){
-        
+        helperMethodToAnimate(view: shareBtnView, button: shareButton)
         let textToShare = [ self.address ]
         let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
-        
         self.present(activityViewController, animated: true, completion: nil)
-        
     }
-    
     
     // MARK: - Helper Methods - Initiate view controller
     func initiateSettingsVC(){
@@ -571,5 +571,14 @@ class ReceiveViewController: UIViewController {
         vc.address = publicAddress
         self.present(vc, animated: false)
     }
-    
+    func helperMethodToAnimate(view: UIView, button: UIButton){
+        UIView.animate(withDuration: 0.1, animations: {
+            view.alpha = 1
+            button.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            view.alpha = 0
+            button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        })
+    }
 }
