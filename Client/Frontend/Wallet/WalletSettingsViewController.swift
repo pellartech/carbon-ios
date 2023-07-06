@@ -431,7 +431,7 @@ class WalletSettingsViewController: UIViewController {
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
         for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
+            changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", chainID: each.chainID, isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
         }
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.isSettings = true
