@@ -895,12 +895,11 @@ class WalletViewController: UIViewController {
     }
     func initiateSettingsVC(){
         let settingsVC = WalletSettingsViewController()
+        settingsVC.delegate = self
         let navController = ThemedNavigationController(rootViewController: settingsVC)
         self.present(navController, animated: true)
-
     }
-    
-    
+
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
         vc.modalPresentationStyle = .overCurrentContext

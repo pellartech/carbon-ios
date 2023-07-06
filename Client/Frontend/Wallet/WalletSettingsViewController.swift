@@ -295,7 +295,8 @@ class WalletSettingsViewController: UIViewController {
     private let walletDetails = ["Your Carbon Wallet","Change Network","Connect Wallet","Add Token"]
     private let security = ["Wallet Seed Phrase","Allow scan QR Codes","Save Transaction History","Allow Push Notifications"]
     private var networkName = String()
-    
+    var delegate :  ChangeNetwork?
+
     // MARK: - View Lifecycles
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -433,6 +434,7 @@ class WalletSettingsViewController: UIViewController {
         for each in networks{
             changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", chainID: each.chainID, isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
         }
+        changeNetworkVC.delegate = self
         changeNetworkVC.modalPresentationStyle = .overCurrentContext
         changeNetworkVC.isSettings = true
         self.navigationController?.pushViewController(changeNetworkVC, animated: true)
@@ -456,6 +458,12 @@ extension WalletSettingsViewController : AddWalletProtocol{
     func addWalletDelegate() {
         self.dismissVC()
     }
+}
+extension WalletSettingsViewController : ChangeNetwork{
+    func changeNetworkDelegate(platforms: Platforms) {
+        self.delegate?.changeNetworkDelegate(platforms: platforms)
+    }
+        
 }
 // MARK: - Extension - ConnectProtocol
 extension WalletSettingsViewController : ConnectProtocol{
