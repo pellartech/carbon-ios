@@ -694,6 +694,13 @@ class WalletViewController: UIViewController {
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
                 walletAddress = filterData[0].publicAddress
+                print("=====================================\(walletAddress)")
+                if let currentTab = tabManager.selectedTab, let url =  currentTab.url{
+                        tabManager.removeTab(currentTab)
+                        tabManager.selectTab(tabManager.addTab(URLRequest(url: url), isPrivate: false))
+                }else{
+                    tabManager.addTab()
+                }
                 setUIAndFetchData(address: filterData[0].publicAddress)
             }
         }else{
@@ -890,6 +897,7 @@ class WalletViewController: UIViewController {
         let settingsVC = WalletSettingsViewController()
         let navController = ThemedNavigationController(rootViewController: settingsVC)
         self.present(navController, animated: true)
+
     }
     
     

@@ -440,7 +440,7 @@ class ChangeNetworkViewController: UIViewController {
             switchButton.status = isSwitch
             self.platforms = isSwitch ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
             }
-            let selectedIndex = self.platforms.firstIndex{$0.isSelected == true}
+            let selectedIndex = self.platforms.firstIndex{$0.chainID ?? 0 == ParticleNetwork.getChainInfo().chainId}            
             selectedIndexes = IndexPath(row: selectedIndex ?? 0, section: 0)
             self.tableView.reloadData()
         }
@@ -530,55 +530,55 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
 
         switch platform.name?.uppercased(){
           
-        //Ethereum
+        ///Ethereum
         case NetworkEnum.Ethereum.rawValue.uppercased():
             server = RPCServer.allCases[0]
             chainInfo  = .ethereum(EthereumNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
             
-       //Goerli-Ethereum Testnet
+       ///Goerli-Ethereum Testnet
         case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():
             server = RPCServer.allCases[3]
             chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.goerli.rawValue)!)
            
-       //Sepolia-Ethereum Testnet
+       ///Sepolia-Ethereum Testnet
         case NetworkEnum.EthereumSepoliaTest.rawValue.uppercased():
             server = RPCServer.allCases[25]
             chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
 
-        //BinanceSmartChain
+        ///BinanceSmartChain
         case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
             server = RPCServer.allCases[5]
             chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
 
-        //BinanceSmartChain Testnet
+        ///BinanceSmartChain Testnet
         case NetworkEnum.BinanceSmartChainTest.rawValue.uppercased():
             server = RPCServer.allCases[4]
             chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.testnet.rawValue)!)
             
-        //Solana
+        ///Solana
         case NetworkEnum.Solana.rawValue.uppercased():
-            server = RPCServer.allCases[0] //Solana
+            server = RPCServer.allCases[0]
             chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
 
-        //KucoinCommunityChain
+        ///KucoinCommunityChain
         case NetworkEnum.KucoinCommunityChain.rawValue.uppercased():
             server = RPCServer.allCases[0]
             chainInfo  = .kcc(KccNetwork(rawValue: KccNetwork.mainnet.rawValue)!)
 
-        //OkexChain
+        ///OkexChain
         case NetworkEnum.OkexChain.rawValue.uppercased():
             server = RPCServer.allCases[24]
             chainInfo  = .okc(OKCNetwork(rawValue: OKCNetwork.mainnet.rawValue)!)
 
-         //Polygon
+         ///Polygon
         case NetworkEnum.Polygon.rawValue.uppercased():
             server = RPCServer.allCases[11]
             chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
           
-        //Polygon-Mumbai Testnet
+        ///Polygon-Mumbai Testnet
         case NetworkEnum.PolygonTest.rawValue.uppercased():
             server = RPCServer.allCases[13]
-            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
+            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mumbai.rawValue)!)
 
         default:
             server = RPCServer.allCases[0]
@@ -586,7 +586,12 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
         }
         
         ParticleNetwork.setChainInfo(chainInfo!)
-        tabManager.addTab()
+        if let currentTab = tabManager.selectedTab, let url =  currentTab.url{
+            tabManager.removeTab(currentTab)
+            tabManager.selectTab(tabManager.addTab(URLRequest(url: url), isPrivate: false))
+        }else{
+            tabManager.addTab()
+        }
     }
 }
 

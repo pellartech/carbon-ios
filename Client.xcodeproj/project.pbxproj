@@ -5085,6 +5085,7 @@
 		F91441C32A1CA320008BE25A /* AddWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWalletViewController.swift; sourceTree = "<group>"; };
 		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		F929EC0C2A4C2DFA00221E6F /* carbon.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = carbon.xcdatamodel; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
 		F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsViewController.swift; sourceTree = "<group>"; };
 		F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCServer.swift; sourceTree = "<group>"; };
@@ -7841,6 +7842,7 @@
 				43BE578B278BA4D900491291 /* RustMozillaAppServices-Info.plist */,
 				10CFE67278212B8361D3EB51 /* Pods */,
 				F977AA152A40C1E300761638 /* Recovered References */,
+
 			);
 			sourceTree = "<group>";
 		};
@@ -7872,6 +7874,7 @@
 			isa = PBXGroup;
 			children = (
 				F977AA162A40C1F600761638 /* carbon.xcdatamodeld */,
+
 				F95C231D2A3F3BA600B956B7 /* dApp */,
 				F9FC4C942A2F3C97000FA4C8 /* CoreData */,
 				F84B21E41A0910F600AAB793 /* Application */,
@@ -8181,6 +8184,7 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+
 		F99BEA842A135901003F49B2 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
@@ -16291,6 +16295,7 @@
 				F977AA172A40C1F600761638 /* carbon.xcdatamodel */,
 			);
 			currentVersion = F977AA172A40C1F600761638 /* carbon.xcdatamodel */;
+
 			path = carbon.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

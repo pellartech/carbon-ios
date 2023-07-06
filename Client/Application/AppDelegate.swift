@@ -17,30 +17,20 @@ import ConnectSolanaAdapter
 import ConnectWalletConnectAdapter
 import ParticleConnect
 
- var profile: Profile = BrowserProfile(
+var profile: Profile = BrowserProfile(
     localName: "profile"
 )
-var tabManager = TabManager(profile: profile, imageStore:  DiskImageStore(
-    files: profile.files,
-    namespace: "TabManagerScreenshots",
-    quality: UIConstants.ScreenshotQuality))
-
+var tabManager: TabManager = TabManager(
+    profile: profile,
+    imageStore: DiskImageStore(
+        files: profile.files,
+        namespace: "TabManagerScreenshots",
+        quality: UIConstants.ScreenshotQuality)
+)
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let logger = DefaultLogger.shared
     var notificationCenter: NotificationProtocol = NotificationCenter.default
     var orientationLock = UIInterfaceOrientationMask.all
-
-    lazy var profile: Profile = BrowserProfile(
-        localName: "profile"
-    )
-    lazy var tabManager: TabManager = TabManager(
-        profile: profile,
-        imageStore: DiskImageStore(
-            files: profile.files,
-            namespace: "TabManagerScreenshots",
-            quality: UIConstants.ScreenshotQuality)
-    )
-
     lazy var themeManager: ThemeManager = DefaultThemeManager()
     lazy var ratingPromptManager = RatingPromptManager(profile: profile)
     lazy var appSessionManager: AppSessionProvider = AppSessionManager()
@@ -182,10 +172,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         networks = CoreDataManager.shared.fetchNetworks()
         if (networks.count == 0){
             for network in NetworkEnum.allCases{
-                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue,isTest: network.isTest(),nativeSymbol: network.nativeSymbol(), isSelected: (network == NetworkEnum.BinanceSmartChain || network == NetworkEnum.BinanceSmartChainTest ) ? true : false)
+                let network = CoreDataManager.shared.saveNetwork(name: network.rawValue, chainID: network.chainID(),isTest: network.isTest(),nativeSymbol: network.nativeSymbol(), isSelected: (network == NetworkEnum.BinanceSmartChain || network == NetworkEnum.BinanceSmartChainTest ) ? true : false)
                 networks.append(network)
                 CoreDataManager.shared.save()
             }
+        }else{
+            networks.forEach( { network in
+                    network.isSelected = (network.name == NetworkEnum.BinanceSmartChain.rawValue || network.name == NetworkEnum.BinanceSmartChainTest.rawValue ) ? true : false
+                  })
         }
     }
 
@@ -215,7 +209,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Cleanup can be a heavy operation, take it out of the startup path. Instead check after a few seconds.
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
-            self?.profile.cleanupHistoryIfNeeded()
+            profile.cleanupHistoryIfNeeded()
             self?.ratingPromptManager.updateData()
         }
 
