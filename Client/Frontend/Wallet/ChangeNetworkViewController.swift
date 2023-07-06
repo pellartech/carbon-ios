@@ -277,7 +277,7 @@ class ChangeNetworkViewController: UIViewController {
 
     var switchButton : SwitchButton = {
         let switchButton = SwitchButton()
-        switchButton.setStatus(true)
+        switchButton.status = true
         return switchButton
     }()
     

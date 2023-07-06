@@ -306,7 +306,8 @@ class WalletSettingsViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        networkName = ParticleNetwork.getChainInfo().name
+        let network = ParticleNetwork.getChainInfo().network
+        networkName = (ParticleNetwork.getChainInfo().name + " "  +  (network == "mainnet" ? "" : network))
         navigationController?.isNavigationBarHidden = true
         self.walletTableView.reloadData()
     }
