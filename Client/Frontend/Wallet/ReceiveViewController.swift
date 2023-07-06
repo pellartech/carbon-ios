@@ -480,7 +480,7 @@ class ReceiveViewController: UIViewController {
             
             ///Wallet balance title Label
             receiveTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
-            receiveTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
+            receiveTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor),
             
             qrImageView.centerYAnchor.constraint(equalTo: receiveContentView.centerYAnchor,constant:  UX.QRCodeView.top),
             qrImageView.centerXAnchor.constraint(equalTo: receiveContentView.centerXAnchor),
