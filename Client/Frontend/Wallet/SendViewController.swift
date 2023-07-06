@@ -517,8 +517,6 @@ class SendViewController: UIViewController {
             static let titleFont: CGFloat = 16
             static let top: CGFloat = 30
             static let width: CGFloat = 300
-            static let topTitleValue: CGFloat = 0
-
         }
         struct LogoView {
             static let top: CGFloat = 50
@@ -534,8 +532,8 @@ class SendViewController: UIViewController {
             static let topActionBg: CGFloat = 10
         }
         struct UserTokenView {
-            static let cornerRadius: CGFloat = 20
-            static let common: CGFloat = 30
+            static let cornerRadius: CGFloat = 10
+            static let common: CGFloat = 20
             static let top: CGFloat = 30
         }
         struct WelcomeLabel {
@@ -592,11 +590,11 @@ class SendViewController: UIViewController {
             static let topValue: CGFloat = 10
             static let font: CGFloat = 13
         }
-        struct DescriptionLabel {
-            static let top: CGFloat = 30
-            static let font: CGFloat = 12
-            static let width: CGFloat = 290
-            static let height: CGFloat = 65
+        struct TitleLabel{
+            static let font: CGFloat = 25
+            static let holder: CGFloat = 15
+            static let top: CGFloat = 20
+            static let height: CGFloat = 50
             
         }
         struct WalletLabel {
@@ -615,7 +613,16 @@ class SendViewController: UIViewController {
             static let width: CGFloat = 40
             static let corner: CGFloat = 20
         }
-        
+        struct Value {
+            static let font: CGFloat = 15
+            static let fontAt: CGFloat = 12
+            static let top: CGFloat = 10
+            static let topAt: CGFloat = 0
+            static let trailing: CGFloat = -10
+            static let height: CGFloat = 20
+            static let width: CGFloat = 50
+            static let valueHeight: CGFloat = 60
+        }
     }
     // MARK: - UI Elements
     
@@ -633,12 +640,31 @@ class SendViewController: UIViewController {
     private lazy var sendContentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.clear
+        view.layer.cornerRadius = UX.UserTokenView.cornerRadius
+        view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    private lazy var recepientView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         view.layer.cornerRadius = UX.UserTokenView.cornerRadius
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         return view
     }()
+    private lazy var amountView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+        view.layer.cornerRadius = UX.UserTokenView.cornerRadius
+        view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    
     private lazy var logoBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -744,6 +770,90 @@ class SendViewController: UIViewController {
         return button
     }()
     
+    ///UITextField
+    lazy var receipientTextField:UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .clear
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.keyboardType = UIKeyboardType.default
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.autocorrectionType = UITextAutocorrectionType.no
+        textField.font = UIFont.systemFont(ofSize: UX.TitleLabel.font)
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing;
+        textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor:Utilities().hexStringToUIColor(hex: "#6D6D6D"),
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: UX.TitleLabel.holder)
+        ]
+        textField.attributedPlaceholder = NSAttributedString(string: "Recepient address", attributes:attributes)
+        return textField
+    }()
+    
+    lazy var amountTextField:UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .clear
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.keyboardType = UIKeyboardType.numbersAndPunctuation
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.autocorrectionType = UITextAutocorrectionType.no
+        textField.font = UIFont.systemFont(ofSize: UX.TitleLabel.font)
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing;
+        textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        let attributes = [
+            NSAttributedString.Key.foregroundColor:Utilities().hexStringToUIColor(hex: "#6D6D6D"),
+            NSAttributedString.Key.font : UIFont.systemFont(ofSize: UX.TitleLabel.holder)
+        ]
+        textField.attributedPlaceholder = NSAttributedString(string: "Amount", attributes:attributes)
+        return textField
+    }()
+    
+    private lazy var scanImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_scan")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var tokenImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var receipientGradiantLabel : GradientLabel = {
+        let label = GradientLabel()
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
+        label.textAlignment = .right
+        label.text = ""
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingMiddle
+        return label
+    }()
+    
+    private lazy var amountGradiantLabel : GradientLabel = {
+        let label = GradientLabel()
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 1
+        label.text = "MAX"
+        label.lineBreakMode = .byTruncatingMiddle
+        return label
+    }()
+    
+    private lazy var tokenSymbolLabel : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .white
+        label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
+        label.textAlignment = .right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 1
+        label.text = "BNB"
+        label.lineBreakMode = .byTruncatingMiddle
+        return label
+    }()
+    
     ///UIScrollView
     private lazy var scrollView : UIScrollView = {
         let scrollView = UIScrollView()
@@ -794,7 +904,15 @@ class SendViewController: UIViewController {
         actionsView.addSubview(infoIcon)
         actionsView.addSubview(sendTitleLabel)
         contentView.addSubview(actionsView)
-//        sendContentView.addSubview(qrImageView)
+        recepientView.addSubview(receipientTextField)
+        recepientView.addSubview(scanImageView)
+        recepientView.addSubview(receipientGradiantLabel)
+        amountView.addSubview(amountTextField)
+        amountView.addSubview(tokenImageView)
+        amountView.addSubview(amountGradiantLabel)
+        amountView.addSubview(tokenSymbolLabel)
+        sendContentView.addSubview(recepientView)
+        sendContentView.addSubview(amountView)
         scrollContentView.addSubview(contentView)
         scrollContentView.addSubview(sendContentView)
         scrollContentView.addSubview(sendBtnView)
@@ -804,7 +922,7 @@ class SendViewController: UIViewController {
         view.addSubview(logoBackgroundView)
         view.addSubview(closeButton)
     }
-  
+    
     func setUpViewContraint(){
         NSLayoutConstraint.activate([
             ///Scroll
@@ -847,11 +965,50 @@ class SendViewController: UIViewController {
             actionsView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             actionsView.heightAnchor.constraint(equalToConstant: UX.ActionView.heightActionBg),
             
-            ///User Token List View
-            sendContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.top),
+            ///Send Content View
+            sendContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.common),
             sendContentView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
             sendContentView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
             sendContentView.heightAnchor.constraint(equalToConstant: 340),
+            
+            recepientView.topAnchor.constraint(equalTo: sendContentView.topAnchor ,constant: UX.UserTokenView.common),
+            recepientView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
+            recepientView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
+            recepientView.heightAnchor.constraint(equalToConstant: 50),
+            
+            receipientTextField.topAnchor.constraint(equalTo: recepientView.topAnchor),
+            receipientTextField.leadingAnchor.constraint(equalTo: recepientView.leadingAnchor,constant: UX.UserTokenView.common),
+            receipientTextField.trailingAnchor.constraint(equalTo: recepientView.trailingAnchor,constant: -UX.UserTokenView.common),
+            receipientTextField.heightAnchor.constraint(equalToConstant: 50),
+            
+            scanImageView.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
+            scanImageView.trailingAnchor.constraint(equalTo: recepientView.trailingAnchor,constant: -UX.UserTokenView.common),
+            scanImageView.heightAnchor.constraint(equalToConstant: 20),
+            scanImageView.widthAnchor.constraint(equalToConstant: 20),
+
+            receipientGradiantLabel.centerXAnchor.constraint(equalTo: recepientView.centerXAnchor),
+            receipientGradiantLabel.trailingAnchor.constraint(equalTo: scanImageView.leadingAnchor,constant: -UX.UserTokenView.common),
+ 
+            amountView.topAnchor.constraint(equalTo: recepientView.bottomAnchor ,constant: UX.UserTokenView.common),
+            amountView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
+            amountView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
+            amountView.heightAnchor.constraint(equalToConstant: 50),
+            
+            tokenSymbolLabel.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
+            tokenSymbolLabel.trailingAnchor.constraint(equalTo: amountView.trailingAnchor,constant: -UX.UserTokenView.common),
+
+            tokenImageView.centerYAnchor.constraint(equalTo: amountView.centerYAnchor),
+            tokenImageView.trailingAnchor.constraint(equalTo: tokenSymbolLabel.leadingAnchor,constant: -UX.UserTokenView.common),
+            tokenImageView.heightAnchor.constraint(equalToConstant: 22),
+            tokenImageView.widthAnchor.constraint(equalToConstant: 22),
+            
+            amountGradiantLabel.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
+            amountGradiantLabel.trailingAnchor.constraint(equalTo: tokenImageView.leadingAnchor,constant: -UX.UserTokenView.common),
+
+            amountTextField.topAnchor.constraint(equalTo: amountView.topAnchor),
+            amountTextField.leadingAnchor.constraint(equalTo: amountView.leadingAnchor,constant: UX.UserTokenView.common),
+            amountTextField.trailingAnchor.constraint(equalTo: amountView.trailingAnchor,constant: -UX.UserTokenView.common),
+            amountTextField.heightAnchor.constraint(equalToConstant: 50),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -885,7 +1042,7 @@ class SendViewController: UIViewController {
             
             ///Wallet balance title Label
             sendTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
-            sendTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topTitleValue),
+            sendTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor),
             
             ///Send button view
             sendBtnView.topAnchor.constraint(equalTo: sendContentView.bottomAnchor,constant:UX.ButtonView.addTop),
@@ -893,7 +1050,7 @@ class SendViewController: UIViewController {
             sendBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             sendBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
             sendBtnView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
-
+            
             ///Send button
             sendButton.topAnchor.constraint(equalTo: sendContentView.bottomAnchor,constant:UX.ButtonView.addTop),
             sendButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
@@ -923,7 +1080,7 @@ class SendViewController: UIViewController {
         UIPasteboard.general.string = self.publicAddress
         SimpleToast().showAlertWithText("Copied!", bottomContainer: view, theme: themeManager!.currentTheme)
     }
-
+    
     
     // MARK: - Helper Methods - Initiate view controller
     func initiateSettingsVC(){
