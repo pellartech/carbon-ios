@@ -837,21 +837,41 @@ class WalletViewController: UIViewController {
     }
 
     @objc func sendBtnTapped (){
-        helperMethodToAnimate(view: sendBtnView, button: sendButton)
-        initiateSendVC()
+        UIView.animate(withDuration: 0.05, animations: {
+            self.sendBtnView.alpha = 1
+            self.sendButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.sendBtnView.alpha = 0
+            self.sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.initiateSendVC()
+        })
     }
     
     @objc func receiveBtnTapped (){
-        helperMethodToAnimate(view: receiveBtnView, button: receiveButton)
-        initiateReceiveVC()
+        UIView.animate(withDuration: 0.05, animations: {
+            self.receiveBtnView.alpha = 1
+            self.receiveButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.receiveBtnView.alpha = 0
+            self.receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.initiateReceiveVC()
+        })
     }
     @objc func buyBtnTapped (){
-        helperMethodToAnimate(view: buyBtnView, button: buyButton)
-        self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
-
+        UIView.animate(withDuration: 0.05, animations: {
+            self.buyBtnView.alpha = 1
+            self.buyButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.buyBtnView.alpha = 0
+            self.buyButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
+        })
     }
     func helperMethodToAnimate(view: UIView, button: UIButton){
-        UIView.animate(withDuration: 0.1, animations: {
+        UIView.animate(withDuration: 0.05, animations: {
             view.alpha = 1
             button.backgroundColor = UIColor.clear
         }, completion: {

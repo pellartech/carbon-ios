@@ -262,6 +262,7 @@ class ReceiveViewController: UIViewController {
         label.numberOfLines = 3
         label.font = .boldSystemFont(ofSize: UX.AddressLabel.font)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
         return label
     }()
     
@@ -343,7 +344,7 @@ class ReceiveViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        walletAddressLabel.text = self.address 
+        walletAddressLabel.text = self.address
     }
     
     // MARK: - UI Methods
@@ -493,7 +494,9 @@ class ReceiveViewController: UIViewController {
             ///Wallet Address Title Label
             walletAddressLabel.topAnchor.constraint(equalTo:walletAddressTitleLabel.bottomAnchor,constant: UX.BalanceLabel.topValueCarbon),
             walletAddressLabel.centerXAnchor.constraint(equalTo: receiveContentView.centerXAnchor),
-            
+            walletAddressLabel.leadingAnchor.constraint(equalTo: receiveContentView.leadingAnchor, constant: UX.BalanceLabel.top),
+            walletAddressLabel.trailingAnchor.constraint(equalTo: receiveContentView.trailingAnchor, constant: -UX.BalanceLabel.top),
+
             ///Description Label
             descriptionLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             descriptionLabel.topAnchor.constraint(equalTo: receiveContentView.bottomAnchor,constant:  UX.DescriptionLabel.top),
