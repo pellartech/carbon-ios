@@ -260,7 +260,6 @@ class ReceiveViewController: UIViewController {
         let label = UILabel()
         label.textColor = UIColor.white
         label.numberOfLines = 3
-        label.text = "ucdjhcbjddchdjcchdchdckdsckbndscjsd"
         label.font = .boldSystemFont(ofSize: UX.AddressLabel.font)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -287,6 +286,7 @@ class ReceiveViewController: UIViewController {
         button.addTarget(self, action: #selector(self.copyBtnTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.isUserInteractionEnabled = true
         return button
     }()
@@ -298,6 +298,7 @@ class ReceiveViewController: UIViewController {
         button.addTarget(self, action: #selector(self.shareBtnTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
+        button.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         button.isUserInteractionEnabled = true
         return button
     }()
@@ -342,7 +343,7 @@ class ReceiveViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        walletAddressLabel.text = self.address 
     }
     
     // MARK: - UI Methods
