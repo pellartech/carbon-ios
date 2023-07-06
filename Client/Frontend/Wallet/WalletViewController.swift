@@ -903,7 +903,7 @@ class WalletViewController: UIViewController {
     func initiateSendVC(){
         let vc = SendViewController()
         vc.publicAddress = publicAddress
-        vc.tokens = self.tokensModel
+        vc.tokensModel = self.tokensModel
         vc.modalPresentationStyle = .overCurrentContext
         self.present(vc, animated: true)
     }
