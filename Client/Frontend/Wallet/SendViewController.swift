@@ -484,8 +484,6 @@
 import Foundation
 import UIKit
 import QRCode
-import Foundation
-import UIKit
 import ParticleConnect
 import ConnectCommon
 import ParticleWalletAPI
@@ -535,6 +533,8 @@ class SendViewController: UIViewController {
             static let cornerRadius: CGFloat = 10
             static let common: CGFloat = 20
             static let top: CGFloat = 30
+            static let spacing: CGFloat = 10
+            
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -614,7 +614,7 @@ class SendViewController: UIViewController {
             static let corner: CGFloat = 20
         }
         struct Value {
-            static let font: CGFloat = 15
+            static let font: CGFloat = 12
             static let fontAt: CGFloat = 12
             static let top: CGFloat = 10
             static let topAt: CGFloat = 0
@@ -774,6 +774,8 @@ class SendViewController: UIViewController {
     lazy var receipientTextField:UITextField = {
         let textField = UITextField()
         textField.backgroundColor = .clear
+        textField.textColor = .white
+        textField.tintColor = Utilities().hexStringToUIColor(hex: "#FF4412")
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = UIKeyboardType.default
         textField.returnKeyType = UIReturnKeyType.done
@@ -791,7 +793,9 @@ class SendViewController: UIViewController {
     
     lazy var amountTextField:UITextField = {
         let textField = UITextField()
+        textField.tintColor = Utilities().hexStringToUIColor(hex: "#FF4412")
         textField.backgroundColor = .clear
+        textField.textColor = .white
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = UIKeyboardType.numbersAndPunctuation
         textField.returnKeyType = UIReturnKeyType.done
@@ -816,6 +820,7 @@ class SendViewController: UIViewController {
     
     private lazy var tokenImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_carbon")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -824,10 +829,12 @@ class SendViewController: UIViewController {
         let label = GradientLabel()
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
-        label.text = ""
+        label.text = "PASTE"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingMiddle
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(pasteBtnTapped))
+        label.addGestureRecognizer(tapRecognizer)
         return label
     }()
     
@@ -844,7 +851,7 @@ class SendViewController: UIViewController {
     
     private lazy var tokenSymbolLabel : UILabel = {
         let label = UILabel()
-        label.backgroundColor = .white
+        label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -891,6 +898,7 @@ class SendViewController: UIViewController {
         themeManager =  AppContainer.shared.resolve()
         let theme = themeManager?.currentTheme
         view.backgroundColor = theme?.colors.layer1
+        
     }
     
     func setUpView(){
@@ -969,7 +977,7 @@ class SendViewController: UIViewController {
             sendContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor ,constant: UX.UserTokenView.common),
             sendContentView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
             sendContentView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
-            sendContentView.heightAnchor.constraint(equalToConstant: 340),
+            sendContentView.heightAnchor.constraint(equalToConstant: view.frame.height - 300),
             
             recepientView.topAnchor.constraint(equalTo: sendContentView.topAnchor ,constant: UX.UserTokenView.common),
             recepientView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
@@ -985,26 +993,26 @@ class SendViewController: UIViewController {
             scanImageView.trailingAnchor.constraint(equalTo: recepientView.trailingAnchor,constant: -UX.UserTokenView.common),
             scanImageView.heightAnchor.constraint(equalToConstant: 20),
             scanImageView.widthAnchor.constraint(equalToConstant: 20),
-
-            receipientGradiantLabel.centerXAnchor.constraint(equalTo: recepientView.centerXAnchor),
-            receipientGradiantLabel.trailingAnchor.constraint(equalTo: scanImageView.leadingAnchor,constant: -UX.UserTokenView.common),
- 
+            
+            receipientGradiantLabel.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
+            receipientGradiantLabel.trailingAnchor.constraint(equalTo: scanImageView.leadingAnchor,constant: -UX.UserTokenView.spacing),
+            
             amountView.topAnchor.constraint(equalTo: recepientView.bottomAnchor ,constant: UX.UserTokenView.common),
             amountView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.UserTokenView.common),
             amountView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.UserTokenView.common),
             amountView.heightAnchor.constraint(equalToConstant: 50),
             
-            tokenSymbolLabel.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
-            tokenSymbolLabel.trailingAnchor.constraint(equalTo: amountView.trailingAnchor,constant: -UX.UserTokenView.common),
-
-            tokenImageView.centerYAnchor.constraint(equalTo: amountView.centerYAnchor),
-            tokenImageView.trailingAnchor.constraint(equalTo: tokenSymbolLabel.leadingAnchor,constant: -UX.UserTokenView.common),
-            tokenImageView.heightAnchor.constraint(equalToConstant: 22),
-            tokenImageView.widthAnchor.constraint(equalToConstant: 22),
+            tokenSymbolLabel.centerYAnchor.constraint(equalTo: amountView.centerYAnchor),
+            tokenSymbolLabel.trailingAnchor.constraint(equalTo: amountView.trailingAnchor,constant: -UX.UserTokenView.spacing),
             
-            amountGradiantLabel.centerYAnchor.constraint(equalTo: recepientView.centerYAnchor),
-            amountGradiantLabel.trailingAnchor.constraint(equalTo: tokenImageView.leadingAnchor,constant: -UX.UserTokenView.common),
-
+            tokenImageView.centerYAnchor.constraint(equalTo: amountView.centerYAnchor),
+            tokenImageView.trailingAnchor.constraint(equalTo: tokenSymbolLabel.leadingAnchor,constant: -UX.UserTokenView.spacing),
+            tokenImageView.heightAnchor.constraint(equalToConstant: 25),
+            tokenImageView.widthAnchor.constraint(equalToConstant: 25),
+            
+            amountGradiantLabel.centerYAnchor.constraint(equalTo: amountView.centerYAnchor),
+            amountGradiantLabel.trailingAnchor.constraint(equalTo: tokenImageView.leadingAnchor,constant: -UX.UserTokenView.spacing),
+            
             amountTextField.topAnchor.constraint(equalTo: amountView.topAnchor),
             amountTextField.leadingAnchor.constraint(equalTo: amountView.leadingAnchor,constant: UX.UserTokenView.common),
             amountTextField.trailingAnchor.constraint(equalTo: amountView.trailingAnchor,constant: -UX.UserTokenView.common),
@@ -1070,6 +1078,12 @@ class SendViewController: UIViewController {
         initiateSettingsVC()
     }
     
+    @objc func pasteBtnTapped (){
+        helperMethodToAnimate(view: sendBtnView, button: sendButton)
+        receipientTextField.text = UIPasteboard.general.string
+        SimpleToast().showAlertWithText("Added!", bottomContainer: view, theme: themeManager!.currentTheme)
+    }
+    
     @objc func infoIconTapped (){
         self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
     }
@@ -1077,8 +1091,7 @@ class SendViewController: UIViewController {
     
     @objc func sendBtnTapped (){
         helperMethodToAnimate(view: sendBtnView, button: sendButton)
-        UIPasteboard.general.string = self.publicAddress
-        SimpleToast().showAlertWithText("Copied!", bottomContainer: view, theme: themeManager!.currentTheme)
+        initiateSendConfirmationVC()
     }
     
     
@@ -1089,9 +1102,8 @@ class SendViewController: UIViewController {
         self.present(navController, animated: true)
     }
     
-    func initiateReceiveVC(){
-        let vc = ReceiveViewController()
-        vc.address = publicAddress
+    func initiateSendConfirmationVC(){
+        let vc = SendConfirmationViewController()
         self.present(vc, animated: false)
     }
     func helperMethodToAnimate(view: UIView, button: UIButton){
