@@ -357,7 +357,6 @@ class SendConfirmationViewController: UIViewController {
         label.textColor = UIColor.white
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font2)
         label.textAlignment = .center
-        label.text = "jdkfjdkfjkjd"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -366,13 +365,11 @@ class SendConfirmationViewController: UIViewController {
         label.textColor = Utilities().hexStringToUIColor(hex: "#818181")
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font1)
         label.textAlignment = .center
-        label.text = "fbdfb"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private lazy var tokenLogoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_carbon")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -381,6 +378,7 @@ class SendConfirmationViewController: UIViewController {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "ic_share")
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(shareBtnTapped))
         imageView.addGestureRecognizer(tapRecognizer)
         return imageView
@@ -649,6 +647,27 @@ class SendConfirmationViewController: UIViewController {
         self.tokenNetworkLabel.text = "\(self.details?.network ?? "")"
         if let imageUrl = URL(string: self.details?.logo ?? "" ) {
             tokenLogoImageView.sd_setImage(with: imageUrl)
+        }else{
+            let symbol =  self.details?.symbol ?? ""
+            var defaultImage = ""
+            switch symbol {
+            case "BNB","TBNB" :
+                defaultImage = "ic_binance"
+            case "ETH","GETH", "SETH":
+                defaultImage = "ic_eth"
+            case "SOL":
+                defaultImage = "ic_sol"
+            case "CSIX":
+                defaultImage = "ic_carbon_pro"
+            case "MATIC":
+                defaultImage = "ic_matic"
+            case "KCS":
+                defaultImage = "ic_kcc"
+            case "OKT":
+                defaultImage = "ic_okc"
+            default: break
+            }
+            tokenLogoImageView.image = UIImage(named: defaultImage)
         }
     }
     

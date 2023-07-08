@@ -621,7 +621,7 @@ class SendViewController: UIViewController {
     }
         // MARK: - View Model Methods - Network actions
         func sendNativeEVM(amountString: String,receiver: String,sender:String) {
-            let details = SendDetails(amount: amountString, symbol:  self.selectedToken?.symbol, logo: self.selectedToken?.imageUrl, address: receiver, network: ParticleNetwork.getChainInfo().network, gas: "", date: self.getDateTime(), status: "Completed")
+            let details = SendDetails(amount: amountString, symbol:  self.selectedToken?.symbol, logo: self.selectedToken?.imageUrl, address: receiver, network: ParticleNetwork.getChainInfo().network.capitalized, gas: "", date: self.getDateTime(), status: "Completed")
             SVProgressHUD.show()
             WalletViewModel.shared.sendNativeEVM(amountString: amountString,sender:sender ,receiver: receiver){ result in
                 switch result {
