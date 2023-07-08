@@ -24,6 +24,9 @@ typealias Chain = ParticleNetwork.ChainInfo
 typealias EthereumNetwork = ParticleNetwork.EthereumNetwork
 typealias SolanaNetwork = ParticleNetwork.SolanaNetwork
 typealias BscNetwork = ParticleNetwork.BscNetwork
+typealias PolygonNetwork = ParticleNetwork.PolygonNetwork
+typealias KccNetwork = ParticleNetwork.KccNetwork
+typealias OKCNetwork = ParticleNetwork.OKCNetwork
 
 var carbonToken = ["0x04756126F044634C9a0f0E985e60c88a51ACC206"]
 var publicAddress = String()
@@ -690,7 +693,14 @@ class WalletViewController: UIViewController {
             //TODO: -Need to replace with account preference values
              let filterData = data.filter{$0.walletType == .particle || $0.walletType == .solanaPrivateKey }
             if (filterData.count > 0){
-                print(filterData[0].publicAddress)
+                walletAddress = filterData[0].publicAddress
+                print("=====================================\(walletAddress)")
+                if let currentTab = tabManager.selectedTab, let url =  currentTab.url{
+                        tabManager.removeTab(currentTab)
+                        tabManager.selectTab(tabManager.addTab(URLRequest(url: url), isPrivate: false))
+                }else{
+                    tabManager.addTab()
+                }
                 setUIAndFetchData(address: filterData[0].publicAddress)
             }
         }else{
@@ -732,10 +742,7 @@ class WalletViewController: UIViewController {
     }
     func fetchDefaultNetwork() -> Networks{
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  return networkData[0]
-        default: return networkData[1]
-        }
+        return networkData.filter{$0.nativeSymbol ==  ParticleNetwork.getChainInfo().nativeSymbol}.first ?? networkData[0]
     }
     
     func addCarbonToken(tokens : [String]){
@@ -753,11 +760,11 @@ class WalletViewController: UIViewController {
     }
     func fetchUserTokensEVM(tokens: [TokenModel]){
         WalletViewModel.shared.getUserTokenListsEVM( address: publicAddress, tokenArray: tokens) { result in
-            if (selectedNetwork == networks[1]){
-                self.helperMethodToUpdateUIWithCarbonToken(result: result)
-            }else{
-                self.helperMethodToUpdateUI(result: result)
-            }
+                if (selectedNetwork == networks[0] || selectedNetwork == networks[1]){
+                    self.helperMethodToUpdateUIWithCarbonToken(result: result)
+                }else{
+                    self.helperMethodToUpdateUI(result: result)
+                }
         }
     }
     
@@ -822,7 +829,7 @@ class WalletViewController: UIViewController {
     }
     
     @objc func settingsIconTapped (){
-       initiateChangeNetworkVC()
+        initiateSettingsVC()
     }
     
     @objc func infoIconTapped (){
@@ -830,21 +837,41 @@ class WalletViewController: UIViewController {
     }
 
     @objc func sendBtnTapped (){
-        helperMethodToAnimate(view: sendBtnView, button: sendButton)
-        initiateSendVC()
+        UIView.animate(withDuration: 0.05, animations: {
+            self.sendBtnView.alpha = 1
+            self.sendButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.sendBtnView.alpha = 0
+            self.sendButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.initiateSendVC()
+        })
     }
     
     @objc func receiveBtnTapped (){
-        helperMethodToAnimate(view: receiveBtnView, button: receiveButton)
-        initiateReceiveVC()
+        UIView.animate(withDuration: 0.05, animations: {
+            self.receiveBtnView.alpha = 1
+            self.receiveButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.receiveBtnView.alpha = 0
+            self.receiveButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.initiateReceiveVC()
+        })
     }
     @objc func buyBtnTapped (){
-        helperMethodToAnimate(view: buyBtnView, button: buyButton)
-        self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
-
+        UIView.animate(withDuration: 0.05, animations: {
+            self.buyBtnView.alpha = 1
+            self.buyButton.backgroundColor = UIColor.clear
+        }, completion: {
+            (value: Bool) in
+            self.buyBtnView.alpha = 0
+            self.buyButton.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
+            self.view.makeToast( "Stay tunned! Dev in progress...", duration: 3.0, position: .bottom)
+        })
     }
     func helperMethodToAnimate(view: UIView, button: UIButton){
-        UIView.animate(withDuration: 0.1, animations: {
+        UIView.animate(withDuration: 0.05, animations: {
             view.alpha = 1
             button.backgroundColor = UIColor.clear
         }, completion: {
@@ -886,17 +913,13 @@ class WalletViewController: UIViewController {
         drawerController.delegate = self
         present(drawerController, animated: true)
     }
-    func initiateChangeNetworkVC(){
-        let changeNetworkVC = ChangeNetworkViewController()
-        for each in networks{
-            changeNetworkVC.platforms.append(Platforms(name: each.name, address: ""))
-        }
-        changeNetworkVC.modalPresentationStyle = .overCurrentContext
-        changeNetworkVC.delegate = self
-        changeNetworkVC.isSettings = true
-        self.present(changeNetworkVC, animated: true)
+    func initiateSettingsVC(){
+        let settingsVC = WalletSettingsViewController()
+        settingsVC.delegate = self
+        let navController = ThemedNavigationController(rootViewController: settingsVC)
+        self.present(navController, animated: true)
     }
-    
+
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
         vc.modalPresentationStyle = .overCurrentContext
@@ -950,15 +973,6 @@ extension WalletViewController : ConnectProtocol{
 // MARK: - Extension - ChangeNetwork
 extension WalletViewController :  ChangeNetwork{
     func changeNetworkDelegate(platforms: Platforms) {
-        var chainInfo : Chain?
-        switch platforms.name!.uppercased(){
-        case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
-            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-        default:
-            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-        }
-        ParticleNetwork.setChainInfo(chainInfo!)
-        self.view.makeToast("\(platforms.name ?? "") set to default", duration: 3.0, position: .bottom)
         self.fetchTokens()
         self.getLocalUserData()
     }
@@ -1101,17 +1115,26 @@ class TokensTVCell: UITableViewCell {
         }else{
             var defaultImage = ""
             switch token.tokenInfo.symbol {
+            case "BNB","TBNB" :
+                defaultImage = "ic_binance"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "ETH","GETH", "SETH":
+                defaultImage = "ic_eth"
+                iconImageView.image = UIImage(named: defaultImage)
             case "SOL":
                 defaultImage = "ic_sol"
-                iconImageView.image = UIImage(named: defaultImage)
-            case "ETH":
-                defaultImage = "ic_eth"
                 iconImageView.image = UIImage(named: defaultImage)
             case "CSIX":
                 defaultImage = "ic_carbon_pro"
                 iconImageView.image = UIImage(named: defaultImage)
-            case "BNB":
-                defaultImage = "ic_binance"
+            case "MATIC":
+                defaultImage = "ic_matic"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "KCS":
+                defaultImage = "ic_kcc"
+                iconImageView.image = UIImage(named: defaultImage)
+            case "OKT":
+                defaultImage = "ic_okc"
                 iconImageView.image = UIImage(named: defaultImage)
             default: break
             }

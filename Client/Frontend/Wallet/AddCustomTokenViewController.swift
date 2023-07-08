@@ -682,7 +682,24 @@ class AddCustomTokenViewController: UIViewController {
     func checkCoreDataValue() {
         tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
         tokens = tokens.filter{$0.isAdded == false}
-        self.tokensTableView.reloadData()
+        if (tokens.count == 0){
+            SVProgressHUD.show()
+            WalletViewModel.shared.getTokenList{result in
+                switch result {
+                case .success(let tokensList):
+                    CoreDataManager.shared.saveToken(tokensData: tokensList, network: selectedNetwork)
+                    tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
+                    SVProgressHUD.dismiss()
+                    DispatchQueue.global().async {
+                        DispatchQueue.main.async {
+                            self.tokensTableView.reloadData()
+                        }
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
     }
     
     // MARK: - View Model Methods - Network actions
@@ -709,11 +726,9 @@ class AddCustomTokenViewController: UIViewController {
     
     func fetchDefaultNetwork(){
         let networkData =  CoreDataManager.shared.fetchNetworks()
-        switch ParticleNetwork.getChainInfo().nativeSymbol{
-        case NetworkEnum.Ethereum.rawValue:  selectedNetwork  = networkData[0]
-        default: selectedNetwork  = networkData[1]
-        }
+        selectedNetwork = networkData.filter{$0.nativeSymbol ==  ParticleNetwork.getChainInfo().nativeSymbol}.first ?? networkData[0]
     }
+    
     func fetchTokenInfo(token : Tokens){
         SVProgressHUD.show()
         WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
@@ -736,9 +751,20 @@ class AddCustomTokenViewController: UIViewController {
     
     func setUpData(){
         for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
-            self.platforms.append(Platforms(name: key, address: value))
+            self.platforms.append(Platforms(name: key, address: value, chainID: 0, isTest: false, nativeSymbol: "",isSelected: false))
         }
-        self.platforms =  self.platforms.filter { $0.name?.uppercased() == WalletNetworkEnum.Ethereum.rawValue.uppercased() || $0.name?.uppercased() == WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased() }
+        self.platforms =  self.platforms.filter {
+        $0.name?.uppercased() == NetworkEnum.Ethereum.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.BinanceSmartChain.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.EthereumGoerliTest.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.EthereumSepoliaTest.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.BinanceSmartChainTest.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.KucoinCommunityChain.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.OkexChain.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.Polygon.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.PolygonTest.rawValue.uppercased() ||
+        $0.name?.uppercased() == NetworkEnum.Solana.rawValue.uppercased()
+        }
         if (self.platforms.count > 1 ){
             self.chevronImageView.isHidden = false
             self.trailingForChevron.isActive = true
@@ -926,14 +952,6 @@ extension AddCustomTokenViewController :  ChangeNetwork{
         guard let detailPlatforms = self.tokenInfo?.detail_platforms else {return}
         for (platform, value) in detailPlatforms {
             if (platform == platforms.name){
-                var chainInfo : Chain?
-                switch platform.uppercased(){
-                case WalletNetworkEnum.BinanceSmartChain.rawValue.uppercased():
-                    chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
-                default:
-                    chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
-                }
-                ParticleNetwork.setChainInfo(chainInfo!)
                 self.tokenNetworkValueLabel.text = platform.capitalized
                 self.tokenInfo?.contract_address = value.contract_address
                 self.tokenInfo?.network = platform

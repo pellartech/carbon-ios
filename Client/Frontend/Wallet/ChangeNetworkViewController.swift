@@ -108,7 +108,7 @@ class ChangeNetworkViewController: UIViewController {
             static let common: CGFloat = 15
             static let leading: CGFloat = 10
             static let top: CGFloat = 15
-            static let trailing: CGFloat = -10
+            static let trailing: CGFloat = -20
             static let bottom: CGFloat = -30
             static let height: CGFloat = 500
         }
@@ -151,6 +151,8 @@ class ChangeNetworkViewController: UIViewController {
             static let valueHeight: CGFloat = 30
             static let chevronWidth: CGFloat = 12
             static let chevronHeight: CGFloat = 8
+            static let corner: CGFloat = 15
+
         }
     }
     
@@ -241,6 +243,16 @@ class ChangeNetworkViewController: UIViewController {
         return label
     }()
     
+    private lazy var testNetworkLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
+        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
+        label.textAlignment = .center
+        label.text = "Test Network"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -253,6 +265,20 @@ class ChangeNetworkViewController: UIViewController {
         button.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
         button.isUserInteractionEnabled = true
         return button
+    }()
+    
+    private lazy var switchView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = UX.Value.corner
+        view.clipsToBounds = true
+        return view
+    }()
+
+    var switchButton : SwitchButton = {
+        let switchButton = SwitchButton()
+        switchButton.status = true
+        return switchButton
     }()
     
     ///UITableView
@@ -277,6 +303,7 @@ class ChangeNetworkViewController: UIViewController {
     var selectedIndexes = IndexPath.init(row: 0, section: 0)
     var delegate :  ChangeNetwork?
     var platforms = [Platforms]()
+    var copyPlatforms = [Platforms]()
     var isSettings = false
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -295,16 +322,22 @@ class ChangeNetworkViewController: UIViewController {
     }
     
     func setUpView(){
+        switchButton = SwitchButton(frame: CGRect(x: contentView.frame.origin.x, y: contentView.frame.origin.y, width: 50, height: 30))
+        switchButton.delegate = self
         navigationController?.isNavigationBarHidden = true
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
+        switchView.addSubview(switchButton)
         actionsView.addSubview(settingsIcon)
         actionsView.addSubview(infoIcon)
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
         contentView.addSubview(networkLabel)
+        contentView.addSubview(testNetworkLabel)
+        contentView.addSubview(switchView)
+
         view.addSubview(contentView)
         view.addSubview(tableView)
         view.addSubview(logoBackgroundView)
@@ -347,6 +380,16 @@ class ChangeNetworkViewController: UIViewController {
             networkLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
             networkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
+            //Network switch
+            switchView.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.NetworkView.top),
+            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
+            switchView.widthAnchor.constraint(equalToConstant: UX.Value.width),
+            switchView.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
+            
+            //Test Network
+            testNetworkLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.NetworkView.top),
+            testNetworkLabel.trailingAnchor.constraint(equalTo: switchView.leadingAnchor,constant: -UX.NetworkView.corner),
+            testNetworkLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -385,20 +428,20 @@ class ChangeNetworkViewController: UIViewController {
             ///UserTokenView TableView
             tableView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: UX.TableView.trailing),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
     
     func setUpNetwork(){
         if isSettings{
-            let chainName = ParticleNetwork.getChainInfo()
-            switch chainName.name{
-            case "BSC":
-                selectedIndexes = IndexPath.init(row: 1, section: 0)
-            default:
-                selectedIndexes = IndexPath.init(row: 0, section: 0)
+            self.copyPlatforms = self.platforms
+            if  let isSwitch = UserDefaults.standard.value(forKey: "NetworkSwitch") as? Bool{
+            switchButton.status = isSwitch
+            self.platforms = isSwitch ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
             }
+            let selectedIndex = self.platforms.firstIndex{$0.chainID ?? 0 == ParticleNetwork.getChainInfo().chainId}            
+            selectedIndexes = IndexPath(row: selectedIndex ?? 0, section: 0)
             self.tableView.reloadData()
         }
     }
@@ -435,7 +478,17 @@ class ChangeNetworkViewController: UIViewController {
                                         theme: themeManager!.currentTheme)
     }
 }
-
+// MARK: - Extension - NetworkSwitchDelegate
+extension ChangeNetworkViewController : NetworkSwitchDelegate{
+    func networkSwitchTapped(value: Bool) {
+        if selectedIndexes.row > 0{
+            selectedIndexes = IndexPath(row: 0, section: 0)
+        }
+        self.platforms = value ? self.copyPlatforms : self.copyPlatforms.filter{$0.isTest == false}
+        UserDefaults.standard.setValue(value, forKey: "NetworkSwitch")
+        self.tableView.reloadData()
+    }
+}
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
 extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -464,8 +517,81 @@ extension ChangeNetworkViewController : UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexes = indexPath
         tableView.reloadData()
+        networks.forEach( { network in
+            network.isSelected = ( network.name?.uppercased() == self.platforms[indexPath.row].name?.uppercased() ) ? true : false
+        })
+        self.setUpNetworkDAppBrowsing(platform:self.platforms[indexPath.row])
         self.delegate?.changeNetworkDelegate(platforms: self.platforms[indexPath.row])
         self.dismissVC()
+    }
+    
+    func setUpNetworkDAppBrowsing(platform : Platforms){
+        var chainInfo : Chain?
+
+        switch platform.name?.uppercased(){
+          
+        ///Ethereum
+        case NetworkEnum.Ethereum.rawValue.uppercased():
+            server = RPCServer.allCases[0]
+            chainInfo  = .ethereum(EthereumNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+            
+       ///Goerli-Ethereum Testnet
+        case NetworkEnum.EthereumGoerliTest.rawValue.uppercased():
+            server = RPCServer.allCases[3]
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.goerli.rawValue)!)
+           
+       ///Sepolia-Ethereum Testnet
+        case NetworkEnum.EthereumSepoliaTest.rawValue.uppercased():
+            server = RPCServer.allCases[25]
+            chainInfo  = .ethereum(EthereumNetwork(rawValue: EthereumNetwork.sepolia.rawValue)!)
+
+        ///BinanceSmartChain
+        case NetworkEnum.BinanceSmartChain.rawValue.uppercased():
+            server = RPCServer.allCases[5]
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.mainnet.rawValue)!)
+
+        ///BinanceSmartChain Testnet
+        case NetworkEnum.BinanceSmartChainTest.rawValue.uppercased():
+            server = RPCServer.allCases[4]
+            chainInfo  = .bsc(BscNetwork(rawValue:BscNetwork.testnet.rawValue)!)
+            
+        ///Solana
+        case NetworkEnum.Solana.rawValue.uppercased():
+            server = RPCServer.allCases[0]
+            chainInfo  = .solana(SolanaNetwork(rawValue: SolanaNetwork.mainnet.rawValue)!)
+
+        ///KucoinCommunityChain
+        case NetworkEnum.KucoinCommunityChain.rawValue.uppercased():
+            server = RPCServer.allCases[0]
+            chainInfo  = .kcc(KccNetwork(rawValue: KccNetwork.mainnet.rawValue)!)
+
+        ///OkexChain
+        case NetworkEnum.OkexChain.rawValue.uppercased():
+            server = RPCServer.allCases[24]
+            chainInfo  = .okc(OKCNetwork(rawValue: OKCNetwork.mainnet.rawValue)!)
+
+         ///Polygon
+        case NetworkEnum.Polygon.rawValue.uppercased():
+            server = RPCServer.allCases[11]
+            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mainnet.rawValue)!)
+          
+        ///Polygon-Mumbai Testnet
+        case NetworkEnum.PolygonTest.rawValue.uppercased():
+            server = RPCServer.allCases[13]
+            chainInfo  = .polygon(PolygonNetwork(rawValue: PolygonNetwork.mumbai.rawValue)!)
+
+        default:
+            server = RPCServer.allCases[0]
+            chainInfo  = .bsc(BscNetwork(rawValue:EthereumNetwork.mainnet.rawValue)!)
+        }
+        
+        ParticleNetwork.setChainInfo(chainInfo!)
+        if let currentTab = tabManager.selectedTab, let url =  currentTab.url{
+            tabManager.removeTab(currentTab)
+            tabManager.selectTab(tabManager.addTab(URLRequest(url: url), isPrivate: false))
+        }else{
+            tabManager.addTab()
+        }
     }
 }
 
@@ -559,7 +685,7 @@ class NetworkTVCell: UITableViewCell {
             //Gradient view
             gradientView.topAnchor.constraint(equalTo: contentView.topAnchor),
             gradientView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.GradientView.common),
-            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.GradientView.common),
+            gradientView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             gradientView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             ///UILabel
@@ -598,4 +724,53 @@ class NetworkTVCell: UITableViewCell {
     func setUI(platforms : Platforms){
         titleLabel.text = platforms.name?.capitalized
     }
+}
+
+class SwitchButton: UIButton {
+
+    var status: Bool = false {
+        didSet {
+            self.update()
+        }
+    }
+    var onImage = UIImage(named: "switch_on")
+    var offImage = UIImage(named: "switch_off")
+    var delegate : NetworkSwitchDelegate?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setStatus(false)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func update() {
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.status ? self.setImage(self.onImage, for: .normal) : self.setImage(self.offImage, for: .normal)
+        }, completion:{_ in
+        })
+    }
+    func toggle() {
+        self.status ? self.setStatus(false) : self.setStatus(true)
+        self.delegate?.networkSwitchTapped(value: self.status)
+    }
+    
+    func setStatus(_ status: Bool) {
+        self.status = status
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        self.sendHapticFeedback()
+        self.toggle()
+    }
+    
+    func sendHapticFeedback() {
+        let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+        impactFeedbackgenerator.prepare()
+        impactFeedbackgenerator.impactOccurred()
+    }
+    
 }
