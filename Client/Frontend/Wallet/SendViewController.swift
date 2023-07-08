@@ -32,6 +32,9 @@ class SendViewController: UIViewController {
             static let titleFont: CGFloat = 16
             static let top: CGFloat = 30
             static let width: CGFloat = 300
+            static let font1: CGFloat = 12
+            static let font2: CGFloat = 20
+            static let tokenFont: CGFloat = 11
         }
         struct LogoView {
             static let top: CGFloat = 50
@@ -109,7 +112,7 @@ class SendViewController: UIViewController {
             static let font: CGFloat = 13
         }
         struct TitleLabel{
-            static let font: CGFloat = 25
+            static let font: CGFloat = 20
             static let holder: CGFloat = 15
             static let top: CGFloat = 20
             static let height: CGFloat = 50
@@ -123,7 +126,15 @@ class SendViewController: UIViewController {
             static let width: CGFloat = 200
             static let height: CGFloat = 200
         }
-        
+        struct TokenView {
+            static let height: CGFloat = 80
+            static let common: CGFloat = 20
+            static let top: CGFloat = 10
+            static let logoHeight: CGFloat = 48
+            static let logoWidth: CGFloat = 48
+            static let shareHeight: CGFloat = 24
+            static let shareWidth: CGFloat = 24
+        }
         struct CloseButton {
             static let top: CGFloat = 50
             static let leading: CGFloat = 20
@@ -170,6 +181,12 @@ class SendViewController: UIViewController {
         view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         view.layer.cornerRadius = UX.UserTokenView.cornerRadius
         view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
+        return view
+    }()
+    private lazy var tokenView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -261,6 +278,7 @@ class SendViewController: UIViewController {
         label.font = .systemFont(ofSize: UX.AddressLabel.font)
         return label
     }()
+
     
     ///UIButton
     private lazy var closeButton : UIButton = {
@@ -346,7 +364,6 @@ class SendViewController: UIViewController {
         imageView.addGestureRecognizer(tapRecognizer)
         return imageView
     }()
-    
     private lazy var receipientGradiantLabel : GradientLabel = {
         let label = GradientLabel()
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
@@ -413,6 +430,8 @@ class SendViewController: UIViewController {
     var publicAddress : String = ""
     var tokensModel = [TokenModel]()
     var pickerArray = [String]()
+    var selectedToken : TokenModel?
+
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -433,6 +452,7 @@ class SendViewController: UIViewController {
         for token in self.tokensModel {
             pickerArray.append(token.symbol.uppercased())
         }
+        self.selectedToken = self.tokensModel.first
         self.tokenSymbolLabel.text = pickerArray.first
         sendBtnView.alpha = 0
         navigationController?.isNavigationBarHidden = true
@@ -601,20 +621,27 @@ class SendViewController: UIViewController {
     }
         // MARK: - View Model Methods - Network actions
         func sendNativeEVM(amountString: String,receiver: String,sender:String) {
+            let details = SendDetails(amount: amountString, symbol:  self.selectedToken?.symbol, logo: self.selectedToken?.imageUrl, address: receiver, network: ParticleNetwork.getChainInfo().network, gas: "", date: self.getDateTime(), status: "Completed")
             SVProgressHUD.show()
             WalletViewModel.shared.sendNativeEVM(amountString: amountString,sender:sender ,receiver: receiver){ result in
                 switch result {
                 case .success(let tokens):
                     print(tokens)
                     SVProgressHUD.dismiss()
-                    self.initiateSendConfirmationVC(address: receiver)
+                    self.initiateSendConfirmationVC(details: details)
                 case .failure(let error):
                     print(error)
                     SVProgressHUD.dismiss()
                 }
             }
         }
-    
+    func getDateTime() -> String{
+        let date = Date()
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        return df.string(from: date)
+    }
+  
     // MARK: - Objc Methods
     @objc func closeBtnTapped (){
         self.dismiss(animated: true)
@@ -684,10 +711,10 @@ class SendViewController: UIViewController {
         self.present(navController, animated: true)
     }
     
-    func initiateSendConfirmationVC(address: String){
+    func initiateSendConfirmationVC(details: SendDetails){
         let vc = SendConfirmationViewController()
         vc.modalPresentationStyle = .overFullScreen
-        vc.destinationAddress = address
+        vc.details = details
         self.present(vc, animated: false)
     }
     func helperMethodToAnimate(view: UIView, button: UIButton){
@@ -715,6 +742,7 @@ extension SendViewController : UIPickerViewDelegate, UIPickerViewDataSource{
     }
         
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.selectedToken = self.tokensModel[row]
         self.tokenSymbolLabel.text = self.pickerArray[row]
     }
 }

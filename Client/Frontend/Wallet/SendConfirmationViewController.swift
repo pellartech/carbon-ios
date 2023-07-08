@@ -35,6 +35,7 @@ class SendConfirmationViewController: UIViewController {
             static let top: CGFloat = 30
             static let width: CGFloat = 300
             static let font1: CGFloat = 12
+            static let font2: CGFloat = 20
             static let tokenFont: CGFloat = 11
             
         }
@@ -145,6 +146,15 @@ class SendConfirmationViewController: UIViewController {
             static let tokenInfoTop: CGFloat = 10
             
         }
+        struct TokenView {
+            static let height: CGFloat = 80
+            static let common: CGFloat = 20
+            static let top: CGFloat = 5
+            static let logoHeight: CGFloat = 48
+            static let logoWidth: CGFloat = 48
+            static let shareHeight: CGFloat = 24
+            static let shareWidth: CGFloat = 24
+        }
         struct WalletLabel {
             static let font: CGFloat = 18
         }
@@ -208,6 +218,12 @@ class SendConfirmationViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    private lazy var tokenView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isUserInteractionEnabled = true
+        return view
+    }()
     private lazy var actionsView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -235,7 +251,7 @@ class SendConfirmationViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
-    private lazy var addTokenBtnView: GradientView = {
+    private lazy var backBtnView: GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
         view.layer.cornerRadius = UX.ButtonView.corner
@@ -336,7 +352,39 @@ class SendConfirmationViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    private lazy var tokenTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font2)
+        label.textAlignment = .center
+        label.text = "jdkfjdkfjkjd"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var tokenNetworkLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#818181")
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font1)
+        label.textAlignment = .center
+        label.text = "fbdfb"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var tokenLogoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_carbon")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
+    private lazy var shareImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_share")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(shareBtnTapped))
+        imageView.addGestureRecognizer(tapRecognizer)
+        return imageView
+    }()
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -398,7 +446,7 @@ class SendConfirmationViewController: UIViewController {
     
     // MARK: - UI Properties
     var themeManager: ThemeManager?
-    var destinationAddress = String()
+    var details : SendDetails?
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -406,7 +454,7 @@ class SendConfirmationViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
-        
+        setUpUI()
     }
     
     // MARK: - UI Methods
@@ -422,6 +470,11 @@ class SendConfirmationViewController: UIViewController {
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
+        tokenView.addSubview(tokenLogoImageView)
+        tokenView.addSubview(shareImageView)
+        tokenView.addSubview(tokenTitleLabel)
+        tokenView.addSubview(tokenNetworkLabel)
+        contentView.addSubview(tokenView)
         actionsView.addSubview(settingsIcon)
         actionsView.addSubview(infoIcon)
         actionsView.addSubview(addTokenTitleLabel)
@@ -433,7 +486,7 @@ class SendConfirmationViewController: UIViewController {
         contentView.addSubview(transactionView)
         detailsView.addSubview(tableView)
         contentView.addSubview(detailsView)
-        contentView.addSubview(addTokenBtnView)
+        contentView.addSubview(backBtnView)
         contentView.addSubview(backButton)
         scrollContentView.addSubview(contentView)
         scrollView.addSubview(scrollContentView)
@@ -476,14 +529,36 @@ class SendConfirmationViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
             contentView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 100),
+            contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 50),
             contentView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
             
             ///User Token List View
-            detailsView.topAnchor.constraint(equalTo: actionsView.bottomAnchor ,constant: UX.DetailsView.top),
+            detailsView.topAnchor.constraint(equalTo: tokenView.bottomAnchor ,constant: UX.DetailsView.top),
             detailsView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.DetailsView.common),
             detailsView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.DetailsView.common),
             detailsView.heightAnchor.constraint(equalToConstant: UX.DetailsView.height),
+            
+            ///Token View
+            tokenView.topAnchor.constraint(equalTo: actionsView.bottomAnchor),
+            tokenView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            tokenView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            tokenView.heightAnchor.constraint(equalToConstant: UX.TokenView.height),
+            
+            tokenLogoImageView.centerYAnchor.constraint(equalTo: tokenView.centerYAnchor),
+            tokenLogoImageView.leadingAnchor.constraint(equalTo: tokenView.leadingAnchor,constant: UX.TokenView.common),
+            tokenLogoImageView.widthAnchor.constraint(equalToConstant: UX.TokenView.logoWidth),
+            tokenLogoImageView.heightAnchor.constraint(equalToConstant: UX.TokenView.logoHeight),
+            
+            tokenTitleLabel.topAnchor.constraint(equalTo: tokenView.topAnchor,constant:UX.TokenView.common),
+            tokenTitleLabel.leadingAnchor.constraint(equalTo: tokenLogoImageView.trailingAnchor,constant: UX.TokenView.common),
+            
+            tokenNetworkLabel.topAnchor.constraint(equalTo: tokenTitleLabel.bottomAnchor,constant: UX.TokenView.top),
+            tokenNetworkLabel.leadingAnchor.constraint(equalTo: tokenLogoImageView.trailingAnchor,constant: UX.TokenView.common),
+            
+            shareImageView.centerYAnchor.constraint(equalTo: tokenView.centerYAnchor),
+            shareImageView.trailingAnchor.constraint(equalTo: tokenView.trailingAnchor,constant: -UX.TokenView.common),
+            shareImageView.widthAnchor.constraint(equalToConstant: UX.TokenView.shareWidth),
+            shareImageView.heightAnchor.constraint(equalToConstant: UX.TokenView.shareHeight),
             
             ///Action View
             actionsView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -554,11 +629,11 @@ class SendConfirmationViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor),
             
             ///Add token button view
-            addTokenBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -UX.ButtonView.addTop),
-            addTokenBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
-            addTokenBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
-            addTokenBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
-            addTokenBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+            backBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -UX.ButtonView.addTop),
+            backBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            backBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            backBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            backBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
             
             ///Add token button
             backButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -UX.ButtonView.addTop),
@@ -567,6 +642,14 @@ class SendConfirmationViewController: UIViewController {
             backButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
             backButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
         ])
+    }
+    
+    func setUpUI(){
+        self.tokenTitleLabel.text = "\(self.details?.amount ?? "") \(self.details?.symbol ?? "")"
+        self.tokenNetworkLabel.text = "\(self.details?.network ?? "")"
+        if let imageUrl = URL(string: self.details?.logo ?? "" ) {
+            tokenLogoImageView.sd_setImage(with: imageUrl)
+        }
     }
     
     
@@ -587,7 +670,15 @@ class SendConfirmationViewController: UIViewController {
         showToast(message: "Stay tunned! Dev in progress...")
     }
     @objc func backBtnTapped (){
-        
+        self.dismiss(animated: true)
+    }
+    @objc func shareBtnTapped (){
+        let shareText = "Hey, I have sent \(self.details?.amount ?? "") \(self.details?.symbol ?? "") to this address \(self.details?.address ?? "")"
+        let textToShare = [ shareText ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     
@@ -622,7 +713,7 @@ extension SendConfirmationViewController : UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ConfirmationDetailsTVCell", for: indexPath) as! ConfirmationDetailsTVCell
-        cell.setUI( index: indexPath.row,address: destinationAddress)
+        cell.setUI( index: indexPath.row,details: self.details!)
         return cell
     }
     
@@ -730,31 +821,24 @@ class ConfirmationDetailsTVCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func getDateTime() -> String{
-        let date = Date()
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm"
-        return df.string(from: date)
-    }
-  
-    func setUI(index: Int, address: String){
+
+    func setUI(index: Int, details: SendDetails){
         switch index{
         case 0:
             self.titleLabel.text = "Date:"
-            self.valueLabel.text = getDateTime()
+            self.valueLabel.text = details.date
             self.completedImageView.isHidden = true
         case 1:
             self.titleLabel.text = "Status:"
-            self.valueLabel.text = "Completed"
+            self.valueLabel.text = details.status
             self.completedImageView.isHidden = false
         case 2:
             self.titleLabel.text = "Sent to:"
-            self.valueLabel.text = address
+            self.valueLabel.text = details.address
             self.completedImageView.isHidden = true
         default:
             self.titleLabel.text = "Gas:"
-            self.valueLabel.text = ""
+            self.valueLabel.text = details.gas
             self.completedImageView.isHidden = true
             self.valueSubLabel.text = ""
         }

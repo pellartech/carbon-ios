@@ -159,3 +159,24 @@ class Platforms {
         return network
     }
 }
+class SendDetails {
+    var amount: String?
+    var symbol: String?
+    var logo: String?
+    var address: String?
+    var network: String?
+    var gas: String?
+    var date: String?
+    var status: String?
+
+    init(amount: String?,symbol: String?,logo : String?, address: String?, network: String?, gas: String?, date: String?, status: String?){
+        self.amount = amount
+        self.symbol = symbol
+        self.logo = logo
+        self.address = address
+        self.network = network
+        self.gas = gas
+        self.date = date
+        self.status = status
+    }
+}
