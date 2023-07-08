@@ -1,9 +1,10 @@
 //
-//  AddCustomTokenViewController.swift
+//  SendConfirmationViewController.swift
 //  Client
 //
-//  Created by Ashok on 29/05/23.
+//  Created by Ashok on 07/07/23.
 //
+
 import Foundation
 import UIKit
 import ParticleConnect
@@ -18,7 +19,7 @@ import SDWebImage
 import Common
 import Shared
 
-class AddCustomTokenViewController: UIViewController {
+class SendConfirmationViewController: UIViewController {
     
     // MARK: - UI Constants
     private struct UX {
@@ -34,6 +35,7 @@ class AddCustomTokenViewController: UIViewController {
             static let top: CGFloat = 30
             static let width: CGFloat = 300
             static let font1: CGFloat = 12
+            static let font2: CGFloat = 20
             static let tokenFont: CGFloat = 11
             
         }
@@ -73,7 +75,7 @@ class AddCustomTokenViewController: UIViewController {
             static let cornerRadius: CGFloat = 20
             static let common: CGFloat = 10
             static let top: CGFloat = 15
-            static let height: CGFloat = 155
+            static let height: CGFloat = 220
         }
         struct WelcomeLabel {
             static let topValueCarbon: CGFloat = 25
@@ -122,7 +124,7 @@ class AddCustomTokenViewController: UIViewController {
             static let font: CGFloat = 14
             static let corner: CGFloat = 10
             static let leading: CGFloat = 20
-            static let addTop: CGFloat = 20
+            static let addTop: CGFloat = 300
             static let seeAllheight: CGFloat = 24
             static let seeAllwidth: CGFloat = 100
             static let seeTop: CGFloat = -15
@@ -143,6 +145,15 @@ class AddCustomTokenViewController: UIViewController {
             static let height: CGFloat = 120
             static let tokenInfoTop: CGFloat = 10
             
+        }
+        struct TokenView {
+            static let height: CGFloat = 80
+            static let common: CGFloat = 20
+            static let top: CGFloat = 5
+            static let logoHeight: CGFloat = 48
+            static let logoWidth: CGFloat = 48
+            static let shareHeight: CGFloat = 24
+            static let shareWidth: CGFloat = 24
         }
         struct WalletLabel {
             static let font: CGFloat = 18
@@ -207,12 +218,9 @@ class AddCustomTokenViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    private lazy var searchView: UIView = {
+    private lazy var tokenView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
-        view.layer.cornerRadius = UX.SearchView.cornerRadius
-        view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         return view
     }()
@@ -222,13 +230,14 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
-    private lazy var networkView: UIView = {
+    private lazy var transactionView: UIView = {
         let view = UIView()
+        view.alpha = 0.6
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = Utilities().hexStringToUIColor(hex: "#292929")
         view.layer.cornerRadius = UX.NetworkView.corner
         view.clipsToBounds = true
-        view.isUserInteractionEnabled = true
+        view.isUserInteractionEnabled = false
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
         view.addGestureRecognizer(tapRecognizer)
         return view
@@ -242,7 +251,7 @@ class AddCustomTokenViewController: UIViewController {
         view.isUserInteractionEnabled = true
         return view
     }()
-    private lazy var addTokenBtnView: GradientView = {
+    private lazy var backBtnView: GradientView = {
         let view = GradientView()
         view.clipsToBounds = true
         view.layer.cornerRadius = UX.ButtonView.corner
@@ -285,39 +294,11 @@ class AddCustomTokenViewController: UIViewController {
     
     private lazy var chevronImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_chevron")
+        imageView.image = UIImage(named: "ic_down_chevron")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private lazy var searchButton: UIButton = {
-        let searchButton = UIButton()
-        searchButton.clipsToBounds = false
-        searchButton.tintColor = UIColor.Photon.Grey50
-        searchButton.contentHorizontalAlignment = .center
-        searchButton.setImage(UIImage(named: "search"), for: .normal)
-        searchButton.translatesAutoresizingMaskIntoConstraints = false
-        searchButton.isUserInteractionEnabled = false
-        return searchButton
-    }()
-    
-    ///UITextField
-    lazy var searchTextField: UITextField = {
-        let textField = UITextField()
-        textField.attributedPlaceholder =
-        NSAttributedString(
-            string: "Search by token name",
-            attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray,NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UX.SearchView.font)]
-        )
-        textField.backgroundColor = .clear
-        textField.font = UIFont.preferredFont(forTextStyle: .body)
-        textField.adjustsFontForContentSizeCategory = true
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.isUserInteractionEnabled = true
-        textField.delegate = self
-        textField.autocorrectionType = .no
-        return textField
-    }()
     
     ///UILabel
     private lazy var walletLabel: GradientLabel = {
@@ -333,27 +314,18 @@ class AddCustomTokenViewController: UIViewController {
         label.textColor = UIColor.white
         label.font = .boldSystemFont(ofSize: UX.BalanceLabel.titleFont)
         label.textAlignment = .center
-        label.text = "ADD CUSTOM TOKEN"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    private lazy var detailsLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Utilities().hexStringToUIColor(hex: "#808080")
-        label.font = .boldSystemFont(ofSize: UX.NetworkView.font)
-        label.textAlignment = .center
-        label.text = "DETAILS:"
+        label.text = "SEND TOKEN"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var tokenNetworktitleLabel : UILabel = {
+    private lazy var transactiontitleLabel : UILabel = {
         let label = UILabel()
         label.textColor = UIColor.white
         label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Token Network"
+        label.text = "Transaction Details"
         label.isUserInteractionEnabled = true
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(networkViewTapped))
         label.addGestureRecognizer(tapRecognizer)
@@ -380,7 +352,37 @@ class AddCustomTokenViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    private lazy var tokenTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.white
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font2)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var tokenNetworkLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = Utilities().hexStringToUIColor(hex: "#818181")
+        label.font = .boldSystemFont(ofSize: UX.BalanceLabel.font1)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var tokenLogoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
+    private lazy var shareImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_share")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(shareBtnTapped))
+        imageView.addGestureRecognizer(tapRecognizer)
+        return imageView
+    }()
     ///UIButton
     private lazy var closeButton : UIButton = {
         let button = UIButton()
@@ -394,12 +396,12 @@ class AddCustomTokenViewController: UIViewController {
         button.isUserInteractionEnabled = true
         return button
     }()
-    private lazy var addTokenButton : UIButton = {
+    private lazy var backButton : UIButton = {
         let button = UIButton()
-        button.setTitle("ADD NEW TOKEN", for: .normal)
+        button.setTitle("GO BACK", for: .normal)
         button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: UX.ButtonView.font)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(self.addTokenBtnTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(self.backBtnTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.layer.cornerRadius = UX.ButtonView.corner
         button.isUserInteractionEnabled = true
@@ -414,26 +416,13 @@ class AddCustomTokenViewController: UIViewController {
         tableView.isUserInteractionEnabled = true
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorStyle = .none
+        tableView.separatorStyle = .singleLine
         tableView.allowsSelection = false
         tableView.isScrollEnabled = true
+        tableView.separatorColor = Utilities().hexStringToUIColor(hex: "#373737")
         tableView.showsVerticalScrollIndicator = false
         tableView.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
-        tableView.register(TokenDetailsTVCell.self, forCellReuseIdentifier:"TokenDetailsTVCell")
-        return tableView
-    }()
-    private lazy var tokensTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .clear
-        tableView.isUserInteractionEnabled = true
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .singleLine
-        tableView.allowsSelection = true
-        tableView.isScrollEnabled = true
-        tableView.showsVerticalScrollIndicator = false
-        tableView.register(CustomTokensTVCell.self, forCellReuseIdentifier:"CustomTokensTVCell")
+        tableView.register(ConfirmationDetailsTVCell.self, forCellReuseIdentifier:"ConfirmationDetailsTVCell")
         return tableView
     }()
     
@@ -453,20 +442,9 @@ class AddCustomTokenViewController: UIViewController {
         return contentView
     }()
     
-    
     // MARK: - UI Properties
-    let bag = DisposeBag()
-    var networkData = [String]()
-    var themeManager :  ThemeManager?
-    var tokenInfo : TokensInfo?
-    var selectedIndexes = IndexPath()
-    var searchTokenList = [Tokens]()
-    var platforms = [Platforms]()
-    var heightForTokenViewNoToken =  NSLayoutConstraint()
-    var heightForTokenView =  NSLayoutConstraint()
-    var trailingForNoChevron =  NSLayoutConstraint()
-    var trailingForChevron =  NSLayoutConstraint()
-    var delegate : ConnectProtocol?
+    var themeManager: ThemeManager?
+    var details : SendDetails?
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -474,8 +452,7 @@ class AddCustomTokenViewController: UIViewController {
         applyTheme()
         setUpView()
         setUpViewContraint()
-        fetchDefaultNetwork()
-        checkCoreDataValue()
+        setUpUI()
     }
     
     // MARK: - UI Methods
@@ -487,32 +464,28 @@ class AddCustomTokenViewController: UIViewController {
     
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
-        heightForTokenViewNoToken = tokensTableView.heightAnchor.constraint(equalToConstant: 0)
-        heightForTokenView = tokensTableView.heightAnchor.constraint(equalToConstant: 120)
-        trailingForNoChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: 0)
-        trailingForChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -20)
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
         logoBackgroundView.addSubview(logoView)
+        tokenView.addSubview(tokenLogoImageView)
+        tokenView.addSubview(shareImageView)
+        tokenView.addSubview(tokenTitleLabel)
+        tokenView.addSubview(tokenNetworkLabel)
+        contentView.addSubview(tokenView)
         actionsView.addSubview(settingsIcon)
         actionsView.addSubview(infoIcon)
         actionsView.addSubview(addTokenTitleLabel)
         contentView.addSubview(actionsView)
-        searchView.addSubview(searchButton)
-        searchView.addSubview(searchTextField)
-        contentView.addSubview(searchView)
-        contentView.addSubview(tokensTableView)
         contentView.addSubview(tokenInfoLabel)
-        contentView.addSubview(detailsLabel)
-        networkView.addSubview(tokenNetworktitleLabel)
-        networkView.addSubview(tokenNetworkValueLabel)
-        networkView.addSubview(chevronImageView)
-        contentView.addSubview(networkView)
+        transactionView.addSubview(transactiontitleLabel)
+        transactionView.addSubview(tokenNetworkValueLabel)
+        transactionView.addSubview(chevronImageView)
+        contentView.addSubview(transactionView)
         detailsView.addSubview(tableView)
         contentView.addSubview(detailsView)
-        contentView.addSubview(addTokenBtnView)
-        contentView.addSubview(addTokenButton)
+        contentView.addSubview(backBtnView)
+        contentView.addSubview(backButton)
         scrollContentView.addSubview(contentView)
         scrollView.addSubview(scrollContentView)
         view.addSubview(scrollView)
@@ -521,8 +494,6 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     func setUpViewContraint(){
-        heightForTokenViewNoToken.isActive = true
-        trailingForNoChevron.isActive = true
         NSLayoutConstraint.activate([
             ///Scroll
             scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -556,14 +527,36 @@ class AddCustomTokenViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
             contentView.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollContentView.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 100),
+            contentView.heightAnchor.constraint(equalToConstant: view.frame.height - 50),
             contentView.bottomAnchor.constraint(equalTo: scrollContentView.bottomAnchor),
             
             ///User Token List View
-            detailsView.topAnchor.constraint(equalTo: networkView.bottomAnchor ,constant: UX.DetailsView.top),
+            detailsView.topAnchor.constraint(equalTo: tokenView.bottomAnchor ,constant: UX.DetailsView.top),
             detailsView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.DetailsView.common),
             detailsView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: -UX.DetailsView.common),
             detailsView.heightAnchor.constraint(equalToConstant: UX.DetailsView.height),
+            
+            ///Token View
+            tokenView.topAnchor.constraint(equalTo: actionsView.bottomAnchor),
+            tokenView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            tokenView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            tokenView.heightAnchor.constraint(equalToConstant: UX.TokenView.height),
+            
+            tokenLogoImageView.centerYAnchor.constraint(equalTo: tokenView.centerYAnchor),
+            tokenLogoImageView.leadingAnchor.constraint(equalTo: tokenView.leadingAnchor,constant: UX.TokenView.common),
+            tokenLogoImageView.widthAnchor.constraint(equalToConstant: UX.TokenView.logoWidth),
+            tokenLogoImageView.heightAnchor.constraint(equalToConstant: UX.TokenView.logoHeight),
+            
+            tokenTitleLabel.topAnchor.constraint(equalTo: tokenView.topAnchor,constant:UX.TokenView.common),
+            tokenTitleLabel.leadingAnchor.constraint(equalTo: tokenLogoImageView.trailingAnchor,constant: UX.TokenView.common),
+            
+            tokenNetworkLabel.topAnchor.constraint(equalTo: tokenTitleLabel.bottomAnchor,constant: UX.TokenView.top),
+            tokenNetworkLabel.leadingAnchor.constraint(equalTo: tokenLogoImageView.trailingAnchor,constant: UX.TokenView.common),
+            
+            shareImageView.centerYAnchor.constraint(equalTo: tokenView.centerYAnchor),
+            shareImageView.trailingAnchor.constraint(equalTo: tokenView.trailingAnchor,constant: -UX.TokenView.common),
+            shareImageView.widthAnchor.constraint(equalToConstant: UX.TokenView.shareWidth),
+            shareImageView.heightAnchor.constraint(equalToConstant: UX.TokenView.shareHeight),
             
             ///Action View
             actionsView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -571,44 +564,15 @@ class AddCustomTokenViewController: UIViewController {
             actionsView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             actionsView.heightAnchor.constraint(equalToConstant: UX.ActionView.heightActionBg),
             
-            ///Search View
-            searchView.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant:  UX.SearchView.top),
-            searchView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.SearchView.leading),
-            searchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.SearchView.leading),
-            searchView.heightAnchor.constraint(equalToConstant: UX.SearchView.height),
-            
-            ///Search button
-            searchButton.topAnchor.constraint(equalTo: searchView.topAnchor,constant: UX.SearchView.constant),
-            searchButton.leadingAnchor.constraint(equalTo: searchView.leadingAnchor,constant: UX.SearchView.leading),
-            searchButton.centerYAnchor.constraint(equalTo: searchView.centerYAnchor),
-            searchButton.widthAnchor.constraint(equalToConstant: UX.SearchView.button),
-            searchButton.heightAnchor.constraint(equalToConstant: UX.SearchView.button),
-            
-            ///Search textField
-            searchTextField.topAnchor.constraint(equalTo: searchView.topAnchor),
-            searchTextField.leadingAnchor.constraint(equalTo: searchButton.trailingAnchor,constant: UX.SearchView.constant),
-            searchTextField.trailingAnchor.constraint(equalTo: searchView.trailingAnchor),
-            searchTextField.bottomAnchor.constraint(equalTo: searchView.bottomAnchor),
-            
-            ///Token Tableview
-            tokensTableView.topAnchor.constraint(equalTo: searchView.bottomAnchor,constant: UX.TableView.top),
-            tokensTableView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant: UX.TableView.leading),
-            tokensTableView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant: UX.TableView.trailing),
-            
             ///Token info Label
-            tokenInfoLabel.topAnchor.constraint(equalTo: tokensTableView.bottomAnchor,constant: UX.TableView.tokenInfoTop),
+            tokenInfoLabel.topAnchor.constraint(equalTo: actionsView.bottomAnchor,constant: UX.TableView.tokenInfoTop),
             tokenInfoLabel.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
             
-            ///Details Label
-            detailsLabel.topAnchor.constraint(equalTo: tokensTableView.bottomAnchor,constant:  UX.NetworkView.top),
-            detailsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
-            detailsLabel.heightAnchor.constraint(equalToConstant: UX.NetworkView.detailHeight),
-            
             ///Network View
-            networkView.topAnchor.constraint(equalTo: detailsLabel.bottomAnchor,constant:  UX.NetworkView.netWorkTop),
-            networkView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
-            networkView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.NetworkView.leading),
-            networkView.heightAnchor.constraint(equalToConstant: UX.NetworkView.height),
+            transactionView.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant:  UX.NetworkView.netWorkTop),
+            transactionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant:  UX.NetworkView.leading),
+            transactionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -UX.NetworkView.leading),
+            transactionView.heightAnchor.constraint(equalToConstant: UX.NetworkView.height),
             
             ///Top header Logo ImageView
             logoImageView.leadingAnchor.constraint(equalTo: logoView.leadingAnchor),
@@ -644,15 +608,15 @@ class AddCustomTokenViewController: UIViewController {
             addTokenTitleLabel.centerXAnchor.constraint(equalTo: actionsView.centerXAnchor),
             addTokenTitleLabel.topAnchor.constraint(equalTo: actionsView.topAnchor,constant: UX.BalanceLabel.topValue),
             
-            tokenNetworktitleLabel.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
-            tokenNetworktitleLabel.leadingAnchor.constraint(equalTo: networkView.leadingAnchor,constant: UX.Title.leading),
-            tokenNetworktitleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
+            transactiontitleLabel.centerYAnchor.constraint(equalTo: transactionView.centerYAnchor),
+            transactiontitleLabel.leadingAnchor.constraint(equalTo: transactionView.leadingAnchor,constant: UX.Title.leading),
+            transactiontitleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
-            chevronImageView.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
-            chevronImageView.trailingAnchor.constraint(equalTo: networkView.trailingAnchor,constant: UX.Value.trailing),
+            chevronImageView.centerYAnchor.constraint(equalTo: transactionView.centerYAnchor),
+            chevronImageView.trailingAnchor.constraint(equalTo: transactionView.trailingAnchor,constant: UX.Value.trailing),
             
             
-            tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: networkView.centerYAnchor),
+            tokenNetworkValueLabel.centerYAnchor.constraint(equalTo: transactionView.centerYAnchor),
             tokenNetworkValueLabel.widthAnchor.constraint(equalToConstant: UX.Value.valueWidth),
             tokenNetworkValueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
             
@@ -663,122 +627,48 @@ class AddCustomTokenViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: detailsView.bottomAnchor),
             
             ///Add token button view
-            addTokenBtnView.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant:UX.ButtonView.addTop),
-            addTokenBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
-            addTokenBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
-            addTokenBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
-            addTokenBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+            backBtnView.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -UX.ButtonView.addTop),
+            backBtnView.widthAnchor.constraint(equalToConstant:  UX.ButtonView.width),
+            backBtnView.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            backBtnView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            backBtnView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
             
             ///Add token button
-            addTokenButton.topAnchor.constraint(equalTo: detailsView.bottomAnchor,constant: UX.ButtonView.addTop),
-            addTokenButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
-            addTokenButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
-            addTokenButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
-            addTokenButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
+            backButton.topAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -UX.ButtonView.addTop),
+            backButton.widthAnchor.constraint(equalToConstant: UX.ButtonView.width),
+            backButton.heightAnchor.constraint(equalToConstant:  UX.ButtonView.height),
+            backButton.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor,constant:UX.ButtonView.leading),
+            backButton.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor,constant:-UX.ButtonView.leading),
         ])
-        
-    }
-    // MARK: - View Helper Methods - Check coredata stored values
-    func checkCoreDataValue() {
-        tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
-        tokens = tokens.filter{$0.isAdded == false}
-        if (tokens.count == 0){
-            SVProgressHUD.show()
-            WalletViewModel.shared.getTokenList{result in
-                switch result {
-                case .success(let tokensList):
-                    CoreDataManager.shared.saveToken(tokensData: tokensList, network: selectedNetwork)
-                    tokens = CoreDataManager.shared.fetchTokens(network:selectedNetwork)
-                    SVProgressHUD.dismiss()
-                    DispatchQueue.global().async {
-                        DispatchQueue.main.async {
-                            self.tokensTableView.reloadData()
-                        }
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
     }
     
-    // MARK: - View Model Methods - Network actions
-    func addToken(tokenArray : [String]){
-        WalletViewModel.shared.addTokenToUserAccount(address: publicAddress,tokens: tokenArray) {result in
-            switch result {
-            case .success(let result):
-                print(result)
-                guard let index = tokens.firstIndex(where: {$0.name == self.tokenInfo?.name}) else {return}
-                tokens[index].isAdded = true
-                tokens[index].address = self.tokenInfo?.contract_address
-                tokens[index].imageUrl = self.tokenInfo?.image?.large
-                CoreDataManager.shared.save()
-                SVProgressHUD.dismiss()
-                self.delegate?.accountPublicAddress(address: "")
-                self.dismissVC()
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-                self.showToast(message: error.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchDefaultNetwork(){
-        let networkData =  CoreDataManager.shared.fetchNetworks()
-        selectedNetwork = networkData.filter{$0.nativeSymbol ==  ParticleNetwork.getChainInfo().nativeSymbol}.first ?? networkData[0]
-    }
-    
-    func fetchTokenInfo(token : Tokens){
-        SVProgressHUD.show()
-        WalletViewModel.shared.getTokenDetails(tokenID: token.id ?? "") {result in
-            switch result {
-            case .success(let token):
-                SVProgressHUD.dismiss()
-                self.platforms = []
-                self.tokenInfo = token
-                DispatchQueue.global().async {
-                    DispatchQueue.main.async {
-                        self.setUpData()
-                    }
-                }
-            case .failure(let error):
-                SVProgressHUD.dismiss()
-                print(error)
-            }
-        }
-    }
-    
-    func setUpData(){
-        for (key, value) in self.tokenInfo?.platforms ?? ["": ""] {
-            self.platforms.append(Platforms(name: key, address: value, chainID: 0, isTest: false, nativeSymbol: "",isSelected: false))
-        }
-        self.platforms =  self.platforms.filter {
-        $0.name?.uppercased() == NetworkEnum.Ethereum.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.BinanceSmartChain.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.EthereumGoerliTest.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.EthereumSepoliaTest.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.BinanceSmartChainTest.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.KucoinCommunityChain.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.OkexChain.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.Polygon.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.PolygonTest.rawValue.uppercased() ||
-        $0.name?.uppercased() == NetworkEnum.Solana.rawValue.uppercased()
-        }
-        if (self.platforms.count > 1 ){
-            self.chevronImageView.isHidden = false
-            self.trailingForChevron.isActive = true
-            self.trailingForNoChevron.isActive = false
+    func setUpUI(){
+        self.tokenTitleLabel.text = "\(self.details?.amount ?? "") \(self.details?.symbol ?? "")"
+        self.tokenNetworkLabel.text = "\(self.details?.network ?? "")"
+        if let imageUrl = URL(string: self.details?.logo ?? "" ) {
+            tokenLogoImageView.sd_setImage(with: imageUrl)
         }else{
-            self.chevronImageView.isHidden = true
-            self.trailingForChevron.isActive = false
-            self.trailingForNoChevron.isActive = true
+            let symbol =  self.details?.symbol ?? ""
+            var defaultImage = ""
+            switch symbol {
+            case "BNB","TBNB" :
+                defaultImage = "ic_binance"
+            case "ETH","GETH", "SETH":
+                defaultImage = "ic_eth"
+            case "SOL":
+                defaultImage = "ic_sol"
+            case "CSIX":
+                defaultImage = "ic_carbon_pro"
+            case "MATIC":
+                defaultImage = "ic_matic"
+            case "KCS":
+                defaultImage = "ic_kcc"
+            case "OKT":
+                defaultImage = "ic_okc"
+            default: break
+            }
+            tokenLogoImageView.image = UIImage(named: defaultImage)
         }
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-        self.tokenNetworkValueLabel.text = self.platforms.first?.name?.capitalized
-        self.tableView.reloadData()
     }
     
     
@@ -792,177 +682,66 @@ class AddCustomTokenViewController: UIViewController {
     }
     
     @objc func networkViewTapped() {
-        if self.platforms.count > 1{
-            initiateChangeNetworkVC()
-        }
+        
     }
     
     @objc func infoIconTapped (){
         showToast(message: "Stay tunned! Dev in progress...")
     }
-    @objc func addTokenBtnTapped (){
-        if ( self.tokenNetworkValueLabel.text  == selectedNetwork.name?.capitalized){
-            SVProgressHUD.show()
-                let contractAddress = self.tokenInfo?.contract_address ?? ""
-                self.addToken(tokenArray: [contractAddress])
-        }else{
-            self.view.makeToast("Sorry! Unable to add. Please select different token or network", duration: 3.0, position: .bottom)
-        }
+    @objc func backBtnTapped (){
+        self.dismiss(animated: true)
+    }
+    @objc func shareBtnTapped (){
+        let shareText = "Hey, I have sent \(self.details?.amount ?? "") \(self.details?.symbol ?? "") to this address \(self.details?.address ?? "")"
+        let textToShare = [ shareText ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     
     // MARK: - Helper Methods - Initiate view controller
     
     func initiateDrawerVC(){
-        let drawerController = DrawerMenuViewController()
-        drawerController.delegate = self
-        self.present(drawerController, animated: true)
+        //        let drawerController = DrawerMenuViewController()
+        //        drawerController.delegate = self
+        //        self.present(drawerController, animated: true)
     }
     
     func initiateChangeNetworkVC(){
-        let changeNetworkVC = ChangeNetworkViewController()
-        changeNetworkVC.modalPresentationStyle = .overFullScreen
-        changeNetworkVC.platforms = self.platforms
-        changeNetworkVC.delegate = self
-        self.present(changeNetworkVC, animated: true)
+        //        let changeNetworkVC = ChangeNetworkViewController()
+        //        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        //        changeNetworkVC.platforms = self.platforms
+        //        changeNetworkVC.delegate = self
+        //        self.present(changeNetworkVC, animated: true)
     }
     
     func showToast(message: String){
-        SimpleToast().showAlertWithText(message,
-                                        bottomContainer: self.view,
-                                        theme: themeManager!.currentTheme)
-    }
-}
-// MARK: - Extension - UITextFieldDelegate
-extension AddCustomTokenViewController: UITextFieldDelegate{
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
-        var searchText  = textField.text! + string
-        if searchText.count >= 3 {
-            self.emptyList()
-            searchText = String(searchText.dropLast(range.length))
-            for each in  tokens{
-                if (each.name?.hasPrefix(searchText) ?? false){
-                    self.searchTokenList.append(each)
-                }
-            }
-            self.filteredList()
-        }else{
-            self.emptyList()
-        }
-        return true
-    }
-    
-    func filteredList(){
-        if self.searchTokenList.count > 0{
-            self.tokenInfoLabel.text =  self.searchTokenList.count > 4 ? "\(self.searchTokenList.count) results. Scroll to see more" :  self.searchTokenList.count == 0 ? "0 result" :"\(self.searchTokenList.count) results"
-            self.expandTableView()
-            self.tokensTableView.reloadData()
-        }else{
-            self.emptyList()
-        }
-    }
-    
-    func emptyList(){
-        self.selectedIndexes = IndexPath()
-        self.tokenInfoLabel.text = "0 result"
-        self.searchTokenList = []
-        self.tokensTableView.reloadData()
-        self.collapseTableView()
-    }
-    
-    func expandTableView(){
-        heightForTokenViewNoToken.isActive = false
-        heightForTokenView.isActive = true
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    func collapseTableView(){
-        heightForTokenView.isActive = false
-        heightForTokenViewNoToken.isActive = true
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        //        SimpleToast().showAlertWithText(message,
+        //                                        bottomContainer: self.view,
+        //                                        theme: themeManager!.currentTheme)
     }
 }
 
 // MARK: - Extension - UITableViewDelegate and UITableViewDataSource
-extension AddCustomTokenViewController : UITableViewDelegate, UITableViewDataSource{
+extension SendConfirmationViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  tableView == self.tokensTableView  ? self.searchTokenList.count : 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if (tableView == self.tokensTableView){
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CustomTokensTVCell", for: indexPath) as! CustomTokensTVCell
-            cell.setUI(token: self.searchTokenList[indexPath.row])
-            cell.selectionStyle = .none
-            cell.tintColor = Utilities().hexStringToUIColor(hex: "#FF2D08")
-            if (self.selectedIndexes == indexPath) {
-                cell.accessoryType = .checkmark
-            }
-            else {
-                cell.accessoryType = .none
-            }
-            
-            return cell
-        }else{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "TokenDetailsTVCell", for: indexPath) as! TokenDetailsTVCell
-            cell.setUI(token: self.tokenInfo , index: indexPath.row)
-            return cell
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ConfirmationDetailsTVCell", for: indexPath) as! ConfirmationDetailsTVCell
+        cell.setUI( index: indexPath.row,details: self.details!)
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView == self.tokensTableView ? 30 : 45
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (tableView == self.tokensTableView){
-            self.view.endEditing(true)
-            let cell = tableView.cellForRow(at: indexPath)
-            cell?.accessoryType = .checkmark
-            self.selectedIndexes = indexPath
-            tableView.reloadData()
-            self.fetchTokenInfo(token: self.searchTokenList[indexPath.row])
-        }
+        return  50
     }
 }
 
-// MARK: - Extension - ConnectProtocol
-extension AddCustomTokenViewController : ConnectProtocol{
-    func accountPublicAddress(address: String) {
-        
-    }
-    func logout() {
-        self.dismiss(animated: true)
-    }
-}
-// MARK: - Extension - AddTokenDelegate
-extension AddCustomTokenViewController: AddTokenDelegate{
-    func initiateAddToken() {
-        
-    }
-}
-// MARK: - Extension - ChangeNetwork
-extension AddCustomTokenViewController :  ChangeNetwork{
-    func changeNetworkDelegate(platforms: Platforms) {
-        guard let detailPlatforms = self.tokenInfo?.detail_platforms else {return}
-        for (platform, value) in detailPlatforms {
-            if (platform == platforms.name){
-                self.tokenNetworkValueLabel.text = platform.capitalized
-                self.tokenInfo?.contract_address = value.contract_address
-                self.tokenInfo?.network = platform
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
-}
-
-class TokenDetailsTVCell: UITableViewCell {
+class ConfirmationDetailsTVCell: UITableViewCell {
     // MARK: - UI Constants
     private struct UX {
         struct Icon {
@@ -1007,13 +786,13 @@ class TokenDetailsTVCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 2
-        label.lineBreakMode = .byTruncatingTail
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
-    
-    private lazy var valueGradiantLabel : GradientLabel = {
-        let label = GradientLabel()
+    private lazy var valueSubLabel : UILabel = {
+        let label = UILabel()
+        label.textColor =   Utilities().hexStringToUIColor(hex: "#6D6D6D")
         label.font = UIFont.boldSystemFont(ofSize:  UX.Value.font)
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -1022,96 +801,65 @@ class TokenDetailsTVCell: UITableViewCell {
         return label
     }()
     
+    private lazy var completedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ic_completed")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(titleLabel)
         contentView.addSubview(valueLabel)
-        contentView.addSubview(valueGradiantLabel)
+        contentView.addSubview(completedImageView)
+        contentView.addSubview(valueSubLabel)
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         NSLayoutConstraint.activate([
             
-            ///UILabel
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
             titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
             
             valueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             valueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            valueLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width/2),
+            valueLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width/2),
             valueLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
             
-            valueGradiantLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            valueGradiantLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: UX.Value.trailing),
-            valueGradiantLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width/2),
-            valueGradiantLabel.heightAnchor.constraint(equalToConstant: UX.Value.valueHeight),
-        ]
-        )
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setUI(token : TokensInfo?,index: Int){
-        switch index{
-        case 0:
-            self.titleLabel.text = "Address:"
-            self.valueGradiantLabel.text = token?.contract_address ?? ""
-            self.valueLabel.text = ""
-        case 1:
-            self.titleLabel.text = "Token Name:"
-            self.valueLabel.text = token?.name ?? ""
-            self.valueGradiantLabel.text = ""
-        default:
-            self.titleLabel.text = "Notes:"
-            self.valueLabel.text = token?.description?.en ?? ""
-            self.valueGradiantLabel.text = ""
-        }
-        
-    }
-    
-}
-class CustomTokensTVCell: UITableViewCell {
-    
-    private struct UX {
-        struct Title {
-            static let font: CGFloat = 14
-            static let leading: CGFloat = 30
-            static let height: CGFloat = 30
-        }
-    }
-    
-    ///UILabel
-    private lazy var titleLabel : UILabel = {
-        let label = UILabel()
-        label.textColor = UIColor.white
-        label.font = UIFont.boldSystemFont(ofSize: UX.Title.font)
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(titleLabel)
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
-        NSLayoutConstraint.activate([
-            ///UILabel
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: UX.Title.leading),
-            titleLabel.heightAnchor.constraint(equalToConstant: UX.Title.height),
-        ]
-        )
+            completedImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            completedImageView.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor,constant: UX.Value.trailing),
+            completedImageView.widthAnchor.constraint(equalToConstant: 17),
+            completedImageView.heightAnchor.constraint(equalToConstant: 17),
+            
+            valueSubLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            valueSubLabel.trailingAnchor.constraint(equalTo: completedImageView.leadingAnchor),
+        ])
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setUI(token : Tokens){
-        titleLabel.text = "\(token.name ?? "") (\(token.symbol?.uppercased() ?? ""))"
+    func setUI(index: Int, details: SendDetails){
+        switch index{
+        case 0:
+            self.titleLabel.text = "Date:"
+            self.valueLabel.text = details.date
+            self.completedImageView.isHidden = true
+        case 1:
+            self.titleLabel.text = "Status:"
+            self.valueLabel.text = details.status
+            self.completedImageView.isHidden = false
+        case 2:
+            self.titleLabel.text = "Sent to:"
+            self.valueLabel.text = details.address
+            self.completedImageView.isHidden = true
+        default:
+            self.titleLabel.text = "Gas:"
+            self.valueLabel.text = details.gas
+            self.completedImageView.isHidden = true
+            self.valueSubLabel.text = ""
+        }
     }
 }

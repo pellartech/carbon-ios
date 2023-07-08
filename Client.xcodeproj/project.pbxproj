@@ -1203,6 +1203,8 @@
 		F91ABAA229F1A17F0060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F91ABAA429F1A2410060105E /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F9254BAD29CCBB3D00A12B10 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */; };
+		F929D9032A5858CF000F48D7 /* SendConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F929D9022A5858CF000F48D7 /* SendConfirmationViewController.swift */; };
+		F95B0B252A49E05000BC0823 /* WalletSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */; };
 		F95C23202A3F3DDD00B956B7 /* RPCServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */; };
 		F95C23232A3F445200B956B7 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23222A3F445200B956B7 /* Enum.swift */; };
 		F95C23252A3F44AA00B956B7 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F95C23242A3F44AA00B956B7 /* Helper.swift */; };
@@ -5084,7 +5086,9 @@
 		F91441C32A1CA320008BE25A /* AddWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWalletViewController.swift; sourceTree = "<group>"; };
 		F91ABA9729F11A0B0060105E /* RewardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsViewController.swift; sourceTree = "<group>"; };
 		F9254BAC29CCBB3D00A12B10 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		F929D9022A5858CF000F48D7 /* SendConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendConfirmationViewController.swift; sourceTree = "<group>"; };
 		F9564CABB325D696ADAB7E2F /* co */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = co; path = co.lproj/ClearPrivateData.strings; sourceTree = "<group>"; };
+		F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsViewController.swift; sourceTree = "<group>"; };
 		F95C231F2A3F3DDD00B956B7 /* RPCServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCServer.swift; sourceTree = "<group>"; };
 		F95C23222A3F445200B956B7 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		F95C23242A3F44AA00B956B7 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -8196,6 +8200,8 @@
 				F9FE70232A28F3270006A379 /* AddCustomTokenViewController.swift */,
 				F9FC4C922A2EEC03000FA4C8 /* ChangeNetworkViewController.swift */,
 				F9DDF8362A393DEA006AAADE /* WalletEnum.swift */,
+				F95B0B242A49E05000BC0823 /* WalletSettingsViewController.swift */,
+				F929D9022A5858CF000F48D7 /* SendConfirmationViewController.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -9607,6 +9613,7 @@
 				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/GRDB.swift/GRDB.framework",
 				"${BUILT_PRODUCTS_DIR}/GenericJSON/GenericJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/QRCode/QRCode.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
@@ -9614,7 +9621,9 @@
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftImageReadWrite/SwiftImageReadWrite.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftMessages/SwiftMessages.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftQRCodeGenerator/QRCodeGenerator.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyUserDefaults/SwiftyUserDefaults.framework",
 				"${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework",
@@ -9630,6 +9639,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GenericJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCode.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
@@ -9637,7 +9647,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftImageReadWrite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMessages.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QRCodeGenerator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyUserDefaults.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast_Swift.framework",
@@ -10302,6 +10314,7 @@
 				9636D92A27F767EC00771F5E /* GleanPlumbMessageUtility.swift in Sources */,
 				E127313F28B6C194006F39D2 /* WallpaperSettingsHeaderView.swift in Sources */,
 				2FDE87FE1ABB3817005317B1 /* RemoteTabsPanel.swift in Sources */,
+				F95B0B252A49E05000BC0823 /* WalletSettingsViewController.swift in Sources */,
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				96EB6C3E27D9266500A9D159 /* HistoryActionables.swift in Sources */,
 				C4F3B29A1CFCF93A00966259 /* ButtonToast.swift in Sources */,
@@ -10395,6 +10408,7 @@
 				C87DC85A27B2C8DE006EFCE2 /* LegacyWallpaperFilePathProtocol.swift in Sources */,
 				F99BEA8F2A135A71003F49B2 /* WalletViewModel.swift in Sources */,
 				63306D3921103EAE00F25400 /* SavedTab.swift in Sources */,
+				F929D9032A5858CF000F48D7 /* SendConfirmationViewController.swift in Sources */,
 				2F44FCCB1A9E972E00FD20CC /* SearchEnginePicker.swift in Sources */,
 				1DA3CE5F24EEE7C600422BB2 /* TabDataRetriever.swift in Sources */,
 				D04D1B92209790B60074B35F /* Toast.swift in Sources */,

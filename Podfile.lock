@@ -66,6 +66,9 @@ PODS:
     - RxSwift (= 6.5.0)
     - SwiftyJSON (~> 5.0)
     - SwiftyUserDefaults (~> 5.3.0)
+  - QRCode (15.0.0):
+    - SwiftImageReadWrite (~> 1.1.6)
+    - SwiftQRCodeGenerator
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
   - RxAlamofire/Core (6.1.1):
@@ -83,9 +86,11 @@ PODS:
   - secp256k1.swift (0.1.4)
   - SnapKit (5.6.0)
   - SVProgressHUD (2.2.5)
+  - SwiftImageReadWrite (1.1.6)
   - SwiftMessages (9.0.6):
     - SwiftMessages/App (= 9.0.6)
   - SwiftMessages/App (9.0.6)
+  - SwiftQRCodeGenerator (1.0.3)
   - SwiftyJSON (5.0.1)
   - SwiftyUserDefaults (5.3.0)
   - Toast-Swift (5.0.1)
@@ -104,6 +109,7 @@ DEPENDENCIES:
   - ParticleConnect (= 0.1.52)
   - ParticleNetworkBase (= 0.12.0)
   - ParticleWalletAPI (= 0.12.0)
+  - QRCode (from `https://github.com/dagronf/qrcode.git`, tag `15.0.0`)
   - SDWebImage
   - SnapKit
   - SVProgressHUD
@@ -135,18 +141,26 @@ SPEC REPOS:
     - secp256k1.swift
     - SnapKit
     - SVProgressHUD
+    - SwiftImageReadWrite
     - SwiftMessages
+    - SwiftQRCodeGenerator
     - SwiftyJSON
     - SwiftyUserDefaults
     - Toast-Swift
     - TweetNacl
 
 EXTERNAL SOURCES:
+  QRCode:
+    :git: https://github.com/dagronf/qrcode.git
+    :tag: 15.0.0
   WalletConnectSwift:
     :branch: master
     :git: https://github.com/SunZhiC/WalletConnectSwift
 
 CHECKOUT OPTIONS:
+  QRCode:
+    :git: https://github.com/dagronf/qrcode.git
+    :tag: 15.0.0
   WalletConnectSwift:
     :commit: fa43b956320911e2ee7c5268e100c452382d7f4b
     :git: https://github.com/SunZhiC/WalletConnectSwift
@@ -167,6 +181,7 @@ SPEC CHECKSUMS:
   ParticleConnect: 55f4bec96c183ba89d9e887577e21f85835c6326
   ParticleNetworkBase: 30d0be1a52b44db9fa6df4983b5d9d0192c50da2
   ParticleWalletAPI: 1cf87a0ec84d454b19216c1bbcbf1a92665cca01
+  QRCode: eabf9cbb131730ad02102f2d7152b348d8c1e31d
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
@@ -175,13 +190,15 @@ SPEC CHECKSUMS:
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftImageReadWrite: 3508ec60fea50876964055b63558fdd02f132ba3
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
+  SwiftQRCodeGenerator: c5cdef1603699784b07af0fd3cc1c2f45ac26ada
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   SwiftyUserDefaults: 63f80248cf5bfb3458825d9a78f2eb7e1293a040
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
   TweetNacl: 3abf4d1d2082b0114e7a67410e300892448951e6
   WalletConnectSwift: 6309bf3011b0b30e3e9d1e7449535302a9240f71
 
-PODFILE CHECKSUM: e55dda682a59691fff7e92a018ba6c75016e2bd9
+PODFILE CHECKSUM: 30611b43f4450dc60ef0c167be9063a4179e84a8
 
 COCOAPODS: 1.12.1

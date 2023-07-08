@@ -12,7 +12,7 @@ class UITestAppDelegate: AppDelegate, FeatureFlaggable {
 
     private var internalProfile: Profile?
 
-    override var profile: Profile {
+    var profile: Profile {
         get {
             getProfile(UIApplication.shared)
         }

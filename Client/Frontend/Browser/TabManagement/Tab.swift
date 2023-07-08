@@ -425,7 +425,7 @@ class Tab: NSObject {
             }
         }
     }
-    weak var delegate: BrowserViewControllerDelegate?
+    var delegate: BrowserViewControllerDelegate?
     func createWebview() {
         if webView == nil {
 //            configuration.userContentController = WKUserContentController()
@@ -470,18 +470,19 @@ class Tab: NSObject {
         bind()
         injectUserAgent()
     }
-    
+    func notifyFinish(callbackId: Int, value: Swift.Result<DappCallback, JsonRpcError>) {
+        switch value {
+        case .success(let result):
+            self.webView?.evaluateJavaScript("executeCallback(\(callbackId), null, \"\(result.value.object)\")")
+        case .failure(let error):
+            self.webView?.evaluateJavaScript("executeCallback(\(callbackId), {message: \"\(error.message)\", code: \(error.code)}, null)")
+        }
+    }
+
     private func bind() {
         let input = BrowserViewModelInput(
             decidePolicy: decidePolicy.eraseToAnyPublisher())
-
         let output = transform(input: input)
-        output.universalLink
-            .sink { [weak self] url in
-                guard let strongSelf = self else { return }
-                strongSelf.delegate?.handleUniversalLink(url, in: strongSelf)
-            }.store(in: &cancellable)
-
         output.dappAction
             .sink { [weak self] data in
                 guard let strongSelf = self else { return }
@@ -572,7 +573,7 @@ class Tab: NSObject {
         func checkTabCount(failures: Int) {
             // Need delay for pool to drain.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if appDelegate.tabManager.remoteTabs.count == debugTabCount {
+                if appDelegate.tabsManager.remoteTabs.count == debugTabCount {
                     return
                 }
 
@@ -1031,5 +1032,17 @@ class TabWebView: WKWebView, MenuHelperInterface {
                 message: "Do not call evaluateJavaScript directly on TabWebViews, should only be called on super class")
     override func evaluateJavaScript(_ javaScriptString: String, completionHandler: ((Any?, Error?) -> Void)? = nil) {
         super.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
+    }
+}
+extension Tab: BrowserViewControllerDelegate {
+    func didCall(action: DappAction, callbackId: Int, in viewController: Tab) {
+        switch action {
+        case .signTransaction, .sendTransaction, .signMessage, .signPersonalMessage, .unknown, .sendRawTransaction:
+            self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
+        case .walletAddEthereumChain, .ethCall:
+            self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
+        case .walletSwitchEthereumChain(let chain):
+        print(chain.server?.name ?? "")
+        }
     }
 }

@@ -28,6 +28,8 @@ target 'Client' do
   pod 'SVProgressHUD'
   pod 'iOSDropDown'
   pod 'Toast-Swift', '~> 5.0.0'
+  pod 'QRCode', :git => 'https://github.com/dagronf/qrcode.git', :tag => '15.0.0'
+
 end
 
 target 'CredentialProvider' do

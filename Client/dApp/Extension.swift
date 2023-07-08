@@ -426,13 +426,12 @@ extension DappAction {
         var contract : String?
         
         if data.isEmpty || data.toHexString() == "0x" {
-            recipient = recipientAddress
+            recipient = walletAddress
             contract = nil
         } else {
             recipient = nil
-            contract = recipientAddress
+            contract = walletAddress
         }
-        
         return UnconfirmedTransaction(
             value: value,
             recipient: recipient,
@@ -467,6 +466,7 @@ extension DappAction {
         } else if let command = try? decoder.decode(AddCustomChainCommand.self, from: data) {
             return .walletAddEthereumChain(command)
         } else if let command = try? decoder.decode(SwitchChainCommand.self, from: data) {
+            UserDefaults.standard.set(false, forKey: WALLET_SWITCH)
             return .walletSwitchEthereumChain(command)
         } else {
             print("[Browser] failed to parse dapp command with JSON: \(jsonString)")
