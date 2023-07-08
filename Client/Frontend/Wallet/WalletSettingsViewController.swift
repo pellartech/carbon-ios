@@ -436,7 +436,7 @@ class WalletSettingsViewController: UIViewController {
             changeNetworkVC.platforms.append(Platforms(name: each.name, address: "", chainID: each.chainID, isTest: each.isTest,nativeSymbol:each.nativeSymbol, isSelected: each.isSelected))
         }
         changeNetworkVC.delegate = self
-        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.modalPresentationStyle = .overFullScreen
         changeNetworkVC.isSettings = true
         self.navigationController?.pushViewController(changeNetworkVC, animated: true)
     }

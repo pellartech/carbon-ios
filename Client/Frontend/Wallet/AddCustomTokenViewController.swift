@@ -821,7 +821,7 @@ class AddCustomTokenViewController: UIViewController {
     
     func initiateChangeNetworkVC(){
         let changeNetworkVC = ChangeNetworkViewController()
-        changeNetworkVC.modalPresentationStyle = .overCurrentContext
+        changeNetworkVC.modalPresentationStyle = .overFullScreen
         changeNetworkVC.platforms = self.platforms
         changeNetworkVC.delegate = self
         self.present(changeNetworkVC, animated: true)

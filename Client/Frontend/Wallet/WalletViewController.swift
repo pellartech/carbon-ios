@@ -904,7 +904,7 @@ class WalletViewController: UIViewController {
         let vc = SendViewController()
         vc.publicAddress = publicAddress
         vc.tokensModel = self.tokensModel
-        vc.modalPresentationStyle = .overCurrentContext
+        vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
     }
     
@@ -922,7 +922,7 @@ class WalletViewController: UIViewController {
 
     func initiateReceiveVC(){
         let vc = ReceiveViewController()
-        vc.modalPresentationStyle = .overCurrentContext
+        vc.modalPresentationStyle = .overFullScreen
         vc.address = publicAddress
         self.present(vc, animated: false)
     }
@@ -930,7 +930,7 @@ class WalletViewController: UIViewController {
     func initiateAddTokenVC(){
         let vc = AddCustomTokenViewController()
         vc.delegate = self
-        vc.modalPresentationStyle = .overCurrentContext
+        vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: false)
     }
     func toEther(wei: BInt) -> Decimal {

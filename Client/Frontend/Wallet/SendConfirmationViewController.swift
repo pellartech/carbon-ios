@@ -1,6 +1,6 @@
 //
 //  SendConfirmationViewController.swift
-//  example
+//  Client
 //
 //  Created by Ashok on 07/07/23.
 //
@@ -396,15 +396,9 @@ class SendConfirmationViewController: UIViewController {
         return contentView
     }()
     
-    
     // MARK: - UI Properties
-    var networkData = [String]()
-    var selectedIndexes = IndexPath()
-    var heightForTokenViewNoToken =  NSLayoutConstraint()
-    var heightForTokenView =  NSLayoutConstraint()
-    var trailingForNoChevron =  NSLayoutConstraint()
-    var trailingForChevron =  NSLayoutConstraint()
     var themeManager: ThemeManager?
+    var destinationAddress = String()
     
     // MARK: - View Lifecycles
     override func viewDidLoad() {
@@ -424,8 +418,6 @@ class SendConfirmationViewController: UIViewController {
     
     func setUpView(){
         navigationController?.isNavigationBarHidden = true
-        trailingForNoChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: 0)
-        trailingForChevron = tokenNetworkValueLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -20)
         logoView.addSubview(logoImageView)
         logoView.addSubview(carbonImageView)
         logoView.addSubview(walletLabel)
@@ -630,7 +622,7 @@ extension SendConfirmationViewController : UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ConfirmationDetailsTVCell", for: indexPath) as! ConfirmationDetailsTVCell
-        cell.setUI( index: indexPath.row)
+        cell.setUI( index: indexPath.row,address: destinationAddress)
         return cell
     }
     
@@ -739,27 +731,32 @@ class ConfirmationDetailsTVCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUI(index: Int){
+    func getDateTime() -> String{
+        let date = Date()
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd HH:mm"
+        return df.string(from: date)
+    }
+  
+    func setUI(index: Int, address: String){
         switch index{
         case 0:
             self.titleLabel.text = "Date:"
-            self.valueLabel.text = "17.05.2023 12:23"
+            self.valueLabel.text = getDateTime()
             self.completedImageView.isHidden = true
         case 1:
             self.titleLabel.text = "Status:"
             self.valueLabel.text = "Completed"
             self.completedImageView.isHidden = false
-            
         case 2:
             self.titleLabel.text = "Sent to:"
-            self.valueLabel.text = "0x2314hd1fhdajkfhadkf1no1282x9"
+            self.valueLabel.text = address
             self.completedImageView.isHidden = true
-            
         default:
             self.titleLabel.text = "Gas:"
-            self.valueLabel.text = "$0.124"
+            self.valueLabel.text = ""
             self.completedImageView.isHidden = true
-            self.valueSubLabel.text = "0,000214 BNB"
+            self.valueSubLabel.text = ""
         }
     }
 }
