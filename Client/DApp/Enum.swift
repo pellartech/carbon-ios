@@ -30,6 +30,7 @@ public enum Method: String, Decodable {
     case signTransaction
     case signPersonalMessage
     case signMessage
+    case signTypedMessage
     case ethCall
     case unknown
     
@@ -146,4 +147,23 @@ public enum DappOrWalletCommand {
 }
 
 public enum TokenScript {
+}
+
+public enum PromiseError: Error {
+    case some(error: Error)
+
+    public init(error: Error) {
+        if let e = error as? PromiseError {
+            self = e
+        } else {
+            self = .some(error: error)
+        }
+    }
+    
+    public var embedded: Error {
+        switch self {
+        case .some(let error):
+            return error
+        }
+    }
 }

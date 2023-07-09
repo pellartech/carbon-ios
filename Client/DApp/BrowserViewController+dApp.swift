@@ -8,11 +8,18 @@ import UIKit
 import WebKit
 import Combine
 import ParticleNetworkBase
+import APIKit
+import Combine
+import BigInt
+import CryptoSwift
+import secp256k1_ios
+import PromiseKit
 
 var walletAddress = ""
 protocol BrowserViewControllerDelegate: AnyObject {
     func didCall(action: DappAction, callbackId: Int, in viewController: Tab)
 }
+public typealias APIKitSession = APIKit.Session
 typealias DecisionHandler = (WKNavigationActionPolicy) -> Void
 typealias DecidePolicy = (navigationAction: WKNavigationAction, decisionHandler: DecisionHandler)
 let dappActionSubject = PassthroughSubject<(action: DappAction, callbackId: Int), Never>()
@@ -30,8 +37,25 @@ extension TabManager: BrowserViewControllerDelegate {
             switch action {
             case .signTransaction, .sendTransaction, .signMessage, .signPersonalMessage, .unknown, .sendRawTransaction:
                 self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
-            case .walletAddEthereumChain, .ethCall:
+            case .walletAddEthereumChain:
                 self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
+            case .ethCall(from: let from , to: let to, value: let value, data: let data):
+                requestEthCall(from: from, to: to, value: value, data: data)
+                    .sink(receiveCompletion: { [self] result in
+                        guard case .failure(let error) = result else { return }
+                        
+                        if case JSONRPCError.responseError(let code, let message, _) = error.embedded {
+                            self.notifyFinish(callbackId: callbackId, value: .failure(.init(code: code, message: message)))
+                        } else {
+                            //TODO better handle. User didn't cancel
+                            self.notifyFinish(callbackId: callbackId, value: .failure(.responseError))
+                        }
+                        
+                    }, receiveValue: { [self] value in
+                        let callback = DappCallback(id: callbackId, value: .ethCall(value))
+                        self.notifyFinish(callbackId: callbackId, value: .success(callback))
+                    }).store(in: &cancellable)
+                
             case .walletSwitchEthereumChain(let chain):
                 switch chain.server?.chainID {
                     
@@ -81,5 +105,65 @@ extension TabManager: BrowserViewControllerDelegate {
             }
         }
     }
+    
+    public func call(from: String?, to: String?, value: String?, data: String) -> AnyPublisher<String, SessionTaskError> {
+        let request = EtherServiceRequest(server: server, batch: BatchFactory().create(EthCallRequest(from: from, to: to, value: value, data: data)))
+        print(request)
+        return APIKitSession.sendPublisher(request, server: server)
+    }
+    
+    func requestEthCall(from: String?,
+                        to: String?,
+                        value: String?,
+                        data: String) -> AnyPublisher<String, PromiseError> {
+        
+        return call(from: from, to: to, value: value, data: data)
+            .receive(on: RunLoop.main)
+            .mapError { PromiseError(error: $0) }
+            .eraseToAnyPublisher()
+    }
+    
 }
 
+extension APIKitSession {
+
+    class func sendPublisher<Request: APIKit.Request>(_ request: Request, server: RPCServer, callbackQueue: CallbackQueue? = nil) -> AnyPublisher<Request.Response, SessionTaskError> {
+        sendImplPublisher(request, server: server, callbackQueue: callbackQueue)
+            .retry(2).eraseToAnyPublisher()
+    }
+
+    private class func sendImplPublisher<Request: APIKit.Request>(_ request: Request, server: RPCServer, callbackQueue: CallbackQueue? = nil) -> AnyPublisher<Request.Response, SessionTaskError> {
+        var sessionTask: SessionTask?
+        let publisher = Deferred {
+            Future<Request.Response, SessionTaskError> { seal in
+                sessionTask = APIKitSession.send(request, callbackQueue: callbackQueue) { result in
+                    switch result {
+                    case .success(let result):
+                        seal(.success(result))
+                    case .failure(let error):
+                       seal(.failure(error))
+                        
+                    }
+                }
+            }
+        }.handleEvents(receiveCancel: {
+            sessionTask?.cancel()
+        })
+
+        return publisher
+            .eraseToAnyPublisher()
+    }
+    static func logRpcNodeError(_ rpcNodeError: RpcNodeRetryableRequestError) {
+        switch rpcNodeError {
+        case .rateLimited(let server, let domainName):
+           print(domainName)
+            print(server)
+        case .invalidApiKey(let server, let domainName):
+            print(domainName)
+             print(server)
+        case .possibleBinanceTestnetTimeout, .networkConnectionWasLost, .invalidCertificate, .requestTimedOut:
+            return
+        }
+    }
+
+}

@@ -176,90 +176,75 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
     // MARK: - Webview configuration
     public static func makeWebViewConfig(isPrivate: Bool, prefs: Prefs?,forType type: WebViewType, messageHandler: WKScriptMessageHandler) -> WKWebViewConfiguration {
 
-        let configuration = WKWebViewConfiguration()
+        let webViewConfig = WKWebViewConfiguration()
+        var js = ""
         if (walletAddress != ""){
-            configuration.dataDetectorTypes = [.phoneNumber]
-            configuration.processPool = WKProcessPool()
-            let blockPopups = prefs?.boolForKey(PrefsKeys.KeyBlockPopups) ?? true
-            configuration.preferences.javaScriptCanOpenWindowsAutomatically = !blockPopups
-            // We do this to go against the configuration of the <meta name="viewport">
-            // tag to behave the same way as Safari :-(
-            configuration.ignoresViewportScaleLimits = true
-            if isPrivate {
-                configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
-            }else{
-                configuration.websiteDataStore = WKWebsiteDataStore.default()
-            }
-            configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
-            
-            //dApp
-            var js = ""
             
             switch type {
             case .dappBrowser(let server):
-                
-                if let filepath = Bundle.main.path(forResource: "Carbon-min", ofType: "js") {
-                    do {
-                        js += try String(contentsOfFile: filepath)
-                    } catch { }
-                }
-                js += javaScriptForDappBrowser(server: server)
-            case .tokenScriptRenderer:
-                js += javaScriptForTokenScriptRenderer()
-                js += """
-                  \n
-                  web3.tokens = {
-                      data: {
-                          currentInstance: {
-                          },
-                          token: {
-                          },
-                          card: {
-                          },
-                      },
-                      dataChanged: (old, updated, tokenCardId) => {
-                        console.log(\"web3.tokens.data changed. You should assign a function to `web3.tokens.dataChanged` to monitor for changes like this:\\n    `web3.tokens.dataChanged = (old, updated, tokenCardId) => { //do something }`\")
-                      }
+                  if let filepath = Bundle.main.path(forResource: "Carbon-min", ofType: "js") {
+                      do {
+                          js += try String(contentsOfFile: filepath)
+                      } catch { }
                   }
-                  """
+                  js += javaScriptForDappBrowser(server: server, address: walletAddress)
+            case .tokenScriptRenderer:
+                js += javaScriptForTokenScriptRenderer(address: walletAddress)
+                js += """
+                      \n
+                      web3.tokens = {
+                          data: {
+                              currentInstance: {
+                              },
+                              token: {
+                              },
+                              card: {
+                              },
+                          },
+                          dataChanged: (old, updated, tokenCardId) => {
+                            console.log(\"web3.tokens.data changed. You should assign a function to `web3.tokens.dataChanged` to monitor for changes like this:\\n    `web3.tokens.dataChanged = (old, updated, tokenCardId) => { //do something }`\")
+                          }
+                      }
+                      """
             }
             let userScript = WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false)
-            configuration.userContentController.addUserScript(userScript)
-            
+            webViewConfig.userContentController.addUserScript(userScript)
+
             switch type {
             case .dappBrowser:
                 break
             case .tokenScriptRenderer:
-                configuration.setURLSchemeHandler(configuration, forURLScheme: "tokenscript-resource")
+                //TODO enable content blocking rules to support whitelisting
+                webViewConfig.setURLSchemeHandler(webViewConfig, forURLScheme: "tokenscript-resource")
             }
-            
-            HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: configuration)
-            configuration.userContentController.add(messageHandler, name: Method.sendTransaction.rawValue)
-            configuration.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
-            configuration.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
-            configuration.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
-            configuration.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
-            configuration.userContentController.add(messageHandler, name: AddCustomChainCommand.Method.walletAddEthereumChain.rawValue)
-            configuration.userContentController.add(messageHandler, name: SwitchChainCommand.Method.walletSwitchEthereumChain.rawValue)
-            configuration.userContentController.add(messageHandler, name: Browser.locationChangedEventName)
-            //TODO extract like `Method.signTypedMessage.rawValue` when we have more than 1
-            configuration.userContentController.add(messageHandler, name: TokenScript.SetProperties.setActionProps)
+
+            HackToAllowUsingSafaryExtensionCodeInDappBrowser.injectJs(to: webViewConfig)
+            webViewConfig.userContentController.add(messageHandler, name: Method.sendTransaction.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Method.signTransaction.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Method.signPersonalMessage.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Method.signMessage.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Method.signTypedMessage.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Method.ethCall.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: AddCustomChainCommand.Method.walletAddEthereumChain.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: SwitchChainCommand.Method.walletSwitchEthereumChain.rawValue)
+            webViewConfig.userContentController.add(messageHandler, name: Browser.locationChangedEventName)
+            webViewConfig.userContentController.add(messageHandler, name: TokenScript.SetProperties.setActionProps)
         }
-        return configuration
+        return webViewConfig
     }
     
-    fileprivate static func javaScriptForDappBrowser(server: RPCServer) -> String {
+    fileprivate static func javaScriptForDappBrowser(server: RPCServer, address: String) -> String {
         return """
                //Space is needed here because it is sometimes cut off by websites.
                
-               const addressHex = "\(walletAddress)"
+               const addressHex = "\(address)"
                const rpcURL = "\(server.web3InjectedRpcURL.absoluteString)"
                const chainID = "\(server.chainID)"
-             
+
                function executeCallback (id, error, value) {
                    AlphaWallet.executeCallback(id, error, value)
                }
-             
+
                AlphaWallet.init(rpcURL, {
                    getAccounts: function (cb) { cb(null, [addressHex]) },
                    processTransaction: function (tx, cb){
@@ -320,17 +305,17 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                    address: addressHex,
                    networkVersion: "0x" + parseInt(chainID).toString(16) || null
                })
-             
+
                web3.setProvider = function () {
                    console.debug('AlphaWallet Wallet - overrode web3.setProvider')
                }
-             
+
                web3.eth.defaultAccount = addressHex
-             
+
                web3.version.getNetwork = function(cb) {
                    cb(null, chainID)
                }
-             
+
               web3.eth.getCoinbase = function(cb) {
                return cb(null, addressHex)
              }
@@ -340,37 +325,39 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
              ;(function() {
                var pushState = history.pushState;
                var replaceState = history.replaceState;
-             
+
                history.pushState = function() {
                  pushState.apply(history, arguments);
                  window.dispatchEvent(new Event('locationchange'));
                };
-             
+
                history.replaceState = function() {
                  replaceState.apply(history, arguments);
                  window.dispatchEvent(new Event('locationchange'));
                };
-             
+
                window.addEventListener('popstate', function() {
                  window.dispatchEvent(new Event('locationchange'))
                });
              })();
-             
+
              window.addEventListener('locationchange', function(){
                webkit.messageHandlers.\(Browser.locationChangedEventName).postMessage(window.location.href)
              })
              """
     }
-    fileprivate static func javaScriptForTokenScriptRenderer() -> String {
+// swiftlint:enable function_body_length
+
+    fileprivate static func javaScriptForTokenScriptRenderer(address: String) -> String {
         return """
                window.web3CallBacks = {}
                window.tokenScriptCallBacks = {}
-               
+
                function executeCallback (id, error, value) {
                    window.web3CallBacks[id](error, value)
                    delete window.web3CallBacks[id]
                }
-               
+
                function executeTokenScriptCallback (id, error, value) {
                    let cb = window.tokenScriptCallBacks[id]
                    if (cb) {
@@ -379,7 +366,7 @@ class TabManager: NSObject, FeatureFlaggable, TabManagerProtocol {
                    } else {
                    }
                }
-               
+
                web3 = {
                  personal: {
                    sign: function (msgParams, cb) {

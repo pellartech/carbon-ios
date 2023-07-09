@@ -377,7 +377,7 @@ extension DappAction {
             case .signMessage:
                 let data = command.object["data"]?.value ?? ""
                 return .signMessage(data)
-            case .signPersonalMessage:
+            case .signPersonalMessage, .signTypedMessage:
                 let data = command.object["data"]?.value ?? ""
                 return .signPersonalMessage(data)
             case .ethCall:
