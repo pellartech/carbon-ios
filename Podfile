@@ -31,7 +31,6 @@ target 'Client' do
   pod 'QRCode', :git => 'https://github.com/dagronf/qrcode.git', :tag => '15.0.0'
   pod 'APIKit'
   pod 'CryptoSwift'
-  pod 'secp256k1_ios'
   pod 'PromiseKit'
   pod 'Result'
 

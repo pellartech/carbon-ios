@@ -12,7 +12,7 @@ import APIKit
 import Combine
 import BigInt
 import CryptoSwift
-import secp256k1_ios
+import secp256k1
 import PromiseKit
 
 var walletAddress = ""
