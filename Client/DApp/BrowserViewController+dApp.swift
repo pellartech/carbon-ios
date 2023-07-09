@@ -39,8 +39,8 @@ extension TabManager: BrowserViewControllerDelegate {
                 self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
             case .walletAddEthereumChain:
                 self.notifyFinish(callbackId: callbackId, value: .failure(JsonRpcError.requestRejected))
-            case .ethCall(from: let from , to: let to, value: let value, data: let data):
-                requestEthCall(from: from, to: to, value: value, data: data)
+            case .ethCall(from: _ , to: let to, value: let value, data: let data):
+                requestEthCall(from: walletAddress, to: to, value: value, data: data)
                     .sink(receiveCompletion: { [self] result in
                         guard case .failure(let error) = result else { return }
                         
